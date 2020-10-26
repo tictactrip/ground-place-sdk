@@ -1,0 +1,11 @@
+{
+  "extends": ["tslint-microsoft-contrib/recommended", "tslint-config-prettier"],
+  "rules": {
+    "no-relative-imports": false,
+    "no-backbone-get-set-outside-model": false,
+    "import-name": false,
+    "export-name": false,
+    "prefer-type-cast": false,
+    "max-func-body-length": 120
+  }
+}
