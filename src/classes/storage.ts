@@ -9,6 +9,7 @@ export class Storage {
   /**
    * @description Returns the stopGroup identified by its Gpuid.
    * @param Gpuid Ground Place unique identifier.
+   * @returns {StopGroup|undefined}
    */
   // @ts-ignore
   public getStopGroupByGpuid(Gpuid: string): StopGroup | undefined {} 
@@ -16,6 +17,7 @@ export class Storage {
   /**
    * @description Returns the stopCluster identified by its Gpuid.
    * @param Gpuid Ground place unique identifier.
+   * @returns {StopCluster|undefined}
    */
   // @ts-ignore
   public getStopClusterByGpuid(Gpuid: string): StopCluster | undefined {} 
@@ -24,6 +26,7 @@ export class Storage {
    * @description Create the stopGroup with the values given.
    * @param Gpuid Ground place unique identifier of the stopCluster parent.
    * @param stopGroupInfos StopGroup informations.
+   * @returns {StopGroup}
    */
   // @ts-ignore
   public createStopGroup(Gpuid: string, stopGroupInfos: StopGroup): StopGroup {}
@@ -32,6 +35,7 @@ export class Storage {
    * @description Create the stopCluster with the values given.
    * @param Gpuid Ground place unique identifier of the stopCluster parent.
    * @param stopClusterInfos stopCluster informations.
+   * @returns {StopCluster}
    */
   // @ts-ignore
   public createStopCluster(Gpuid: string, stopClusterInfos: StopCluster): StopCluster {}
@@ -40,6 +44,7 @@ export class Storage {
    * @description Update the stopGroup with the new values given.
    * @param Gpuid Ground place unique identifier.
    * @param propertiesToUpdate Properties that need to be update. 
+   * @returns {StopGroup}
    */
   // @ts-ignore
   public updateStopGroup(Gpuid: string, propertiesToUpdate: Properties): StopGroup {}
@@ -48,6 +53,7 @@ export class Storage {
    * @description Update the stopCluster with the new values given.
    * @param Gpuid Ground place unique identifier.
    * @param propertiesToUpdate Properties that need to be update. 
+   * @returns {StopCluster}
    */
   // @ts-ignore
   public updateStopCluster(Gpuid: string, propertiesToUpdate: Properties): StopCluster {}
