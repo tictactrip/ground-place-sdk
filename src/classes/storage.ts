@@ -1,7 +1,5 @@
 
-import { StopGroup, StopCluster } from '../types';
-
-interface Properties {}
+import { StopGroup, StopCluster, Properties } from '../types';
 
 /**
  * @description Manipulate GroundPlaces.

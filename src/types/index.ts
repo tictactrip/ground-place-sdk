@@ -4,4 +4,6 @@ interface StopGroup {}
 
 interface StopCluster {}
 
-export { GroundPlace, StopGroup, StopCluster };
+interface Properties {}
+
+export { GroundPlace, StopGroup, StopCluster, Properties };
