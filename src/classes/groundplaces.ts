@@ -1,11 +1,18 @@
-
-import { AutoComplete, StopGroup, StopCluster, StopGroupGpuid, StopClusterGpuid, Properties, Filters, GroundPlacesDiff } from '../types';
+import {
+  AutoComplete,
+  StopGroup,
+  StopCluster,
+  StopGroupGpuid,
+  StopClusterGpuid,
+  Properties,
+  Filters,
+  GroundPlacesDiff,
+} from '../types';
 
 /**
  * @description GroundPlaces business logic.
  */
 export class GroundPlaces {
-
   /**
    * @description Returns a list of places.
    * @param {string} query - Can be a name, a Gpuid, a unique name or other name.
@@ -32,10 +39,10 @@ export class GroundPlaces {
   // @ts-ignore
   public createStopCluster(stopClusterInfos: StopCluster): StopCluster {}
 
-   /**
+  /**
    * @description Update the stopGroup with the new values given.
    * @param {StopGroupGpuid} stopGroupGpuid - Ground place unique identifier of a StopGroup.
-   * @param {Properties} propertiesToUpdate - Properties that need to be update. 
+   * @param {Properties} propertiesToUpdate - Properties that need to be update.
    * @returns {StopGroup}
    */
   // @ts-ignore
@@ -44,7 +51,7 @@ export class GroundPlaces {
   /**
    * @description Update the stopCluster with the new values given.
    * @param {StopClusterGpuid} stopClusterGpuid - Ground place unique identifier.
-   * @param {Properties} propertiesToUpdate - Properties that need to be update. 
+   * @param {Properties} propertiesToUpdate - Properties that need to be update.
    * @returns {StopCluster}
    */
   // @ts-ignore
@@ -66,7 +73,11 @@ export class GroundPlaces {
    * @returns {void}
    */
   // WARNING: The segmentProviderStop cannot be without a parent.
-  public moveSegmentProviderStop(segmentProviderId: string, fromStopGroupGpuid: StopGroupGpuid, intoStopGroupGpuid: StopGroupGpuid): void {}
+  public moveSegmentProviderStop(
+    segmentProviderId: string,
+    fromStopGroupGpuid: StopGroupGpuid,
+    intoStopGroupGpuid: StopGroupGpuid,
+  ): void {}
 
   /**
    * @description Move a stopGroup from a stopCluster to another stopCluster.
@@ -76,7 +87,11 @@ export class GroundPlaces {
    * @returns {StopCluster}
    */
   // @ts-ignore
-  public moveStopGroup(stopGroupToMoveGpuid: StopGroupGpuid, fromStopClusterGpuid: StopClusterGpuid, intoStopClusterGpuid: StopClusterGpuid): StopCluster {}
+  public moveStopGroup(
+    stopGroupToMoveGpuid: StopGroupGpuid,
+    fromStopClusterGpuid: StopClusterGpuid,
+    intoStopClusterGpuid: StopClusterGpuid,
+  ): StopCluster {}
 
   /**
    * @description Delete place only if it's empty.
@@ -92,7 +107,10 @@ export class GroundPlaces {
    * @returns {StopCluster}
    */
   // @ts-ignore
-  public addStopGroupToStopCluster(stopGroupToAddGpuid: StopGroupGpuid, intoStopClusterGpuid: StopClusterGpuid): StopCluster {}
+  public addStopGroupToStopCluster(
+    stopGroupToAddGpuid: StopGroupGpuid,
+    intoStopClusterGpuid: StopClusterGpuid,
+  ): StopCluster {}
 
   /**
    * @description Merge two stopGroups. It means moving all segmentProviderStop of a stopGroup into another.
@@ -102,7 +120,7 @@ export class GroundPlaces {
    * @returns {StopGroup}
    */
   // @ts-ignore
-  public mergeStopGroup(stopGroupToMergeGpuid: StopGroupGpuid, intoStopGroupGpuid: StopGroupGpuid): StopGroup {} 
+  public mergeStopGroup(stopGroupToMergeGpuid: StopGroupGpuid, intoStopGroupGpuid: StopGroupGpuid): StopGroup {}
 
   /**
    * @description Merge two stopClusters. It Means moving all stopGroup of a stopCluster into another.
@@ -112,10 +130,13 @@ export class GroundPlaces {
    * @returns {StopCluster}
    */
   // @ts-ignore
-  public mergeStopCluster(stopClusterToMergeGpuid: StopClusterGpuid, intoStopClusterGpuid: StopClusterGpuid): StopCluster {}
+  public mergeStopCluster(
+    stopClusterToMergeGpuid: StopClusterGpuid,
+    intoStopClusterGpuid: StopClusterGpuid,
+  ): StopCluster {}
 
   /**
-   * @description Check if all the business rules are respected. 
+   * @description Check if all the business rules are respected.
    * Returns true if everything ok, throw an error with all issues if not.
    * @returns {boolean|Error}
    */

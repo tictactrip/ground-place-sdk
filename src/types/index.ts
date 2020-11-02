@@ -1,3 +1,4 @@
+// @ts-ignore
 interface AutoComplete {}
 
 interface StopGroup {}
@@ -10,8 +11,17 @@ interface Filters {}
 
 interface GroundPlacesDiff {}
 
-type StopGroupGpuid = {}
+type StopGroupGpuid = {};
 
-type StopClusterGpuid = {}
+type StopClusterGpuid = {};
 
-export { AutoComplete, StopGroup, StopCluster, Properties, Filters, GroundPlacesDiff, StopGroupGpuid, StopClusterGpuid };
+export {
+  AutoComplete,
+  StopGroup,
+  StopCluster,
+  Properties,
+  Filters,
+  GroundPlacesDiff,
+  StopGroupGpuid,
+  StopClusterGpuid,
+};
