@@ -1,9 +1,5 @@
 
-import { GroundPlace, StopGroup, StopCluster, Properties } from '../types';
-
-interface Filters {}
-
-interface GroundPlacesDiff {}
+import { AutoComplete, StopGroup, StopCluster, StopGroupGpuid, StopClusterGpuid, Properties, Filters, GroundPlacesDiff } from '../types';
 
 /**
  * @description GroundPlaces business logic.
@@ -12,103 +8,116 @@ export class GroundPlaces {
 
   /**
    * @description Returns a list of places.
-   * @param query Can be a name, a Gpuid, a unique name or other name.
-   * @param filters Filters with different options (StopGroup, StopCluster, Serviced, SegmentProvider).
-   * @returns {Array<StopGroup|StopCluster>}
+   * @param {string} query - Can be a name, a Gpuid, a unique name or other name.
+   * @param {Filters} filters - Filters with different options (StopGroup, StopCluster, Serviced, SegmentProvider).
+   * @returns {AutoComplete}
    */
   // @ts-ignore
-  public autocomplete(query: string, filters: Filters): (StopGroup | StopCluster)[] {}
+  public autocomplete(query: string, filters: Filters): AutoComplete {}
 
   /**
-   * @description Create stopCluster or stopGroup.
-   * @param type Type can be stopCluster or stopGroup.
-   * @param groundPlace Informations to use for creating the place.
-   * @param GpuidParent Ground place unique identifier of the stopCluster parent if the type is a stopGroup. 
-   * @returns {StopGroup|StopCluster}
-   */
-  // @ts-ignore
-  // This method will call Storage.createStopGroup or Storage.createStopCluster depending on type passed in params.
-  public create(type: 'stopCluster' | 'stopGroup', groundPlace: GroundPlace, GpuidParent?: string): StopGroup | StopCluster {}
-
-  /**
-   * @description Create stopCluster or stopGroup.
-   * @param type Type can be stopCluster or stopGroup.
-   * @param Gpuid Ground place unique identifier.
-   * @param propertiesToUpdate Properties that need to be update. 
-   * @returns {StopGroup|StopCluster}
-   */
-  // @ts-ignore
-  // This method will call Store.updateStopGroup or Storage.updateStopCluster depending on type passed in params.
-  public update(type: 'stopCluster' | 'stopGroup', Gpuid: string, propertiesToUpdate: Properties): StopGroup | StopCluster {}
-
-  /**
-   * @description Remove a stopGroup from a stopCluster.
-   * @param stopClusterGpuid StopCluster Ground place unique identifier.
-   * @param stopGroupGpuid StopGroup Ground place unique identifier to remove.
-   * @returns {Void}
-   */
-  public removeStopGroupFromStopCluster(stopClusterGpuid: string, stopGroupGpuid: string): void {}
-
-  /**
-   * @description Move a segmentProviderStop from a stopGroup to another stopGroup.
-   * @param segmentProviderId The identifier of the segmentProvider to move.
-   * @param fromStopGroupGpuid Ground place unique identifier of the old stopGroup.
-   * @param intoStopGroupGpuid Ground place unique identifier of the new stopGroup.
-   * @returns {Void}
-   */
-  // WARNING: The segmentProviderStop cannot be without a parent.
-  public moveSegmentProviderStop(segmentProviderId: string, fromStopGroup: string, intoStopGroup: string): void {}
-
-  /**
-   * @description Move a stopGroup from a stopCluster to another stopCluster.
-   * @param stopGroupToMoveGpuid Ground place unique identifier of the stopGroup to move.
-   * @param fromStopClusterGpuid Ground place unique identifier of the old stopCluster.
-   * @param intoStopClusterGpuid Greound place unique identifier of the new stopCluster.
-   * @returns {StopCluster}
-   */
-  // @ts-ignore
-  public moveStopGroup(stopGroupToMoveGpuid: string, fromStopClusterGpuid: string, intoStopClusterGpuid: string): StopCluster {}
-
-  /**
-   * @description Delete place only if it's empty.
-   * @param placeToRemoveGpuid Ground place unique identifier of the place to remove.
-   * @returns {Void}
-   */
-  public deletePlace(placeToRemoveGpuid: string): void {}
-
-  /**
-   * @description Add a stopGroup to a stopCluster.
-   * @param stopGroupToAddGpuid Ground place unique identifier of the stopGroup to add.
-   * @param intoStopClusterGpuid Ground Place unique identifier of the stopCluster.
-   * @returns {StopCluster}
-   */
-  // @ts-ignore
-  public addStopGroupToStopCluster(stopGroupToAddGpuid: string, intoStopClusterGpuid: string): StopCluster {}
-
-  /**
-   * @description Merge two stopGroups. It means moving all segmentProviderStop of a stopGroup into another.
-   * @param stopGroupToMergeGpuid Ground place unique identifier of the stopGroup to merge.
-   * @param intoStopGroupGpuid Ground Place unique identifier of the stopGroup to be merged.
+   * @description Create the stopGroup with the values given.
+   * @param {StopClusterGpuid} stopClusterGpuid - Ground place unique identifier of the stopCluster parent.
+   * @param {StopGroup} stopGroupInfos - StopGroup informations.
    * @returns {StopGroup}
    */
   // @ts-ignore
-  // WARNING: Check first if the merged stopGroup don't have two segmentStopProvider of the same segmentProvider in it.
-  public mergeStopGroup(stopGroupToMergeGpuid: string, intoStopGroupGpuid: string): StopGroup {} 
+  public createStopGroup(stopClusterGpuid: StopClusterGpuid, stopGroupInfos: StopGroup): StopGroup {}
 
   /**
-   * @description Merge two stopClusters. It Means moving all stopGroup of a stopCluster into another.
-   * @param stopClusterToMergeGpuid Ground place unique identifier of the stopCluster to merge.
-   * @param intoStopClusterGpuid Ground place unique identifier of the stopCluster to be merged.
+   * @description Create the stopCluster with the values given.
+   * @param {StopCluster} stopClusterInfos - StopCluster informations.
    * @returns {StopCluster}
    */
   // @ts-ignore
-  // WARNING: A stopGroup can belong to both stopCluster, in this case, just remove it from the first stopCluster.
-  public mergeStopCluster(stopClusterToMergeGpuid: string, intoStopClusterGpuid: string): StopCluster {}
+  public createStopCluster(stopClusterInfos: StopCluster): StopCluster {}
+
+   /**
+   * @description Update the stopGroup with the new values given.
+   * @param {StopGroupGpuid} stopGroupGpuid - Ground place unique identifier of a StopGroup.
+   * @param {Properties} propertiesToUpdate - Properties that need to be update. 
+   * @returns {StopGroup}
+   */
+  // @ts-ignore
+  public updateStopGroup(stopGroupGpuid: StopGroupGpuid, propertiesToUpdate: Properties): StopGroup {}
+
+  /**
+   * @description Update the stopCluster with the new values given.
+   * @param {StopClusterGpuid} stopClusterGpuid - Ground place unique identifier.
+   * @param {Properties} propertiesToUpdate - Properties that need to be update. 
+   * @returns {StopCluster}
+   */
+  // @ts-ignore
+  public updateStopCluster(stopClusterGpuid: StopClusterGpuid, propertiesToUpdate: Properties): StopCluster {}
+
+  /**
+   * @description Remove a stopGroup from a stopCluster.
+   * @param {StopClusterGpuid} stopClusterGpuid - Ground place unique identifier of a StopCluster.
+   * @param {StopGroupGpuid} stopGroupGpuid - StopGroup Ground place unique identifier to remove.
+   * @returns {void}
+   */
+  public removeStopGroupFromStopCluster(stopClusterGpuid: StopClusterGpuid, stopGroupGpuid: StopGroupGpuid): void {}
+
+  /**
+   * @description Move a segmentProviderStop from a stopGroup to another stopGroup.
+   * @param {string} segmentProviderId - The identifier of the segmentProvider to move.
+   * @param {StopGroupGpuid} fromStopGroupGpuid - Ground place unique identifier of the old stopGroup.
+   * @param {StopGroupGpuid} intoStopGroupGpuid - Ground place unique identifier of the new stopGroup.
+   * @returns {void}
+   */
+  // WARNING: The segmentProviderStop cannot be without a parent.
+  public moveSegmentProviderStop(segmentProviderId: string, fromStopGroupGpuid: StopGroupGpuid, intoStopGroupGpuid: StopGroupGpuid): void {}
+
+  /**
+   * @description Move a stopGroup from a stopCluster to another stopCluster.
+   * @param {StopGroupGpuid} stopGroupToMoveGpuid - Ground place unique identifier of the stopGroup to move.
+   * @param {StopClusterGpuid} fromStopClusterGpuid - Ground place unique identifier of the old stopCluster.
+   * @param {StopClusterGpuid} intoStopClusterGpuid - Ground place unique identifier of the new stopCluster.
+   * @returns {StopCluster}
+   */
+  // @ts-ignore
+  public moveStopGroup(stopGroupToMoveGpuid: StopGroupGpuid, fromStopClusterGpuid: StopClusterGpuid, intoStopClusterGpuid: StopClusterGpuid): StopCluster {}
+
+  /**
+   * @description Delete place only if it's empty.
+   * @param {StopGroupGpuid|StopClusterGpuid} placeToRemoveGpuid - Ground place unique identifier of the place to remove.
+   * @returns {void}
+   */
+  public deletePlace(placeToRemoveGpuid: StopGroupGpuid | StopClusterGpuid): void {}
+
+  /**
+   * @description Add a stopGroup to a stopCluster.
+   * @param {StopGroupGpuid} stopGroupToAddGpuid - Ground place unique identifier of the stopGroup to add.
+   * @param {StopClusterGpuid} intoStopClusterGpuid - Ground Place unique identifier of the stopCluster.
+   * @returns {StopCluster}
+   */
+  // @ts-ignore
+  public addStopGroupToStopCluster(stopGroupToAddGpuid: StopGroupGpuid, intoStopClusterGpuid: StopClusterGpuid): StopCluster {}
+
+  /**
+   * @description Merge two stopGroups. It means moving all segmentProviderStop of a stopGroup into another.
+   * Warning: Check first if the merged stopGroup don't have two segmentStopProvider of the same segmentProvider in it.
+   * @param {StopGroupGpuid} stopGroupToMergeGpuid - Ground place unique identifier of the stopGroup to merge.
+   * @param {StopGroupGpuid} intoStopGroupGpuid - Ground Place unique identifier of the stopGroup to be merged.
+   * @returns {StopGroup}
+   */
+  // @ts-ignore
+  public mergeStopGroup(stopGroupToMergeGpuid: StopGroupGpuid, intoStopGroupGpuid: StopGroupGpuid): StopGroup {} 
+
+  /**
+   * @description Merge two stopClusters. It Means moving all stopGroup of a stopCluster into another.
+   * Warning: A stopGroup can belong to both stopCluster, in this case, just remove it from the first stopCluster.
+   * @param {StopClusterGpuid} stopClusterToMergeGpuid - Ground place unique identifier of the stopCluster to merge.
+   * @param {StopClusterGpuid} intoStopClusterGpuid - Ground place unique identifier of the stopCluster to be merged.
+   * @returns {StopCluster}
+   */
+  // @ts-ignore
+  public mergeStopCluster(stopClusterToMergeGpuid: StopClusterGpuid, intoStopClusterGpuid: StopClusterGpuid): StopCluster {}
 
   /**
    * @description Check if all the business rules are respected. 
    * Returns true if everything ok, throw an error with all issues if not.
-   * @returns {Boolean|Error}
+   * @returns {boolean|Error}
    */
   // @ts-ignore
   private isValid(): boolean | Error {}
@@ -116,14 +125,14 @@ export class GroundPlaces {
   /**
    * @description Check the validity of the GroundPlacesDiff structure.
    * Returns true if everything ok, throw an error with all issues if not.
-   * @returns {Boolean|Error}
+   * @returns {boolean|Error}
    */
   // @ts-ignore
   private isGroundPlacesDiffValid(): boolean | Error {}
 
   /**
    * @description Apply the diff file to the GroundPlacesDiff object.
-   * @param groundPlacesDiff Object that store the history of changes of the GroundPlaces.
+   * @param {GroundPlacesDiff} groundPlacesDiff - Object that store the history of changes of the GroundPlaces.
    * @returns {GroundPlacesDiff}
    */
   // @ts-ignore

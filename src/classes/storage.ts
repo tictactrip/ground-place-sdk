@@ -1,5 +1,4 @@
-
-import { StopGroup, StopCluster, Properties } from '../types';
+import { StopGroup, StopCluster, StopGroupGpuid, StopClusterGpuid } from '../types';
 
 /**
  * @description Manipulate GroundPlaces.
@@ -8,53 +7,17 @@ export class Storage {
 
   /**
    * @description Returns the stopGroup identified by its Gpuid.
-   * @param Gpuid Ground Place unique identifier.
+   * @param {StopGroupGpuid} stopGroupGpuid - Ground Place unique identifier of the StopGroup to find.
    * @returns {StopGroup|undefined}
    */
   // @ts-ignore
-  public getStopGroupByGpuid(Gpuid: string): StopGroup | undefined {} 
+  public getStopGroupByGpuid(stopGroupGpuid: StopGroupGpuid): StopGroup | undefined {} 
 
   /**
    * @description Returns the stopCluster identified by its Gpuid.
-   * @param Gpuid Ground place unique identifier.
+   * @param {StopClusterGpuid} stopClusterGpuid - Ground place unique identifier of the StopCluster to find.
    * @returns {StopCluster|undefined}
    */
   // @ts-ignore
-  public getStopClusterByGpuid(Gpuid: string): StopCluster | undefined {} 
-
-  /**
-   * @description Create the stopGroup with the values given.
-   * @param Gpuid Ground place unique identifier of the stopCluster parent.
-   * @param stopGroupInfos StopGroup informations.
-   * @returns {StopGroup}
-   */
-  // @ts-ignore
-  public createStopGroup(Gpuid: string, stopGroupInfos: StopGroup): StopGroup {}
-
-  /**
-   * @description Create the stopCluster with the values given.
-   * @param Gpuid Ground place unique identifier of the stopCluster parent.
-   * @param stopClusterInfos stopCluster informations.
-   * @returns {StopCluster}
-   */
-  // @ts-ignore
-  public createStopCluster(Gpuid: string, stopClusterInfos: StopCluster): StopCluster {}
-
-  /**
-   * @description Update the stopGroup with the new values given.
-   * @param Gpuid Ground place unique identifier.
-   * @param propertiesToUpdate Properties that need to be update. 
-   * @returns {StopGroup}
-   */
-  // @ts-ignore
-  public updateStopGroup(Gpuid: string, propertiesToUpdate: Properties): StopGroup {}
-
-  /**
-   * @description Update the stopCluster with the new values given.
-   * @param Gpuid Ground place unique identifier.
-   * @param propertiesToUpdate Properties that need to be update. 
-   * @returns {StopCluster}
-   */
-  // @ts-ignore
-  public updateStopCluster(Gpuid: string, propertiesToUpdate: Properties): StopCluster {}
+  public getStopClusterByGpuid(stopClusterGpuid: StopClusterGpuid): StopCluster | undefined {} 
 }
