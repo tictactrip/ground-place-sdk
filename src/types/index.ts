@@ -5,21 +5,24 @@ interface StopGroup {}
 
 interface StopCluster {}
 
-interface Properties {}
+interface StopGroupProperties {}
+
+interface StopClusterProperties {}
 
 interface Filters {}
 
 interface GroundPlacesDiff {}
 
-type StopGroupGpuid = {};
+type StopGroupGpuid = string;
 
-type StopClusterGpuid = {};
+type StopClusterGpuid = string;
 
 export {
   AutoComplete,
   StopGroup,
   StopCluster,
-  Properties,
+  StopGroupProperties,
+  StopClusterProperties,
   Filters,
   GroundPlacesDiff,
   StopGroupGpuid,

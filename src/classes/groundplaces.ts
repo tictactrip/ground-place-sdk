@@ -4,7 +4,8 @@ import {
   StopCluster,
   StopGroupGpuid,
   StopClusterGpuid,
-  Properties,
+  StopGroupProperties,
+  StopClusterProperties,
   Filters,
   GroundPlacesDiff,
 } from '../types';
@@ -42,20 +43,23 @@ export class GroundPlaces {
   /**
    * @description Update the stopGroup with the new values given.
    * @param {StopGroupGpuid} stopGroupGpuid - Ground place unique identifier of a StopGroup.
-   * @param {Properties} propertiesToUpdate - Properties that need to be update.
+   * @param {StopGroupProperties} propertiesToUpdate - Properties that need to be update.
    * @returns {StopGroup}
    */
   // @ts-ignore
-  public updateStopGroup(stopGroupGpuid: StopGroupGpuid, propertiesToUpdate: Properties): StopGroup {}
+  public updateStopGroup(stopGroupGpuid: StopGroupGpuid, propertiesToUpdate: StopGroupProperties): StopGroup {}
 
   /**
    * @description Update the stopCluster with the new values given.
    * @param {StopClusterGpuid} stopClusterGpuid - Ground place unique identifier.
-   * @param {Properties} propertiesToUpdate - Properties that need to be update.
+   * @param {StopClusterProperties} propertiesToUpdate - Properties that need to be update.
    * @returns {StopCluster}
    */
   // @ts-ignore
-  public updateStopCluster(stopClusterGpuid: StopClusterGpuid, propertiesToUpdate: Properties): StopCluster {}
+  public updateStopCluster(
+    stopClusterGpuid: StopClusterGpuid,
+    propertiesToUpdate: StopClusterProperties,
+  ): StopCluster {}
 
   /**
    * @description Remove a stopGroup from a stopCluster.
@@ -67,12 +71,12 @@ export class GroundPlaces {
 
   /**
    * @description Move a segmentProviderStop from a stopGroup to another stopGroup.
+   * Warning: The segmentProviderStop cannot be without a parent.
    * @param {string} segmentProviderId - The identifier of the segmentProvider to move.
    * @param {StopGroupGpuid} fromStopGroupGpuid - Ground place unique identifier of the old stopGroup.
    * @param {StopGroupGpuid} intoStopGroupGpuid - Ground place unique identifier of the new stopGroup.
    * @returns {void}
    */
-  // WARNING: The segmentProviderStop cannot be without a parent.
   public moveSegmentProviderStop(
     segmentProviderId: string,
     fromStopGroupGpuid: StopGroupGpuid,
@@ -141,7 +145,7 @@ export class GroundPlaces {
    * @returns {boolean|Error}
    */
   // @ts-ignore
-  private isValid(): boolean | Error {}
+  private checkValidity(): boolean | Error {}
 
   /**
    * @description Check the validity of the GroundPlacesDiff structure.
@@ -149,7 +153,7 @@ export class GroundPlaces {
    * @returns {boolean|Error}
    */
   // @ts-ignore
-  private isGroundPlacesDiffValid(): boolean | Error {}
+  private checkGroundPlacesDiffValidity(): boolean | Error {}
 
   /**
    * @description Apply the diff file to the GroundPlacesDiff object.
