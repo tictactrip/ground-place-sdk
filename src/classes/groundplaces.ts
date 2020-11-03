@@ -6,7 +6,7 @@ import {
   StopClusterGpuid,
   StopGroupProperties,
   StopClusterProperties,
-  Filters,
+  AutoCompleteFilters,
   GroundPlacesDiff,
   GroundPlaceType,
 } from '../types';
@@ -18,11 +18,11 @@ export class GroundPlaces {
   /**
    * @description Returns a list of places.
    * @param {string} query - Can be a name, a Gpuid, a unique name or other name.
-   * @param {Filters} filters - Filters with different options (StopGroup, StopCluster, Serviced, SegmentProvider).
+   * @param {AutoCompleteFilters} filters - Filters with different options (StopGroup, StopCluster, Serviced, SegmentProvider).
    * @returns {AutoComplete}
    */
   // @ts-ignore
-  public autocomplete(query: string, filters: Filters): AutoComplete {}
+  public autocomplete(query: string, filters: AutoCompleteFilters[]): AutoComplete {}
 
   /**
    * @description Create the stopGroup with the values given.
@@ -31,7 +31,7 @@ export class GroundPlaces {
    * @returns {StopGroup}
    */
   // @ts-ignore
-  public createStopGroup(stopClusterGpuid: StopClusterGpuid, stopGroupInfos: StopGroup): StopGroup {}
+  public createStopGroup(stopClusterGpuid: StopClusterGpuid, stopGroupInfos: StopGroup): void {}
 
   /**
    * @description Create the stopCluster with the values given.
@@ -39,7 +39,7 @@ export class GroundPlaces {
    * @returns {StopCluster}
    */
   // @ts-ignore
-  public createStopCluster(stopClusterInfos: StopCluster): StopCluster {}
+  public createStopCluster(stopClusterInfos: StopCluster): void {}
 
   /**
    * @description Update the stopGroup with the new values given.

@@ -13,13 +13,22 @@ interface Filters {}
 
 interface GroundPlacesDiff {}
 
-type StopGroupGpuid = string;
+type Gpuid = string;
 
-type StopClusterGpuid = string;
+type StopGroupGpuid = Gpuid;
+
+type StopClusterGpuid = Gpuid;
 
 enum GroundPlaceType {
   Group = 'group',
   Cluster = 'cluster',
+}
+
+enum AutoCompleteFilters {
+  Name,
+  Gpuid,
+  Uniquename,
+  OtherName,
 }
 
 export {
@@ -33,4 +42,5 @@ export {
   StopGroupGpuid,
   StopClusterGpuid,
   GroundPlaceType,
+  AutoCompleteFilters,
 };

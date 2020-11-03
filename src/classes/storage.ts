@@ -10,7 +10,7 @@ export class Storage {
    * @returns {StopGroup|undefined}
    */
   // @ts-ignore
-  public getStopGroupByGpuid(stopGroupGpuid: StopGroupGpuid): StopGroup | undefined {}
+  public getStopGroupByGpuid(stopGroupGpuid: StopGroupGpuid): StopGroup | Error {}
 
   /**
    * @description Returns the stopCluster identified by its Gpuid.
@@ -18,7 +18,7 @@ export class Storage {
    * @returns {StopCluster|undefined}
    */
   // @ts-ignore
-  public getStopClusterByGpuid(stopClusterGpuid: StopClusterGpuid): StopCluster | undefined {}
+  public getStopClusterByGpuid(stopClusterGpuid: StopClusterGpuid): StopCluster | Error {}
 
   /**
    * @description Delete StopGroup only if empty.

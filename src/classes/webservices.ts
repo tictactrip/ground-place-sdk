@@ -2,13 +2,12 @@
  * @description APIs to push or retrieve GroundPlaces.
  */
 export class WebServices {
-  
   /**
    * @description Download the file from AWS S3.
    * @returns {unknown}
    */
   // @ts-ignore
-  public downloadDistantGroundPlacesMaster(): unknown {}
+  public downloadDistantGroundPlacesMaster(): void {}
 
   /**
    * @description Upload the file to AWS S3.
