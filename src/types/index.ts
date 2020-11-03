@@ -17,6 +17,11 @@ type StopGroupGpuid = string;
 
 type StopClusterGpuid = string;
 
+enum GroundPlaceType {
+  Group = 'group',
+  Cluster = 'cluster',
+}
+
 export {
   AutoComplete,
   StopGroup,
@@ -27,4 +32,5 @@ export {
   GroundPlacesDiff,
   StopGroupGpuid,
   StopClusterGpuid,
+  GroundPlaceType,
 };

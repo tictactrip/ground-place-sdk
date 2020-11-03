@@ -8,6 +8,7 @@ import {
   StopClusterProperties,
   Filters,
   GroundPlacesDiff,
+  GroundPlaceType,
 } from '../types';
 
 /**
@@ -99,10 +100,11 @@ export class GroundPlaces {
 
   /**
    * @description Delete place only if it's empty.
+   * @param {GroundPlaceType} groundPlaceType - Ground place type 'cluster' or 'group'.
    * @param {StopGroupGpuid|StopClusterGpuid} placeToRemoveGpuid - Ground place unique identifier of the place to remove.
    * @returns {void}
    */
-  public deletePlace(placeToRemoveGpuid: StopGroupGpuid | StopClusterGpuid): void {}
+  public deletePlace(groundPlaceType: GroundPlaceType, placeToRemoveGpuid: StopGroupGpuid | StopClusterGpuid): void {}
 
   /**
    * @description Add a stopGroup to a stopCluster.

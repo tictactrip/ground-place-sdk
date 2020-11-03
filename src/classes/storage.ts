@@ -19,4 +19,18 @@ export class Storage {
    */
   // @ts-ignore
   public getStopClusterByGpuid(stopClusterGpuid: StopClusterGpuid): StopCluster | undefined {}
+
+  /**
+   * @description Delete StopGroup only if empty.
+   * @param {StopGroupGpuid} stopGroupGpuid - Ground place unique identifier of the StopGroup to remove.
+   * @returns {void}
+   */
+  public deleteStopGroup(): void {}
+
+  /**
+   * @description Delete StopCluster only if empty.
+   * @param {StopClusterGpuid} stopClusterGpuid - Ground place unique identifier of the StopCluster to remove.
+   * @returns {void}
+   */
+  public deleteStopCluster(): void {}
 }
