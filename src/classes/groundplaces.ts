@@ -1,7 +1,12 @@
+import { Generator } from '@tictactrip/gp-uid';
+import { Storage } from '../classes/storage';
 import {
   AutoComplete,
   StopGroup,
   StopCluster,
+  GroundPlacesList,
+  GroundPlaceGenerated,
+  StopClusterInfos,
   StopGroupGpuid,
   StopClusterGpuid,
   StopGroupProperties,
@@ -15,6 +20,14 @@ import {
  * @description GroundPlaces business logic.
  */
 export class GroundPlaces {
+  private readonly Generator: Generator = new Generator();
+
+  public readonly Storage: Storage | null = null;
+
+  constructor(groundPlaces: GroundPlacesList) {
+    this.Storage = new Storage(groundPlaces);
+  }
+
   /**
    * @description Returns a list of places.
    * @param {string} query - Can be a name, a Gpuid, a unique name or other name.
@@ -28,18 +41,23 @@ export class GroundPlaces {
    * @description Create the stopGroup with the values given.
    * @param {StopClusterGpuid} stopClusterGpuid - Ground place unique identifier of the stopCluster parent.
    * @param {StopGroup} stopGroupInfos - StopGroup informations.
-   * @returns {StopGroup}
+   * @returns {void|Error}
    */
   // @ts-ignore
-  public createStopGroup(stopClusterGpuid: StopClusterGpuid, stopGroupInfos: StopGroup): void {}
+  public createStopGroup(stopClusterGpuid: StopClusterGpuid, stopGroupInfos: StopGroup): void | Error {}
 
   /**
    * @description Create the stopCluster with the values given.
-   * @param {StopCluster} stopClusterInfos - StopCluster informations.
-   * @returns {StopCluster}
+   * @param {StopClusterInfos} stopClusterInfos - StopCluster informations.
+   * @returns {void|Error}
    */
-  // @ts-ignore
-  public createStopCluster(stopClusterInfos: StopCluster): void {}
+  public createStopCluster(stopClusterInfos: StopClusterInfos): void | Error {
+    // Generate StopCluster with ground place unique identifier generator.
+    const stopClusterGenerated: GroundPlaceGenerated = this.Generator.gpuid(stopClusterInfos);
+
+    // Add the StopCluster to the Ground places list.
+    this.Storage.addStopClusterToGroundPlacesList(stopClusterGenerated);
+  }
 
   /**
    * @description Update the stopGroup with the new values given.
@@ -60,6 +78,7 @@ export class GroundPlaces {
   public updateStopCluster(
     stopClusterGpuid: StopClusterGpuid,
     propertiesToUpdate: StopClusterProperties,
+    // @ts-ignore
   ): StopCluster {}
 
   /**
@@ -91,11 +110,11 @@ export class GroundPlaces {
    * @param {StopClusterGpuid} intoStopClusterGpuid - Ground place unique identifier of the new stopCluster.
    * @returns {StopCluster}
    */
-  // @ts-ignore
   public moveStopGroup(
     stopGroupToMoveGpuid: StopGroupGpuid,
     fromStopClusterGpuid: StopClusterGpuid,
     intoStopClusterGpuid: StopClusterGpuid,
+    // @ts-ignore
   ): StopCluster {}
 
   /**
@@ -112,10 +131,10 @@ export class GroundPlaces {
    * @param {StopClusterGpuid} intoStopClusterGpuid - Ground Place unique identifier of the stopCluster.
    * @returns {StopCluster}
    */
-  // @ts-ignore
   public addStopGroupToStopCluster(
     stopGroupToAddGpuid: StopGroupGpuid,
     intoStopClusterGpuid: StopClusterGpuid,
+    // @ts-ignore
   ): StopCluster {}
 
   /**
@@ -135,10 +154,10 @@ export class GroundPlaces {
    * @param {StopClusterGpuid} intoStopClusterGpuid - Ground place unique identifier of the stopCluster to be merged.
    * @returns {StopCluster}
    */
-  // @ts-ignore
   public mergeStopCluster(
     stopClusterToMergeGpuid: StopClusterGpuid,
     intoStopClusterGpuid: StopClusterGpuid,
+    // @ts-ignore
   ): StopCluster {}
 
   /**

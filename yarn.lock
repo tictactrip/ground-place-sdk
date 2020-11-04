@@ -515,6 +515,14 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
+"@tictactrip/gp-uid@^2.1.1":
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/@tictactrip/gp-uid/-/gp-uid-2.1.1.tgz#2dea6aad578b80f3410f7f5b62b04a45c2f79545"
+  integrity sha512-05wQLCXl09o9zlIIrcxKR1UCbUGmhhmiiMnsO+vY85R/ncUKcTrlnj9RSexcIEMbvWp/WV94PzG9hiswSEgQ5Q==
+  dependencies:
+    ngeohash "0.6.3"
+    stopword "0.1.13"
+
 "@types/babel__core@^7.0.0", "@types/babel__core@^7.1.7":
   version "7.1.10"
   resolved "https://registry.yarnpkg.com/@types/babel__core/-/babel__core-7.1.10.tgz#ca58fc195dd9734e77e57c6f2df565623636ab40"
@@ -2923,6 +2931,11 @@ natural-compare@^1.4.0:
   resolved "https://registry.yarnpkg.com/natural-compare/-/natural-compare-1.4.0.tgz#4abebfeed7541f2c27acfb29bdbbd15c8d5ba4f7"
   integrity sha1-Sr6/7tdUHywnrPspvbvRXI1bpPc=
 
+ngeohash@0.6.3:
+  version "0.6.3"
+  resolved "https://registry.yarnpkg.com/ngeohash/-/ngeohash-0.6.3.tgz#10b1e80be5488262ec95c56cf2dbb6c45fbdf245"
+  integrity sha512-kltF0cOxgx1AbmVzKxYZaoB0aj7mOxZeHaerEtQV0YaqnkXNq26WWqMmJ6lTqShYxVRWZ/mwvvTrNeOwdslWiw==
+
 nice-try@^1.0.4:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/nice-try/-/nice-try-1.0.5.tgz#a3378a7696ce7d223e88fc9b764bd7ef1089e366"
@@ -3676,6 +3689,11 @@ stealthy-require@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/stealthy-require/-/stealthy-require-1.1.1.tgz#35b09875b4ff49f26a777e509b3090a3226bf24b"
   integrity sha1-NbCYdbT/SfJqd35QmzCQoyJr8ks=
+
+stopword@0.1.13:
+  version "0.1.13"
+  resolved "https://registry.yarnpkg.com/stopword/-/stopword-0.1.13.tgz#92b26491c443b1a8d9709142ad64ae1af10cea55"
+  integrity sha512-WteqDiQpRyn2yBAm1pwbkXn+SMa8L+WDesd33ovgs0JoheFcrrazMSet4P9LoTRteuUoqVxtEIwEKVZ/z/WHKg==
 
 string-length@^4.0.1:
   version "4.0.1"
