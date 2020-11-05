@@ -59,25 +59,59 @@ export class Storage {
    * @returns {void}
    */
   public addStopClusterToGroundPlacesList({
-    id,
+    id: stopClusterGpuid,
     name,
     latitude,
     longitude,
     countryCode,
     type,
   }: GroundPlaceGenerated): void {
-    this.groundPlacesList = [
+    // Create the StopCluster
+    const newStopCluster = {
+      [stopClusterGpuid]: { name, latitude, longitude, country_code: countryCode, type, childs: [] },
+    };
+
+    // Append the StopCluster to the ground places list.
+    this.groundPlacesList = {
       ...this.groundPlacesList,
-      {
-        [id]: {
-          country_code: countryCode,
-          name,
-          longitude,
-          latitude,
-          type,
-          childs: [],
-        },
+      ...newStopCluster,
+    };
+  }
+
+  /**
+   * @description Adding StopGroup to the ground places list and also referenced it inside it's StopCluster parent.
+   * @param {StopClusterGpuid} stopClusterParentGpuid - The StopCluster parent ground place unique identifier.
+   * @param {GroundPlaceGenerated} stopGroup - The StopGroup to add to the ground places list.
+   */
+  public addStopGroupToGroundPlacesList(
+    stopClusterParentGpuid: StopClusterGpuid,
+    { id: stopGroupGpuid, name, latitude, longitude, countryCode, type }: GroundPlaceGenerated,
+  ): void {
+    // Create the StopGroup
+    const newStopGroup = {
+      [stopGroupGpuid]: {
+        country_code: countryCode,
+        name,
+        longitude,
+        latitude,
+        type,
+        childs: [],
       },
-    ];
+    };
+
+    // Add the StopGroup Gpuid inside it's StopCluster parent
+    const stopClusterParent = {
+      [stopClusterParentGpuid]: {
+        ...this.groundPlacesList[stopClusterParentGpuid],
+        childs: [...this.groundPlacesList[stopClusterParentGpuid].childs, stopGroupGpuid],
+      } as StopCluster,
+    };
+
+    // Append to the ground places list.
+    this.groundPlacesList = {
+      ...this.groundPlacesList,
+      ...stopClusterParent,
+      ...newStopGroup,
+    };
   }
 }

@@ -6,7 +6,7 @@ import {
   StopCluster,
   GroundPlacesList,
   GroundPlaceGenerated,
-  StopClusterInfos,
+  StopInfos,
   StopGroupGpuid,
   StopClusterGpuid,
   StopGroupProperties,
@@ -40,18 +40,24 @@ export class GroundPlaces {
   /**
    * @description Create the stopGroup with the values given.
    * @param {StopClusterGpuid} stopClusterGpuid - Ground place unique identifier of the stopCluster parent.
-   * @param {StopGroup} stopGroupInfos - StopGroup informations.
+   * @param {StopInfos} stopGroupInfos - StopGroup informations.
    * @returns {void|Error}
    */
   // @ts-ignore
-  public createStopGroup(stopClusterGpuid: StopClusterGpuid, stopGroupInfos: StopGroup): void | Error {}
+  public createStopGroup(stopClusterGpuid: StopClusterGpuid, stopGroupInfos: StopInfos): void | Error {
+    // Generate StopGroup with ground place unique identifier generator.
+    const stopGroupGenerated: GroundPlaceGenerated = this.Generator.gpuid(stopGroupInfos);
+
+    // Add the StopGroup to a StopCluster.
+    this.Storage.addStopGroupToGroundPlacesList(stopClusterGpuid, stopGroupGenerated);
+  }
 
   /**
    * @description Create the stopCluster with the values given.
-   * @param {StopClusterInfos} stopClusterInfos - StopCluster informations.
+   * @param {StopInfos} stopClusterInfos - StopCluster informations.
    * @returns {void|Error}
    */
-  public createStopCluster(stopClusterInfos: StopClusterInfos): void | Error {
+  public createStopCluster(stopClusterInfos: StopInfos): void | Error {
     // Generate StopCluster with ground place unique identifier generator.
     const stopClusterGenerated: GroundPlaceGenerated = this.Generator.gpuid(stopClusterInfos);
 
@@ -61,7 +67,7 @@ export class GroundPlaces {
 
   /**
    * @description Update the stopGroup with the new values given.
-   * @param {StopGroupGpuid} stopGroupGpuid - Ground place unique identifier of a StopGroup.
+   * @param {StopInfos} stopGroupGpuid - Ground place unique identifier of a StopGroup.
    * @param {StopGroupProperties} propertiesToUpdate - Properties that need to be update.
    * @returns {StopGroup}
    */

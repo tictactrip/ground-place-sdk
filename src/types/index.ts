@@ -2,39 +2,35 @@
 interface AutoComplete {}
 
 interface StopGroup {
-  [stopGroupGpuid: string]: {
-    country_code: string;
-    name: string;
-    longitude: number;
-    latitude: number;
-    type: string;
-    childs: SegmentProviderStop[];
-    serviced?: string;
-    has_been_modified?: boolean;
-    warning?: boolean;
-    is_latest?: boolean;
-  };
+  country_code: string;
+  name: string;
+  longitude: number;
+  latitude: number;
+  type: string;
+  childs: SegmentProviderStop[];
+  serviced?: string;
+  has_been_modified?: boolean;
+  warning?: boolean;
+  is_latest?: boolean;
 }
 
 interface StopCluster {
-  [stopClusterGpuid: string]: {
-    country_code: string;
-    name: string;
-    longitude: number;
-    latitude: number;
-    type: string;
-    childs: string[];
-    unique_name?: string;
-    serviced?: string;
-    has_been_modified?: boolean;
-    warning?: boolean;
-    is_latest?: boolean;
-  };
+  country_code: string;
+  name: string;
+  longitude: number;
+  latitude: number;
+  type: string;
+  childs: string[];
+  unique_name?: string;
+  serviced?: string;
+  has_been_modified?: boolean;
+  warning?: boolean;
+  is_latest?: boolean;
 }
 
-type GroundPlacesList = (StopGroup | StopCluster)[];
+type GroundPlacesList = Record<Gpuid, StopGroup | StopCluster>;
 
-interface StopClusterInfos {
+interface StopInfos {
   countryCode: string;
   name: string;
   longitude: number;
@@ -43,7 +39,7 @@ interface StopClusterInfos {
 }
 
 interface GroundPlaceGenerated {
-  id: string;
+  id: StopGroupGpuid | StopClusterGpuid;
   name: string;
   latitude: number;
   longitude: number;
@@ -77,6 +73,8 @@ type StopGroupGpuid = Gpuid;
 
 type StopClusterGpuid = Gpuid;
 
+type GroundPlaceType = 'group' | 'cluster';
+
 enum AutoCompleteFilters {
   Name,
   Gpuid,
@@ -90,7 +88,7 @@ export {
   StopCluster,
   GroundPlacesList,
   GroundPlaceGenerated,
-  StopClusterInfos,
+  StopInfos,
   StopGroupProperties,
   StopClusterProperties,
   Filters,
