@@ -28,7 +28,9 @@ interface StopCluster {
   is_latest?: boolean;
 }
 
-type GroundPlacesList = Record<Gpuid, StopGroup | StopCluster>;
+type GroundPlacesList = {
+  [key: string]: StopGroup | StopCluster;
+};
 
 interface StopInfos {
   countryCode: string;

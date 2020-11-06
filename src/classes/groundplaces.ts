@@ -45,10 +45,10 @@ export class GroundPlaces {
    */
   // @ts-ignore
   public createStopGroup(stopClusterGpuid: StopClusterGpuid, stopGroupInfos: StopInfos): void | Error {
-    // Generate StopGroup with ground place unique identifier generator.
+    // Generate StopGroup with ground place unique identifier generator
     const stopGroupGenerated: GroundPlaceGenerated = this.Generator.gpuid(stopGroupInfos);
 
-    // Add the StopGroup to a StopCluster.
+    // Add the StopGroup to a StopCluster
     this.Storage.addStopGroupToGroundPlacesList(stopClusterGpuid, stopGroupGenerated);
   }
 
@@ -58,10 +58,10 @@ export class GroundPlaces {
    * @returns {void|Error}
    */
   public createStopCluster(stopClusterInfos: StopInfos): void | Error {
-    // Generate StopCluster with ground place unique identifier generator.
+    // Generate StopCluster with ground place unique identifier generator
     const stopClusterGenerated: GroundPlaceGenerated = this.Generator.gpuid(stopClusterInfos);
 
-    // Add the StopCluster to the Ground places list.
+    // Add the StopCluster to the Ground places list
     this.Storage.addStopClusterToGroundPlacesList(stopClusterGenerated);
   }
 

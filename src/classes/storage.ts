@@ -22,7 +22,13 @@ export class Storage {
    * @returns {StopGroup|undefined}
    */
   // @ts-ignore
-  public getStopGroupByGpuid(stopGroupGpuid: StopGroupGpuid): StopGroup | Error {}
+  public getStopGroupByGpuid(stopGroupGpuid: StopGroupGpuid): StopGroup | Error {
+    if (this.groundPlacesList[stopGroupGpuid]) {
+      return this.groundPlacesList[stopGroupGpuid] as StopGroup;
+    } else {
+      throw new Error(`The StopGroup with the Gpuid ${stopGroupGpuid} is not found.`);
+    }
+  }
 
   /**
    * @description Returns the stopCluster identified by its Gpuid.
@@ -30,7 +36,13 @@ export class Storage {
    * @returns {StopCluster|undefined}
    */
   // @ts-ignore
-  public getStopClusterByGpuid(stopClusterGpuid: StopClusterGpuid): StopCluster | Error {}
+  public getStopClusterByGpuid(stopClusterGpuid: StopClusterGpuid): StopCluster | Error {
+    if (this.groundPlacesList[stopClusterGpuid]) {
+      return this.groundPlacesList[stopClusterGpuid] as StopCluster;
+    } else {
+      throw new Error(`The StopCluster with the Gpuid ${stopClusterGpuid} is not found.`);
+    }
+  }
 
   /**
    * @description Getter to retrieve the Ground places list.
@@ -71,6 +83,8 @@ export class Storage {
       [stopClusterGpuid]: { name, latitude, longitude, country_code: countryCode, type, childs: [] },
     };
 
+    // TODO: Call checkValidity on the groundPlacesList to check if all rules are respected before adding the StopCluster
+
     // Append the StopCluster to the ground places list.
     this.groundPlacesList = {
       ...this.groundPlacesList,
@@ -99,12 +113,14 @@ export class Storage {
       },
     };
 
+    // TODO: Call checkValidity on the groundPlacesList to check if all rules are respected before adding the StopCluster
+
     // Add the StopGroup Gpuid inside it's StopCluster parent
     const stopClusterParent = {
       [stopClusterParentGpuid]: {
         ...this.groundPlacesList[stopClusterParentGpuid],
         childs: [...this.groundPlacesList[stopClusterParentGpuid].childs, stopGroupGpuid],
-      } as StopCluster,
+      } as StopCluster, // Type casting here otherwise TS will complain since groundPlacesList could have two structure of places..
     };
 
     // Append to the ground places list.
