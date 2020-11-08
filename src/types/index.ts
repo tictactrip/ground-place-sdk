@@ -39,6 +39,7 @@ interface StopGroupInfos {
   latitude: number;
   type: string;
   currentStopGroupGpuid: StopGroupGpuid;
+  serviced: string;
 }
 
 interface StopClusterInfos {
@@ -47,6 +48,8 @@ interface StopClusterInfos {
   longitude: number;
   latitude: number;
   type: string;
+  currentStopGroupGpuid: StopGroupGpuid;
+  serviced: string;
 }
 
 interface GroundPlaceGenerated {

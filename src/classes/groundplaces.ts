@@ -20,7 +20,7 @@ import {
   GroundPlaceType,
 } from '../types';
 
-const { Create, Move, MoveSegmentProviderStop } = GroundPlacesDiffActionType;
+const { Create, Move, MoveSegmentProviderStop, Add } = GroundPlacesDiffActionType;
 
 /**
  * @description GroundPlaces business logic.
@@ -61,8 +61,8 @@ export class GroundPlaces {
     // @ts-ignore
   ): StopGroup | Error {
     const { id: stopGroupGpuid }: GroundPlaceGenerated = this.generatorService.gpuid(stopGroupInfos);
-    const { latitude, longitude, name, countryCode, currentStopGroupGpuid } = stopGroupInfos;
-    const { serviced, id: segmentProviderStopId } = segmentProviderStop;
+    const { latitude, longitude, name, countryCode, currentStopGroupGpuid, serviced } = stopGroupInfos;
+    const { id: segmentProviderStopId } = segmentProviderStop;
 
     const createStopGroupAction = {
       [stopGroupGpuid]: {
@@ -99,19 +99,43 @@ export class GroundPlaces {
 
     // TODO: Call applyGroundPlacesDiff and getStopGroup
     // this.applyGroundPlacesDiff();
-    // this.storageService.getStopGroup(stopGroupGpuid);
+    // return this.storageService.getStopGroup(stopGroupGpuid);
   }
 
   /**
-   * @description Create the stopCluster with the values given.
+   * @description Create a new StopCluster from a StopGroup.
    * @param {StopClusterInfos} stopClusterInfos - StopCluster informations.
-   * @returns {void|Error}
+   * @returns {StopCluster|Error}
    */
-  public createStopCluster(stopClusterInfos: StopClusterInfos): void | Error {
-    // Generate StopCluster with ground place unique identifier generator
-    // const stopClusterGenerated: GroundPlaceGenerated = this.generatorService.gpuid(stopClusterInfos);
-    // Add the StopCluster to the Ground places list
-    // this.storageService.addStopClusterToGroundPlacesList(stopClusterGenerated);
+  // @ts-ignore
+  public createStopCluster(stopClusterInfos: StopClusterInfos): StopCluster | Error {
+    const { id: stopClusterGpuid }: GroundPlaceGenerated = this.generatorService.gpuid(stopClusterInfos);
+    const { latitude, longitude, name, countryCode, currentStopGroupGpuid, serviced } = stopClusterInfos;
+
+    const createStopClusterAction = {
+      [stopClusterGpuid]: {
+        latitude,
+        longitude,
+        name,
+        country_code: countryCode,
+        childs: [currentStopGroupGpuid],
+        serviced,
+        type: Create,
+      },
+    };
+
+    const addStopGroupToStopClusterAction = {
+      [currentStopGroupGpuid]: {
+        into: stopClusterGpuid,
+        type: Add,
+      },
+    };
+
+    this.addGroundPlacesDiffActions([createStopClusterAction, addStopGroupToStopClusterAction]);
+
+    // TODO: Call applyGroundPlacesDiff and getStopCluster
+    // this.applyGroundPlacesDiff();
+    // return this.storageService.getStopCluster(stopClusterGpuid);
   }
 
   /**

@@ -1,30 +1,32 @@
 import { GroundPlaces } from '../../src/classes/groundplaces';
 
-describe('createStopCluster', () => {
-  const segmentProviderStop = {
-    id: '455',
-    unique_name: null,
-    company_name: 'vsc',
-    name: 'Paris, Île-de-France, France',
-    latitude: 49.00443,
-    longitude: 2.51703,
-    serviced: 'True',
-    company_id: 10,
-  };
-
-  const stopGroupInfos = {
-    name: 'Paris, Île-de-France, France',
-    latitude: 49.00443,
-    longitude: 2.51703,
-    countryCode: 'fr',
-    currentStopGroupGpuid: 'c|FRnancded@u0dfv',
-    type: 'group',
-  };
-
-  const stopClusterGpuid = 'c|FRtroyes__@u0dfv';
+describe('createStopGroup()', () => {
   it('should create three new actions for GroundPlacesDiff', () => {
     const GroundPlacesInstance: GroundPlaces = new GroundPlaces({});
     const addGroundPlacesDiffActions = jest.spyOn(GroundPlaces.prototype, 'addGroundPlacesDiffActions');
+
+    const stopClusterGpuid = 'c|FRtroyes__@u0dfv';
+
+    const segmentProviderStop = {
+      id: '455',
+      unique_name: null,
+      company_name: 'vsc',
+      name: 'Paris, Île-de-France, France',
+      latitude: 49.00443,
+      longitude: 2.51703,
+      serviced: 'True',
+      company_id: 10,
+    };
+
+    const stopGroupInfos = {
+      name: 'Paris, Île-de-France, France',
+      latitude: 49.00443,
+      longitude: 2.51703,
+      countryCode: 'fr',
+      currentStopGroupGpuid: 'c|FRnancded@u0dfv',
+      serviced: 'True',
+      type: 'group',
+    };
 
     GroundPlacesInstance.createStopGroup(segmentProviderStop, stopGroupInfos, stopClusterGpuid);
 
