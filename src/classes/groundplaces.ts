@@ -6,26 +6,36 @@ import {
   StopCluster,
   GroundPlacesList,
   GroundPlaceGenerated,
-  StopInfos,
+  SegmentProviderStop,
+  StopGroupInfos,
+  StopClusterInfos,
   StopGroupGpuid,
   StopClusterGpuid,
   StopGroupProperties,
   StopClusterProperties,
   AutoCompleteFilters,
   GroundPlacesDiff,
+  GroundPlacesDiffAction,
+  GroundPlacesDiffActionType,
   GroundPlaceType,
 } from '../types';
+
+const { Create, Move, MoveSegmentProviderStop } = GroundPlacesDiffActionType;
 
 /**
  * @description GroundPlaces business logic.
  */
 export class GroundPlaces {
-  private readonly Generator: Generator = new Generator();
+  private readonly generatorService: Generator;
 
-  public readonly Storage: Storage | null = null;
+  public readonly storageService: Storage;
+
+  private readonly groundPlacesDiff: GroundPlacesDiff;
 
   constructor(groundPlaces: GroundPlacesList) {
-    this.Storage = new Storage(groundPlaces);
+    this.generatorService = new Generator();
+    this.storageService = new Storage(groundPlaces);
+    this.groundPlacesDiff = [];
   }
 
   /**
@@ -38,31 +48,70 @@ export class GroundPlaces {
   public autocomplete(query: string, filters: AutoCompleteFilters[]): AutoComplete {}
 
   /**
-   * @description Create the stopGroup with the values given.
+   * @description Create a new StopGroup from a SegmentProviderStop.
+   * @param {SegmentProviderStop} segmentProviderStop - The SegmentProviderStop on which is based the StopGroup.
+   * @param {StopGroupInfos} stopGroupInfos - StopGroup informations.
    * @param {StopClusterGpuid} stopClusterGpuid - Ground place unique identifier of the stopCluster parent.
-   * @param {StopInfos} stopGroupInfos - StopGroup informations.
-   * @returns {void|Error}
+   * @returns {StopGroup|Error}
    */
-  // @ts-ignore
-  public createStopGroup(stopClusterGpuid: StopClusterGpuid, stopGroupInfos: StopInfos): void | Error {
-    // Generate StopGroup with ground place unique identifier generator
-    const stopGroupGenerated: GroundPlaceGenerated = this.Generator.gpuid(stopGroupInfos);
+  public createStopGroup(
+    segmentProviderStop: SegmentProviderStop,
+    stopGroupInfos: StopGroupInfos,
+    stopClusterGpuid: StopClusterGpuid,
+    // @ts-ignore
+  ): StopGroup | Error {
+    const { id: stopGroupGpuid }: GroundPlaceGenerated = this.generatorService.gpuid(stopGroupInfos);
+    const { latitude, longitude, name, countryCode, currentStopGroupGpuid } = stopGroupInfos;
+    const { serviced, id: segmentProviderStopId } = segmentProviderStop;
 
-    // Add the StopGroup to a StopCluster
-    this.Storage.addStopGroupToGroundPlacesList(stopClusterGpuid, stopGroupGenerated);
+    const createStopGroupAction = {
+      [stopGroupGpuid]: {
+        latitude,
+        longitude,
+        name,
+        country_code: countryCode,
+        childs: [segmentProviderStop],
+        serviced,
+        type: Create,
+      },
+    };
+
+    const moveStopGroupToStopClusterAction = {
+      [stopGroupGpuid]: {
+        into: stopClusterGpuid,
+        type: Move,
+      },
+    };
+
+    const moveSegmentProviderStopAction = {
+      [currentStopGroupGpuid]: {
+        segmentProviderStopId,
+        into: stopClusterGpuid,
+        type: MoveSegmentProviderStop,
+      },
+    };
+
+    this.addGroundPlacesDiffActions([
+      createStopGroupAction,
+      moveStopGroupToStopClusterAction,
+      moveSegmentProviderStopAction,
+    ]);
+
+    // TODO: Call applyGroundPlacesDiff and getStopGroup
+    // this.applyGroundPlacesDiff();
+    // this.storageService.getStopGroup(stopGroupGpuid);
   }
 
   /**
    * @description Create the stopCluster with the values given.
-   * @param {StopInfos} stopClusterInfos - StopCluster informations.
+   * @param {StopClusterInfos} stopClusterInfos - StopCluster informations.
    * @returns {void|Error}
    */
-  public createStopCluster(stopClusterInfos: StopInfos): void | Error {
+  public createStopCluster(stopClusterInfos: StopClusterInfos): void | Error {
     // Generate StopCluster with ground place unique identifier generator
-    const stopClusterGenerated: GroundPlaceGenerated = this.Generator.gpuid(stopClusterInfos);
-
+    // const stopClusterGenerated: GroundPlaceGenerated = this.generatorService.gpuid(stopClusterInfos);
     // Add the StopCluster to the Ground places list
-    this.Storage.addStopClusterToGroundPlacesList(stopClusterGenerated);
+    // this.storageService.addStopClusterToGroundPlacesList(stopClusterGenerated);
   }
 
   /**
@@ -174,6 +223,18 @@ export class GroundPlaces {
   // @ts-ignore
   private checkValidity(): boolean | Error {}
 
+  // @ts-ignore
+  /**
+   * @description This method is used to push new action(s) to do for the Storage class.
+   * @param {GroundPlacesDiffAction[]} groundPlacesDiffActions - An action (move, add, update, merge, ...) to apply to ground places.
+   * @returns {GroundPlacesDiff}
+   */
+  public addGroundPlacesDiffActions(groundPlacesDiffActions: GroundPlacesDiffAction[]): GroundPlacesDiff {
+    this.groundPlacesDiff.push(...groundPlacesDiffActions);
+
+    return this.groundPlacesDiff;
+  }
+
   /**
    * @description Check the validity of the GroundPlacesDiff structure.
    * Returns true if everything ok, throw an error with all issues if not.
@@ -188,5 +249,8 @@ export class GroundPlaces {
    * @returns {GroundPlacesDiff}
    */
   // @ts-ignore
-  private applyGroundPlacesDiff(groundPlacesDiff: GroundPlacesDiff): GroundPlacesDiff {}
+  public applyGroundPlacesDiff(groundPlacesDiff?: GroundPlacesDiff): GroundPlacesDiff {
+    // const groundPlacesDiffSource = groundPlacesDiff || this.groundPlacesDiff;
+    // process with groundPlacesDiffSource..
+  }
 }

@@ -32,7 +32,16 @@ type GroundPlacesList = {
   [key: string]: StopGroup | StopCluster;
 };
 
-interface StopInfos {
+interface StopGroupInfos {
+  countryCode: string;
+  name: string;
+  longitude: number;
+  latitude: number;
+  type: string;
+  currentStopGroupGpuid: StopGroupGpuid;
+}
+
+interface StopClusterInfos {
   countryCode: string;
   name: string;
   longitude: number;
@@ -67,7 +76,27 @@ interface StopClusterProperties {}
 
 interface Filters {}
 
-interface GroundPlacesDiff {}
+type GroundPlacesDiff = GroundPlacesDiffAction[];
+
+interface GroundPlacesDiffAction {
+  [gpuid: string]: {
+    type: GroundPlacesDiffActionType;
+    into?: string;
+    segmentProviderStopId?: string;
+    latitude?: number;
+    longitude?: number;
+    name?: string;
+  };
+}
+
+enum GroundPlacesDiffActionType {
+  Add = 'add',
+  Create = 'create',
+  Move = 'move',
+  Update = 'update',
+  Delete = 'delete',
+  MoveSegmentProviderStop = 'moveSegmentProviderStop',
+}
 
 type Gpuid = string;
 
@@ -90,11 +119,15 @@ export {
   StopCluster,
   GroundPlacesList,
   GroundPlaceGenerated,
-  StopInfos,
+  SegmentProviderStop,
+  StopGroupInfos,
+  StopClusterInfos,
   StopGroupProperties,
   StopClusterProperties,
   Filters,
   GroundPlacesDiff,
+  GroundPlacesDiffAction,
+  GroundPlacesDiffActionType,
   StopGroupGpuid,
   StopClusterGpuid,
   GroundPlaceType,

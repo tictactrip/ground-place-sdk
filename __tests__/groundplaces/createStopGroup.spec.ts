@@ -1,47 +1,65 @@
 import { GroundPlaces } from '../../src/classes/groundplaces';
 
 describe('createStopCluster', () => {
-  it('should create and add a new StopGroup to the GroundPlacesList with its Gpuid reference inside cluster parent childs', () => {
-    const clusterGpuid = 'c|FRtroyes__@u0dfv';
+  const segmentProviderStop = {
+    id: '455',
+    unique_name: null,
+    company_name: 'vsc',
+    name: 'Paris, Île-de-France, France',
+    latitude: 49.00443,
+    longitude: 2.51703,
+    serviced: 'True',
+    company_id: 10,
+  };
 
-    const GroundPlacesInstance: GroundPlaces = new GroundPlaces({
-      [clusterGpuid]: {
-        name: 'Troyes, Grand Est, France',
-        latitude: 48.32633,
-        longitude: 4.11027,
-        country_code: 'fr',
-        type: 'cluster',
-        childs: [],
+  const stopGroupInfos = {
+    name: 'Paris, Île-de-France, France',
+    latitude: 49.00443,
+    longitude: 2.51703,
+    countryCode: 'fr',
+    currentStopGroupGpuid: 'c|FRnancded@u0dfv',
+    type: 'group',
+  };
+
+  const stopClusterGpuid = 'c|FRtroyes__@u0dfv';
+  it('should create three new actions for GroundPlacesDiff', () => {
+    const GroundPlacesInstance: GroundPlaces = new GroundPlaces({});
+    const addGroundPlacesDiffActions = jest.spyOn(GroundPlaces.prototype, 'addGroundPlacesDiffActions');
+
+    GroundPlacesInstance.createStopGroup(segmentProviderStop, stopGroupInfos, stopClusterGpuid);
+
+    expect(addGroundPlacesDiffActions).toBeCalledTimes(1);
+    expect(addGroundPlacesDiffActions).toBeCalledWith([
+      {
+        'g|FRpailfrfr@u09yc2': {
+          childs: [
+            {
+              company_id: 10,
+              company_name: 'vsc',
+              id: '455',
+              latitude: 49.00443,
+              longitude: 2.51703,
+              name: 'Paris, Île-de-France, France',
+              serviced: 'True',
+              unique_name: null,
+            },
+          ],
+          country_code: 'fr',
+          latitude: 49.00443,
+          longitude: 2.51703,
+          name: 'Paris, Île-de-France, France',
+          serviced: 'True',
+          type: 'create',
+        },
       },
-    });
-
-    const stopGroupInfos = {
-      name: 'Paris, Île-de-France, France',
-      latitude: 49.00443,
-      longitude: 2.51703,
-      countryCode: 'fr',
-      type: 'group',
-    };
-
-    GroundPlacesInstance.createStopGroup(clusterGpuid, stopGroupInfos);
-
-    expect(GroundPlacesInstance.Storage.getGroundPlacesList()).toEqual({
-      [clusterGpuid]: {
-        name: 'Troyes, Grand Est, France',
-        latitude: 48.32633,
-        longitude: 4.11027,
-        country_code: 'fr',
-        type: 'cluster',
-        childs: ['g|FRpailfrfr@u09yc2'],
+      { 'g|FRpailfrfr@u09yc2': { into: 'c|FRtroyes__@u0dfv', type: 'move' } },
+      {
+        'c|FRnancded@u0dfv': {
+          into: 'c|FRtroyes__@u0dfv',
+          segmentProviderStopId: '455',
+          type: 'moveSegmentProviderStop',
+        },
       },
-      'g|FRpailfrfr@u09yc2': {
-        childs: [],
-        country_code: 'fr',
-        latitude: 49.00443,
-        longitude: 2.51703,
-        name: 'Paris, Île-de-France, France',
-        type: 'group',
-      },
-    });
+    ]);
   });
 });
