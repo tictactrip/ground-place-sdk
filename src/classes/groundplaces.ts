@@ -30,7 +30,7 @@ export class GroundPlaces {
 
   public readonly storageService: Storage;
 
-  private readonly groundPlacesDiff: GroundPlacesDiff;
+  public readonly groundPlacesDiff: GroundPlacesDiff;
 
   constructor(groundPlaces: GroundPlacesList) {
     this.generatorService = new Generator();
