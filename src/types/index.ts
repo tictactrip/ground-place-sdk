@@ -1,6 +1,8 @@
 // @ts-ignore
 interface AutoComplete {}
 
+type GroundPlacesFile = Record<Gpuid, StopGroup | StopCluster>;
+
 interface StopGroup {
   country_code: string;
   name: string;
@@ -28,9 +30,10 @@ interface StopCluster {
   is_latest?: boolean;
 }
 
-type GroundPlacesList = {
-  [key: string]: StopGroup | StopCluster;
-};
+type GroundPlacesArray = {
+  gpuid: Gpuid;
+  place: StopGroup | StopCluster;
+}[];
 
 interface StopGroupInfos {
   countryCode: string;
@@ -120,7 +123,7 @@ export {
   AutoComplete,
   StopGroup,
   StopCluster,
-  GroundPlacesList,
+  GroundPlacesArray,
   GroundPlaceGenerated,
   SegmentProviderStop,
   StopGroupInfos,
@@ -131,8 +134,10 @@ export {
   GroundPlacesDiff,
   GroundPlacesDiffAction,
   GroundPlacesDiffActionType,
+  Gpuid,
   StopGroupGpuid,
   StopClusterGpuid,
   GroundPlaceType,
   AutoCompleteFilters,
+  GroundPlacesFile,
 };

@@ -30,8 +30,8 @@ describe('createStopGroup()', () => {
 
     GroundPlacesInstance.createStopGroup(segmentProviderStop, stopGroupInfos, stopClusterGpuid);
 
-    expect(addGroundPlacesDiffActions).toBeCalledTimes(1);
-    expect(addGroundPlacesDiffActions).toBeCalledWith([
+    expect(addGroundPlacesDiffActions).toHaveBeenCalledTimes(1);
+    expect(addGroundPlacesDiffActions).toHaveBeenCalledWith([
       {
         'g|FRpailfrfr@u09yc2': {
           childs: [

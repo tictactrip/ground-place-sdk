@@ -4,7 +4,6 @@ import {
   AutoComplete,
   StopGroup,
   StopCluster,
-  GroundPlacesList,
   GroundPlaceGenerated,
   SegmentProviderStop,
   StopGroupInfos,
@@ -18,6 +17,7 @@ import {
   GroundPlacesDiffAction,
   GroundPlacesDiffActionType,
   GroundPlaceType,
+  GroundPlacesFile,
 } from '../types';
 
 const { Create, Move, MoveSegmentProviderStop, Add } = GroundPlacesDiffActionType;
@@ -32,9 +32,9 @@ export class GroundPlaces {
 
   public readonly groundPlacesDiff: GroundPlacesDiff;
 
-  constructor(groundPlaces: GroundPlacesList) {
+  constructor(groundPlacesFile: GroundPlacesFile) {
     this.generatorService = new Generator();
-    this.storageService = new Storage(groundPlaces);
+    this.storageService = new Storage(groundPlacesFile);
     this.groundPlacesDiff = [];
   }
 
@@ -270,10 +270,10 @@ export class GroundPlaces {
   /**
    * @description Apply the diff file to the GroundPlacesDiff object.
    * @param {GroundPlacesDiff} groundPlacesDiff - Object that store the history of changes of the GroundPlaces.
-   * @returns {GroundPlacesDiff}
+   * @returns {GroundPlacesDiff|Error}
    */
   // @ts-ignore
-  public applyGroundPlacesDiff(groundPlacesDiff?: GroundPlacesDiff): GroundPlacesDiff {
+  public applyGroundPlacesDiff(groundPlacesDiff?: GroundPlacesDiff): GroundPlacesDiff | Error {
     // const groundPlacesDiffSource = groundPlacesDiff || this.groundPlacesDiff;
     // process with groundPlacesDiffSource..
   }

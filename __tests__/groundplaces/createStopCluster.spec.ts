@@ -17,8 +17,8 @@ describe('createStopCluster()', () => {
 
     GroundPlacesInstance.createStopCluster(stopClusterInfos);
 
-    expect(addGroundPlacesDiffActions).toBeCalledTimes(1);
-    expect(addGroundPlacesDiffActions).toBeCalledWith([
+    expect(addGroundPlacesDiffActions).toHaveBeenCalledTimes(1);
+    expect(addGroundPlacesDiffActions).toHaveBeenCalledWith([
       {
         'c|FRparis___@u09yc': {
           childs: ['g|FRnanceydhdjd4334'],
