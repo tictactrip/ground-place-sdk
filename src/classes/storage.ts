@@ -6,6 +6,7 @@ import {
   StopGroupGpuid,
   StopClusterGpuid,
   Gpuid,
+  GroundPlaceType,
 } from '../types';
 
 /**
@@ -40,11 +41,15 @@ export class Storage {
    */
   // @ts-ignore
   public getStopGroup(stopGroupGpuid: StopGroupGpuid): StopGroup | Error {
-    if (this.groundPlacesArray[stopGroupGpuid]) {
-      return this.groundPlacesArray[stopGroupGpuid] as StopGroup;
-    } else {
+    const groundPlace = this.groundPlacesArray.find(
+      ({ place, gpuid }) => gpuid === stopGroupGpuid && place.type === GroundPlaceType.Group,
+    );
+
+    if (groundPlace === undefined) {
       throw new Error(`The StopGroup with the Gpuid ${stopGroupGpuid} is not found.`);
     }
+
+    return groundPlace.place as StopGroup;
   }
 
   /**
@@ -54,11 +59,15 @@ export class Storage {
    */
   // @ts-ignore
   public getStopCluster(stopClusterGpuid: StopClusterGpuid): StopCluster | Error {
-    if (this.groundPlacesArray[stopClusterGpuid]) {
-      return this.groundPlacesArray[stopClusterGpuid] as StopCluster;
-    } else {
+    const groundPlace = this.groundPlacesArray.find(
+      ({ place, gpuid }) => gpuid === stopClusterGpuid && place.type === GroundPlaceType.Cluster,
+    );
+
+    if (groundPlace === undefined) {
       throw new Error(`The StopCluster with the Gpuid ${stopClusterGpuid} is not found.`);
     }
+
+    return groundPlace.place as StopCluster;
   }
 
   /**

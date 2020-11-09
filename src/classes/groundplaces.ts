@@ -140,7 +140,7 @@ export class GroundPlaces {
 
   /**
    * @description Update the stopGroup with the new values given.
-   * @param {StopInfos} stopGroupGpuid - Ground place unique identifier of a StopGroup.
+   * @param {StopGroupGpuid} stopGroupGpuid - Ground place unique identifier of a StopGroup.
    * @param {StopGroupProperties} propertiesToUpdate - Properties that need to be update.
    * @returns {StopGroup}
    */

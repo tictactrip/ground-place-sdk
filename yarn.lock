@@ -515,7 +515,7 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
-"@tictactrip/gp-uid@^2.1.1":
+"@tictactrip/gp-uid@2.1.1":
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/@tictactrip/gp-uid/-/gp-uid-2.1.1.tgz#2dea6aad578b80f3410f7f5b62b04a45c2f79545"
   integrity sha512-05wQLCXl09o9zlIIrcxKR1UCbUGmhhmiiMnsO+vY85R/ncUKcTrlnj9RSexcIEMbvWp/WV94PzG9hiswSEgQ5Q==

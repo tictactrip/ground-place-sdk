@@ -110,7 +110,10 @@ type StopGroupGpuid = Gpuid;
 
 type StopClusterGpuid = Gpuid;
 
-type GroundPlaceType = 'group' | 'cluster';
+enum GroundPlaceType {
+  Group = 'group',
+  Cluster = 'cluster',
+}
 
 enum AutoCompleteFilters {
   Name,

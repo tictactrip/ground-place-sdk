@@ -2,8 +2,9 @@ import { GroundPlaces } from '../../src/classes/groundplaces';
 
 describe('createStopCluster()', () => {
   it('should create two new actions for GroundPlacesDiff', () => {
-    const GroundPlacesInstance: GroundPlaces = new GroundPlaces({});
     const addGroundPlacesDiffActions = jest.spyOn(GroundPlaces.prototype, 'addGroundPlacesDiffActions');
+
+    const GroundPlacesInstance: GroundPlaces = new GroundPlaces({});
 
     const stopClusterInfos = {
       name: 'Paris, Île-de-France, France',

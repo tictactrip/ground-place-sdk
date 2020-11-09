@@ -2,8 +2,9 @@ import { GroundPlaces } from '../../src/classes/groundplaces';
 
 describe('createStopGroup()', () => {
   it('should create three new actions for GroundPlacesDiff', () => {
-    const GroundPlacesInstance: GroundPlaces = new GroundPlaces({});
     const addGroundPlacesDiffActions = jest.spyOn(GroundPlaces.prototype, 'addGroundPlacesDiffActions');
+
+    const GroundPlacesInstance: GroundPlaces = new GroundPlaces({});
 
     const stopClusterGpuid = 'c|FRtroyes__@u0dfv';
 
