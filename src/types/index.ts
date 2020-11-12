@@ -21,7 +21,7 @@ interface StopGroup {
   latitude: number;
   type: GroundPlaceType;
   childs: SegmentProviderStop[];
-  serviced?: Serviced;
+  serviced: Serviced;
   has_been_modified?: boolean;
   warning?: boolean;
   is_latest?: boolean;
@@ -47,7 +47,6 @@ interface StopGroupInfos {
   longitude: number;
   latitude: number;
   type: GroundPlaceType;
-  createdFromStopGroupGpuid: StopGroupGpuid;
   serviced: Serviced;
 }
 
@@ -59,6 +58,18 @@ interface StopClusterInfos {
   type: GroundPlaceType;
   createdFromStopGroupGpuid: StopGroupGpuid;
   serviced: Serviced;
+}
+
+interface StopGroupProperties {
+  name?: string;
+  longitude?: number;
+  latitude?: number;
+}
+
+interface StopClusterProperties {
+  name?: string;
+  longitude?: number;
+  latitude?: number;
 }
 
 interface GroundPlaceGenerated {
@@ -89,13 +100,9 @@ interface GroundPlacesDiff {
   };
 }
 
-// TODO: Implement these types
+// TODO: Implement these interfaces
 
 interface AutoComplete {}
-
-interface StopGroupProperties {}
-
-interface StopClusterProperties {}
 
 interface Filters {}
 

@@ -1,14 +1,13 @@
-import { Storage } from '../../src/classes/storage';
+import { GroundPlaces } from '../../src/classes/groundplaces';
 import { fakeGroundPlacesJSON } from '../../mocks/groundPlaces';
 
-describe('readJSONFile()', () => {
-  it('should parse a JSON file when the Storage is instanciate', () => {
-    const readJSONFile = jest.spyOn(Storage.prototype, 'readJSONFile');
+describe('updateStopCluster()', () => {
+  const GroundPlacesInstance: GroundPlaces = new GroundPlaces(fakeGroundPlacesJSON);
 
-    const StorageInstance: Storage = new Storage(fakeGroundPlacesJSON);
+  it('should update the name of the StopCluster', () => {
+    GroundPlacesInstance.updateStopCluster('c|FRstrasbou@u0ts2', { name: 'Strasbourg, Est, France' });
 
-    expect(readJSONFile).toHaveBeenCalledTimes(1);
-    expect(StorageInstance.getGroundPlaces()).toStrictEqual({
+    expect(GroundPlacesInstance.getGroundPlaces()).toStrictEqual({
       'c|FRstrasbou@u0ts2': {
         unique_name: 'strasbourg',
         childs: ['g|FRststbi__@u0tkxd'],
@@ -17,7 +16,7 @@ describe('readJSONFile()', () => {
         warning: false,
         country_code: 'fr',
         is_latest: true,
-        name: 'Strasbourg, Grand-Est, France',
+        name: 'Strasbourg, Est, France',
         longitude: 7.74815,
         latitude: 48.583,
         type: 'cluster',

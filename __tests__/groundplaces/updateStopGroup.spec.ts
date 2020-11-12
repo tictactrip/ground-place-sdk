@@ -1,14 +1,13 @@
-import { Storage } from '../../src/classes/storage';
+import { GroundPlaces } from '../../src/classes/groundplaces';
 import { fakeGroundPlacesJSON } from '../../mocks/groundPlaces';
 
-describe('readJSONFile()', () => {
-  it('should parse a JSON file when the Storage is instanciate', () => {
-    const readJSONFile = jest.spyOn(Storage.prototype, 'readJSONFile');
+describe('updateStopGroup()', () => {
+  const GroundPlacesInstance: GroundPlaces = new GroundPlaces(fakeGroundPlacesJSON);
 
-    const StorageInstance: Storage = new Storage(fakeGroundPlacesJSON);
+  it('should update the name of the StopGroup', () => {
+    GroundPlacesInstance.updateStopGroup('g|FRststbi__@u0tkxd', { name: 'Strasbourg, Grand-Est, France' });
 
-    expect(readJSONFile).toHaveBeenCalledTimes(1);
-    expect(StorageInstance.getGroundPlaces()).toStrictEqual({
+    expect(GroundPlacesInstance.getGroundPlaces()).toStrictEqual({
       'c|FRstrasbou@u0ts2': {
         unique_name: 'strasbourg',
         childs: ['g|FRststbi__@u0tkxd'],
@@ -35,7 +34,7 @@ describe('readJSONFile()', () => {
             id: '19528',
           },
         ],
-        name: 'Strasbourg, Strasbourg - Bischheim',
+        name: 'Strasbourg, Grand-Est, France',
         longitude: 7.719863,
         serviced: 'True',
         has_been_modified: false,

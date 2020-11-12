@@ -1,10 +1,6 @@
-import { Generator } from '@tictactrip/gp-uid';
 import { Storage } from '../classes/storage';
 import {
   AutoComplete,
-  StopGroup,
-  StopCluster,
-  GroundPlaceGenerated,
   SegmentProviderStop,
   StopGroupInfos,
   StopClusterInfos,
@@ -22,16 +18,10 @@ import {
  * @description GroundPlaces business logic.
  */
 export class GroundPlaces {
-  private readonly generatorService: Generator;
-
   private readonly storageService: Storage;
 
-  private readonly groundPlacesDiff: GroundPlacesDiff;
-
   constructor(groundPlacesFile: string) {
-    this.generatorService = new Generator();
     this.storageService = new Storage(groundPlacesFile);
-    this.groundPlacesDiff = {};
   }
 
   /**
@@ -54,107 +44,42 @@ export class GroundPlaces {
     segmentProviderStop: SegmentProviderStop,
     stopGroupInfos: StopGroupInfos,
     stopClusterGpuid: StopClusterGpuid,
-    // @ts-ignore
-  ): void {
-    const { id: stopGroupGpuid }: GroundPlaceGenerated = this.generatorService.gpuid(stopGroupInfos);
-    const { latitude, longitude, name, countryCode, currentStopGroupGpuid, serviced } = stopGroupInfos;
-    const { id: segmentProviderStopId } = segmentProviderStop;
-
-    /* const createStopGroupAction = {
-      [stopGroupGpuid]: {
-        latitude,
-        longitude,
-        name,
-        country_code: countryCode,
-        childs: [segmentProviderStop],
-        serviced,
-        type: Create,
-      },
-    }; */
-
-    /* const moveStopGroupToStopClusterAction = {
-      [stopGroupGpuid]: {
-        into: stopClusterGpuid,
-        type: Move,
-      },
-    }; */
-    /* 
-    const moveSegmentProviderStopAction = {
-      [currentStopGroupGpuid]: {
-        segmentProviderStopId,
-        into: stopClusterGpuid,
-        type: MoveSegmentProviderStop,
-      },
-    }; */
-
-    /* this.addGroundPlacesDiffActions([
-      createStopGroupAction,
-      moveStopGroupToStopClusterAction,
-      moveSegmentProviderStopAction,
-    ]); */
-
-    // TODO: Call applyGroundPlacesDiff and getStopGroup
-    // this.applyGroundPlacesDiff();
-    // return this.storageService.getStopGroup(stopGroupGpuid);
-  }
+  ): void {}
 
   /**
    * @description Create a new StopCluster from a StopGroup.
    * @param {StopClusterInfos} stopClusterInfos - StopCluster informations.
    * @returns {void}
    */
-  // @ts-ignore
-  public createStopCluster(stopClusterInfos: StopClusterInfos): StopCluster | Error {
-    const { id: stopClusterGpuid }: GroundPlaceGenerated = this.generatorService.gpuid(stopClusterInfos);
-    const { latitude, longitude, name, countryCode, currentStopGroupGpuid, serviced } = stopClusterInfos;
-
-    /* const createStopClusterAction = {
-      [stopClusterGpuid]: {
-        latitude,
-        longitude,
-        name,
-        country_code: countryCode,
-        childs: [currentStopGroupGpuid],
-        serviced,
-        type: Create,
-      },
-    };
-
-    const addStopGroupToStopClusterAction = {
-      [currentStopGroupGpuid]: {
-        into: stopClusterGpuid,
-        type: Add,
-      },
-    };
-
-    this.addGroundPlacesDiffActions([createStopClusterAction, addStopGroupToStopClusterAction]); */
-
-    // TODO: Call applyGroundPlacesDiff and getStopCluster
-    // this.applyGroundPlacesDiff();
-    // return this.storageService.getStopCluster(stopClusterGpuid);
-  }
+  public createStopCluster(stopClusterInfos: StopClusterInfos): void {}
 
   /**
    * @description Update the stopGroup with the new values given.
    * @param {StopGroupGpuid} stopGroupGpuid - Ground place unique identifier of a StopGroup.
    * @param {StopGroupProperties} propertiesToUpdate - Properties that need to be update.
-   * @returns {StopGroup}
+   * @returns {void}
    */
-  // @ts-ignore
-  public updateStopGroup(stopGroupGpuid: StopGroupGpuid, propertiesToUpdate: StopGroupProperties): StopGroup {}
+  public updateStopGroup(stopGroupGpuid: StopGroupGpuid, propertiesToUpdate: StopGroupProperties): void {
+    // Before make call to storageService
+    // Check if the rules are respected with the new properties to update
+    // Then process to update
+
+    this.storageService.updatePlace(stopGroupGpuid, propertiesToUpdate);
+  }
 
   /**
    * @description Update the stopCluster with the new values given.
    * @param {StopClusterGpuid} stopClusterGpuid - Ground place unique identifier.
    * @param {StopClusterProperties} propertiesToUpdate - Properties that need to be update.
-   * @returns {StopCluster}
+   * @returns {void}
    */
-  // @ts-ignore
-  public updateStopCluster(
-    stopClusterGpuid: StopClusterGpuid,
-    propertiesToUpdate: StopClusterProperties,
-    // @ts-ignore
-  ): StopCluster {}
+  public updateStopCluster(stopClusterGpuid: StopClusterGpuid, propertiesToUpdate: StopClusterProperties): void {
+    // Before make call to storageService
+    // Check if the rules are respected with the new properties to update
+    // Then process to update
+
+    this.storageService.updatePlace(stopClusterGpuid, propertiesToUpdate);
+  }
 
   /**
    * @description Remove a stopGroup from a stopCluster.
@@ -189,8 +114,7 @@ export class GroundPlaces {
     stopGroupToMoveGpuid: StopGroupGpuid,
     fromStopClusterGpuid: StopClusterGpuid,
     intoStopClusterGpuid: StopClusterGpuid,
-    // @ts-ignore
-  ): StopCluster {}
+  ): void {}
 
   /**
    * @description Delete place only if it's empty.
@@ -204,52 +128,63 @@ export class GroundPlaces {
    * @description Add a stopGroup to a stopCluster.
    * @param {StopGroupGpuid} stopGroupToAddGpuid - Ground place unique identifier of the stopGroup to add.
    * @param {StopClusterGpuid} intoStopClusterGpuid - Ground Place unique identifier of the stopCluster.
-   * @returns {StopCluster}
+   * @returns {void}
    */
-  public addStopGroupToStopCluster(
-    stopGroupToAddGpuid: StopGroupGpuid,
-    intoStopClusterGpuid: StopClusterGpuid,
-    // @ts-ignore
-  ): StopCluster {}
+  public addStopGroupToStopCluster(stopGroupToAddGpuid: StopGroupGpuid, intoStopClusterGpuid: StopClusterGpuid): void {}
 
   /**
    * @description Merge two stopGroups. It means moving all segmentProviderStop of a stopGroup into another.
    * Warning: Check first if the merged stopGroup don't have two segmentStopProvider of the same segmentProvider in it.
    * @param {StopGroupGpuid} stopGroupToMergeGpuid - Ground place unique identifier of the stopGroup to merge.
    * @param {StopGroupGpuid} intoStopGroupGpuid - Ground Place unique identifier of the stopGroup to be merged.
-   * @returns {StopGroup}
+   * @returns {void}
    */
-  // @ts-ignore
-  public mergeStopGroup(stopGroupToMergeGpuid: StopGroupGpuid, intoStopGroupGpuid: StopGroupGpuid): StopGroup {}
+  public mergeStopGroup(stopGroupToMergeGpuid: StopGroupGpuid, intoStopGroupGpuid: StopGroupGpuid): void {}
 
   /**
    * @description Merge two stopClusters. It Means moving all stopGroup of a stopCluster into another.
    * Warning: A stopGroup can belong to both stopCluster, in this case, just remove it from the first stopCluster.
    * @param {StopClusterGpuid} stopClusterToMergeGpuid - Ground place unique identifier of the stopCluster to merge.
    * @param {StopClusterGpuid} intoStopClusterGpuid - Ground place unique identifier of the stopCluster to be merged.
-   * @returns {StopCluster}
+   * @returns {void}
    */
-  public mergeStopCluster(
-    stopClusterToMergeGpuid: StopClusterGpuid,
-    intoStopClusterGpuid: StopClusterGpuid,
-    // @ts-ignore
-  ): StopCluster {}
+  public mergeStopCluster(stopClusterToMergeGpuid: StopClusterGpuid, intoStopClusterGpuid: StopClusterGpuid): void {}
+
+  /**
+   * @description Delete StopGroup only if empty.
+   * @param {StopGroupGpuid} stopGroupGpuid - Ground place unique identifier of the StopGroup to remove.
+   * @returns {void}
+   */
+  public deleteStopGroup(stopGroupGpuid: StopGroupGpuid): void {}
+
+  /**
+   * @description Delete StopCluster only if empty.
+   * @param {StopClusterGpuid} stopClusterGpuid - Ground place unique identifier of the StopCluster to remove.
+   * @returns {void}
+   */
+  public deleteStopCluster(stopClusterGpuid: StopClusterGpuid): void {}
+
+  /**
+   * @description Getter to retrieve the Ground places.
+   * @returns {GroundPlacesObject}
+   */
+  public getGroundPlaces(): GroundPlacesObject {
+    return this.storageService.getGroundPlaces();
+  }
 
   /**
    * @description Check if all the business rules are respected.
    * Returns true if everything ok, throw an error with all issues if not.
-   * @returns {boolean|Error}
+   * @returns {boolean}
    */
-  // @ts-ignore
-  private checkValidity(): boolean | Error {}
+  private checkValidity(): boolean {}
 
   /**
    * @description Check the validity of the GroundPlacesDiff structure.
    * Returns true if everything ok, throw an error with all issues if not.
-   * @returns {boolean|Error}
+   * @returns {boolean}
    */
-  // @ts-ignore
-  private checkGroundPlacesDiffValidity(): boolean | Error {}
+  private checkGroundPlacesDiffValidity(): boolean {}
 
   /**
    * @description Apply the diff file to the GroundPlacesDiff object.
@@ -257,7 +192,7 @@ export class GroundPlaces {
    * @returns {GroundPlacesObject}
    */
   // @ts-ignore
-  public applyGroundPlacesDiff(groundPlacesDiff?: GroundPlacesDiff): GroundPlacesObject {
+  public applyGroundPlacesDiff(groundPlacesDiff: GroundPlacesDiff): GroundPlacesObject {
     // Uses all the handling methode to apply the diff
     // This method will be used by the backend (could also be used by front)
     // It should first check the integrity of our ground_places_diff.json
