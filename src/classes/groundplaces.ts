@@ -14,13 +14,9 @@ import {
   StopClusterProperties,
   AutoCompleteFilters,
   GroundPlacesDiff,
-  GroundPlacesDiffAction,
-  GroundPlacesDiffActionType,
   GroundPlaceType,
-  GroundPlacesFile,
+  GroundPlacesObject,
 } from '../types';
-
-const { Create, Move, MoveSegmentProviderStop, Add } = GroundPlacesDiffActionType;
 
 /**
  * @description GroundPlaces business logic.
@@ -28,14 +24,14 @@ const { Create, Move, MoveSegmentProviderStop, Add } = GroundPlacesDiffActionTyp
 export class GroundPlaces {
   private readonly generatorService: Generator;
 
-  public readonly storageService: Storage;
+  private readonly storageService: Storage;
 
-  public readonly groundPlacesDiff: GroundPlacesDiff;
+  private readonly groundPlacesDiff: GroundPlacesDiff;
 
-  constructor(groundPlacesFile: GroundPlacesFile) {
+  constructor(groundPlacesFile: string) {
     this.generatorService = new Generator();
     this.storageService = new Storage(groundPlacesFile);
-    this.groundPlacesDiff = [];
+    this.groundPlacesDiff = {};
   }
 
   /**
@@ -52,19 +48,19 @@ export class GroundPlaces {
    * @param {SegmentProviderStop} segmentProviderStop - The SegmentProviderStop on which is based the StopGroup.
    * @param {StopGroupInfos} stopGroupInfos - StopGroup informations.
    * @param {StopClusterGpuid} stopClusterGpuid - Ground place unique identifier of the stopCluster parent.
-   * @returns {StopGroup|Error}
+   * @returns {void}
    */
   public createStopGroup(
     segmentProviderStop: SegmentProviderStop,
     stopGroupInfos: StopGroupInfos,
     stopClusterGpuid: StopClusterGpuid,
     // @ts-ignore
-  ): StopGroup | Error {
+  ): void {
     const { id: stopGroupGpuid }: GroundPlaceGenerated = this.generatorService.gpuid(stopGroupInfos);
     const { latitude, longitude, name, countryCode, currentStopGroupGpuid, serviced } = stopGroupInfos;
     const { id: segmentProviderStopId } = segmentProviderStop;
 
-    const createStopGroupAction = {
+    /* const createStopGroupAction = {
       [stopGroupGpuid]: {
         latitude,
         longitude,
@@ -74,28 +70,28 @@ export class GroundPlaces {
         serviced,
         type: Create,
       },
-    };
+    }; */
 
-    const moveStopGroupToStopClusterAction = {
+    /* const moveStopGroupToStopClusterAction = {
       [stopGroupGpuid]: {
         into: stopClusterGpuid,
         type: Move,
       },
-    };
-
+    }; */
+    /* 
     const moveSegmentProviderStopAction = {
       [currentStopGroupGpuid]: {
         segmentProviderStopId,
         into: stopClusterGpuid,
         type: MoveSegmentProviderStop,
       },
-    };
+    }; */
 
-    this.addGroundPlacesDiffActions([
+    /* this.addGroundPlacesDiffActions([
       createStopGroupAction,
       moveStopGroupToStopClusterAction,
       moveSegmentProviderStopAction,
-    ]);
+    ]); */
 
     // TODO: Call applyGroundPlacesDiff and getStopGroup
     // this.applyGroundPlacesDiff();
@@ -105,14 +101,14 @@ export class GroundPlaces {
   /**
    * @description Create a new StopCluster from a StopGroup.
    * @param {StopClusterInfos} stopClusterInfos - StopCluster informations.
-   * @returns {StopCluster|Error}
+   * @returns {void}
    */
   // @ts-ignore
   public createStopCluster(stopClusterInfos: StopClusterInfos): StopCluster | Error {
     const { id: stopClusterGpuid }: GroundPlaceGenerated = this.generatorService.gpuid(stopClusterInfos);
     const { latitude, longitude, name, countryCode, currentStopGroupGpuid, serviced } = stopClusterInfos;
 
-    const createStopClusterAction = {
+    /* const createStopClusterAction = {
       [stopClusterGpuid]: {
         latitude,
         longitude,
@@ -131,7 +127,7 @@ export class GroundPlaces {
       },
     };
 
-    this.addGroundPlacesDiffActions([createStopClusterAction, addStopGroupToStopClusterAction]);
+    this.addGroundPlacesDiffActions([createStopClusterAction, addStopGroupToStopClusterAction]); */
 
     // TODO: Call applyGroundPlacesDiff and getStopCluster
     // this.applyGroundPlacesDiff();
@@ -247,18 +243,6 @@ export class GroundPlaces {
   // @ts-ignore
   private checkValidity(): boolean | Error {}
 
-  // @ts-ignore
-  /**
-   * @description This method is used to push new action(s) to do for the Storage class.
-   * @param {GroundPlacesDiffAction[]} groundPlacesDiffActions - An action (move, add, update, merge, ...) to apply to ground places.
-   * @returns {GroundPlacesDiff}
-   */
-  public addGroundPlacesDiffActions(groundPlacesDiffActions: GroundPlacesDiffAction[]): GroundPlacesDiff {
-    this.groundPlacesDiff.push(...groundPlacesDiffActions);
-
-    return this.groundPlacesDiff;
-  }
-
   /**
    * @description Check the validity of the GroundPlacesDiff structure.
    * Returns true if everything ok, throw an error with all issues if not.
@@ -270,11 +254,14 @@ export class GroundPlaces {
   /**
    * @description Apply the diff file to the GroundPlacesDiff object.
    * @param {GroundPlacesDiff} groundPlacesDiff - Object that store the history of changes of the GroundPlaces.
-   * @returns {GroundPlacesDiff|Error}
+   * @returns {GroundPlacesObject}
    */
   // @ts-ignore
-  public applyGroundPlacesDiff(groundPlacesDiff?: GroundPlacesDiff): GroundPlacesDiff | Error {
-    // const groundPlacesDiffSource = groundPlacesDiff || this.groundPlacesDiff;
-    // process with groundPlacesDiffSource..
+  public applyGroundPlacesDiff(groundPlacesDiff?: GroundPlacesDiff): GroundPlacesObject {
+    // Uses all the handling methode to apply the diff
+    // This method will be used by the backend (could also be used by front)
+    // It should first check the integrity of our ground_places_diff.json
+    // Then apply it to the object
+    // Then check the integrity of the resulting file
   }
 }

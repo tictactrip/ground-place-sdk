@@ -1,10 +1,9 @@
-import { GroundPlaces } from '../../src/classes/groundplaces';
 import { Storage } from '../../src/classes/storage';
 
-const dummyPlace = {
+const dummyGroundPlaces = JSON.stringify({
   'c|FRstrasbou@u0ts2': {
     unique_name: 'strasbourg',
-    childs: ['g|FRststbi__@u0tkxd', 'g|FRstrasbou@u0tkru', 'g|FRstraroet@u0tkr3'],
+    childs: ['g|FRststbi__@u0tkxd'],
     serviced: 'True',
     has_been_modified: false,
     warning: false,
@@ -15,50 +14,67 @@ const dummyPlace = {
     latitude: 48.583,
     type: 'cluster',
   },
-  'g|FRstraroet@u0tkr3': {
+  'g|FRststbi__@u0tkxd': {
     childs: [
       {
         unique_name: null,
-        company_name: 'vsc',
-        name: 'Strasbourg Roethig',
-        latitude: 48.569,
+        company_name: 'flixbus',
+        name: 'Strasbourg, Strasbourg - Bischheim',
+        latitude: 48.616228,
         serviced: 'True',
-        company_id: 10,
-        longitude: 7.704,
-        id: 'FRBUK',
+        company_id: 5,
+        longitude: 7.719863,
+        id: '19528',
       },
     ],
-    name: 'Strasbourg Roethig',
-    longitude: 7.704,
+    name: 'Strasbourg, Strasbourg - Bischheim',
+    longitude: 7.719863,
     serviced: 'True',
     has_been_modified: false,
     warning: false,
     country_code: 'fr',
-    latitude: 48.569,
+    latitude: 48.616228,
     is_latest: true,
     type: 'group',
   },
-};
+});
 
 describe('getStopGroup()', () => {
+  const StorageInstance: Storage = new Storage(dummyGroundPlaces);
   it('should return the right StopGroup based on its Gpuid', () => {
-    const getStopGroup = jest.spyOn(Storage.prototype, 'getStopGroup');
+    const getStopGroup = StorageInstance.getStopGroup('g|FRstraroet@u0tkr3');
 
-    const GroundPlacesInstance: GroundPlaces = new GroundPlaces(dummyPlace);
-
-    const stopGroup = GroundPlacesInstance.storageService.getStopGroup('g|FRstraroet@u0tkr3');
-
-    expect(getStopGroup).toHaveBeenCalledTimes(1);
-    expect(stopGroup).toEqual(dummyPlace['g|FRstraroet@u0tkr3']);
+    expect(StorageInstance.getStopGroup).toHaveBeenCalledTimes(1);
+    expect(getStopGroup).toEqual({
+      childs: [
+        {
+          unique_name: null,
+          company_name: 'flixbus',
+          name: 'Strasbourg, Strasbourg - Bischheim',
+          latitude: 48.616228,
+          serviced: 'True',
+          company_id: 5,
+          longitude: 7.719863,
+          id: '19528',
+        },
+      ],
+      name: 'Strasbourg, Strasbourg - Bischheim',
+      longitude: 7.719863,
+      serviced: 'True',
+      has_been_modified: false,
+      warning: false,
+      country_code: 'fr',
+      latitude: 48.616228,
+      is_latest: true,
+      type: 'group',
+    });
   });
 
   it('should throw an error if the StopGroup based on its Gpuid is not found', () => {
-    const GroundPlacesInstance: GroundPlaces = new GroundPlaces(dummyPlace);
-
     let thrownError;
 
     try {
-      GroundPlacesInstance.storageService.getStopGroup('badGpuid');
+      StorageInstance.getStopGroup('badGpuid');
     } catch (error) {
       thrownError = error;
     }
@@ -67,12 +83,10 @@ describe('getStopGroup()', () => {
   });
 
   it('should throw an error if the StopGroup based on its Gpuid is found but not of type group', () => {
-    const GroundPlacesInstance: GroundPlaces = new GroundPlaces(dummyPlace);
-
     let thrownError;
 
     try {
-      GroundPlacesInstance.storageService.getStopGroup('c|FRstrasbou@u0ts2');
+      StorageInstance.getStopGroup('c|FRstrasbou@u0ts2');
     } catch (error) {
       thrownError = error;
     }

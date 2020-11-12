@@ -1,11 +1,9 @@
 import {
-  GroundPlacesFile,
+  GroundPlacesObject,
   StopGroup,
   StopCluster,
-  GroundPlacesArray,
   StopGroupGpuid,
   StopClusterGpuid,
-  Gpuid,
   GroundPlaceType,
 } from '../types';
 
@@ -13,10 +11,10 @@ import {
  * @description Manipulate GroundPlaces.
  */
 export class Storage {
-  public readonly groundPlacesArray: GroundPlacesArray;
+  private readonly groundPlaces: GroundPlacesObject;
 
-  constructor(groundPlacesFile: GroundPlacesFile) {
-    this.groundPlacesArray = this.readJSONFile(groundPlacesFile);
+  constructor(groundPlacesFile: string) {
+    this.groundPlaces = this.readJSONFile(groundPlacesFile);
   }
 
   /**
@@ -24,58 +22,50 @@ export class Storage {
    * @param jsonFile The JSON File to parse.
    * @returns {GroundPlacesArray}
    */
-  public readJSONFile(groundPlacesFile: GroundPlacesFile): GroundPlacesArray {
-    const stringifyJSON: string = JSON.stringify(groundPlacesFile);
-    const parsedJSON: GroundPlacesFile = JSON.parse(stringifyJSON);
+  public readJSONFile(groundPlacesFile: string): GroundPlacesObject {
+    const parsedJSON: GroundPlacesObject = JSON.parse(groundPlacesFile);
 
-    return Object.entries(parsedJSON).map(([gpuid, place]: [Gpuid, StopGroup | StopCluster]) => ({
-      gpuid,
-      place,
-    }));
+    return parsedJSON;
   }
 
   /**
    * @description Returns the stopGroup identified by its Gpuid.
    * @param {StopGroupGpuid} stopGroupGpuid - Ground Place unique identifier of the StopGroup to find.
-   * @returns {StopGroup|Error}
+   * @returns {StopGroup}
    */
   // @ts-ignore
-  public getStopGroup(stopGroupGpuid: StopGroupGpuid): StopGroup | Error {
-    const groundPlace = this.groundPlacesArray.find(
-      ({ place, gpuid }) => gpuid === stopGroupGpuid && place.type === GroundPlaceType.Group,
-    );
+  public getStopGroup(stopGroupGpuid: StopGroupGpuid): StopGroup {
+    const groundPlace = this.groundPlaces[stopGroupGpuid];
 
-    if (groundPlace === undefined) {
+    if (!groundPlace || groundPlace.type !== GroundPlaceType.GROUP) {
       throw new Error(`The StopGroup with the Gpuid ${stopGroupGpuid} is not found.`);
     }
 
-    return groundPlace.place as StopGroup;
+    return groundPlace as StopGroup;
   }
 
   /**
    * @description Returns the stopCluster identified by its Gpuid.
    * @param {StopClusterGpuid} stopClusterGpuid - Ground place unique identifier of the StopCluster to find.
-   * @returns {StopCluster|Error}
+   * @returns {StopCluster}
    */
   // @ts-ignore
-  public getStopCluster(stopClusterGpuid: StopClusterGpuid): StopCluster | Error {
-    const groundPlace = this.groundPlacesArray.find(
-      ({ place, gpuid }) => gpuid === stopClusterGpuid && place.type === GroundPlaceType.Cluster,
-    );
+  public getStopCluster(stopClusterGpuid: StopClusterGpuid): StopCluster {
+    const groundPlace = this.groundPlaces[stopClusterGpuid];
 
-    if (groundPlace === undefined) {
+    if (!groundPlace || groundPlace.type !== GroundPlaceType.CLUSTER) {
       throw new Error(`The StopCluster with the Gpuid ${stopClusterGpuid} is not found.`);
     }
 
-    return groundPlace.place as StopCluster;
+    return groundPlace as StopCluster;
   }
 
   /**
    * @description Getter to retrieve the Ground places.
-   * @returns {GroundPlacesArray}
+   * @returns {GroundPlacesObject}
    */
-  public getGroundPlaces(): GroundPlacesArray {
-    return this.groundPlacesArray;
+  public getGroundPlaces(): GroundPlacesObject {
+    return this.groundPlaces;
   }
 
   /**
