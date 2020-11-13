@@ -5,12 +5,7 @@ describe('getStopCluster()', () => {
   const StorageInstance: Storage = new Storage(fakeGroundPlacesJSON);
 
   it('should return the right StopCluster based on its Gpuid', () => {
-    const getStopClusterByGpuid = jest.spyOn(Storage.prototype, 'getStopClusterByGpuid');
-
-    StorageInstance.getStopClusterByGpuid('c|FRstrasbou@u0ts2');
-
-    expect(getStopClusterByGpuid).toHaveBeenCalledTimes(1);
-    expect(StorageInstance.getStopClusterByGpuid('c|FRstrasbou@u0ts2')).toEqual({
+    expect(StorageInstance.getStopClusterByGpuid('c|FRstrasbou@u0ts2')).toStrictEqual({
       unique_name: 'strasbourg',
       childs: ['g|FRststbi__@u0tkxd'],
       serviced: 'True',
@@ -29,12 +24,12 @@ describe('getStopCluster()', () => {
     let thrownError;
 
     try {
-      StorageInstance.getStopClusterByGpuid('badGpuid');
+      StorageInstance.getStopClusterByGpuid('g|FRststbi__@');
     } catch (error) {
       thrownError = error;
     }
 
-    expect(thrownError).toEqual(new Error('The StopCluster with the Gpuid badGpuid is not found.'));
+    expect(thrownError).toEqual(new Error('The StopCluster with the Gpuid g|FRststbi__@ is not found.'));
   });
 
   it('should throw an error if the StopCluster based on its Gpuid is found but not of type cluster', () => {

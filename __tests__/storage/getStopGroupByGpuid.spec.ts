@@ -5,9 +5,7 @@ describe('getStopGroup()', () => {
   const StorageInstance: Storage = new Storage(fakeGroundPlacesJSON);
 
   it('should return the right StopGroup based on its Gpuid', () => {
-    const getStopGroupByGpuid = StorageInstance.getStopGroupByGpuid('g|FRststbi__@u0tkxd');
-
-    expect(getStopGroupByGpuid).toEqual({
+    expect(StorageInstance.getStopGroupByGpuid('g|FRststbi__@u0tkxd')).toStrictEqual({
       childs: [
         {
           unique_name: null,
@@ -36,12 +34,12 @@ describe('getStopGroup()', () => {
     let thrownError;
 
     try {
-      StorageInstance.getStopGroupByGpuid('badGpuid');
+      StorageInstance.getStopGroupByGpuid('g|FRststbi__@');
     } catch (error) {
       thrownError = error;
     }
 
-    expect(thrownError).toEqual(new Error('The StopGroup with the Gpuid badGpuid is not found.'));
+    expect(thrownError).toEqual(new Error('The StopGroup with the Gpuid g|FRststbi__@ is not found.'));
   });
 
   it('should throw an error if the StopGroup based on its Gpuid is found but not of type group', () => {

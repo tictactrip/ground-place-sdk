@@ -179,6 +179,7 @@ export class GroundPlaces {
    * Returns true if everything ok, throw an error with all issues if not.
    * @returns {boolean}
    */
+  // @ts-ignore
   private checkValidity(): boolean {}
 
   /**
@@ -186,6 +187,7 @@ export class GroundPlaces {
    * Returns true if everything ok, throw an error with all issues if not.
    * @returns {boolean}
    */
+  // @ts-ignore
   private checkGroundPlacesDiffValidity(): boolean {}
 
   /**

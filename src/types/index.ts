@@ -19,7 +19,7 @@ interface StopGroup {
   name: string;
   longitude: number;
   latitude: number;
-  type: GroundPlaceType;
+  type: GroundPlaceType.GROUP;
   childs: SegmentProviderStop[];
   serviced: Serviced;
   has_been_modified?: boolean;
@@ -32,7 +32,7 @@ interface StopCluster {
   name: string;
   longitude: number;
   latitude: number;
-  type: GroundPlaceType;
+  type: GroundPlaceType.CLUSTER;
   childs: StopGroupGpuid[];
   serviced: Serviced;
   unique_name?: string;
