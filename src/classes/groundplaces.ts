@@ -62,8 +62,9 @@ export class GroundPlaces {
   public updateStopGroup(stopGroupGpuid: StopGroupGpuid, propertiesToUpdate: StopGroupProperties): void {
     // Before make call to storageService
     // Check if the rules are respected with the new properties to update
-    // Then process to update
+    this.checkValidity();
 
+    // Then process to update
     this.storageService.updatePlace(stopGroupGpuid, propertiesToUpdate);
   }
 
@@ -76,8 +77,9 @@ export class GroundPlaces {
   public updateStopCluster(stopClusterGpuid: StopClusterGpuid, propertiesToUpdate: StopClusterProperties): void {
     // Before make call to storageService
     // Check if the rules are respected with the new properties to update
-    // Then process to update
+    this.checkValidity();
 
+    // Then process to update
     this.storageService.updatePlace(stopClusterGpuid, propertiesToUpdate);
   }
 
