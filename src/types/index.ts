@@ -2,7 +2,7 @@
 //  --------------------------------- TYPES ------------------------------------
 // -----------------------------------------------------------------------------
 
-type GroundPlacesObject = Record<Gpuid, StopGroup | StopCluster>;
+type GroundPlacesStored = Record<Gpuid, StopGroup | StopCluster>;
 
 type Gpuid = string;
 
@@ -404,5 +404,5 @@ export {
   StopClusterGpuid,
   GroundPlaceType,
   AutoCompleteFilters,
-  GroundPlacesObject,
+  GroundPlacesStored,
 };

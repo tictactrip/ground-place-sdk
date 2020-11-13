@@ -11,7 +11,7 @@ import {
   AutoCompleteFilters,
   GroundPlacesDiff,
   GroundPlaceType,
-  GroundPlacesObject,
+  GroundPlacesStored,
 } from '../types';
 
 /**
@@ -20,6 +20,10 @@ import {
 export class GroundPlaces {
   private readonly storageService: Storage;
 
+  /**
+   * @description Manipulate GroundPlaces file.
+   * @param {string} groundPlacesFile - The file to manipulate, can only be JSON for now.
+   */
   constructor(groundPlacesFile: string) {
     this.storageService = new Storage(groundPlacesFile);
   }
@@ -168,9 +172,9 @@ export class GroundPlaces {
 
   /**
    * @description Getter to retrieve the Ground places.
-   * @returns {GroundPlacesObject}
+   * @returns {GroundPlacesStored}
    */
-  public getGroundPlaces(): GroundPlacesObject {
+  public getGroundPlaces(): GroundPlacesStored {
     return this.storageService.getGroundPlaces();
   }
 
@@ -193,10 +197,10 @@ export class GroundPlaces {
   /**
    * @description Apply the diff file to the GroundPlacesDiff object.
    * @param {GroundPlacesDiff} groundPlacesDiff - Object that store the history of changes of the GroundPlaces.
-   * @returns {GroundPlacesObject}
+   * @returns {GroundPlacesStored}
    */
   // @ts-ignore
-  public applyGroundPlacesDiff(groundPlacesDiff: GroundPlacesDiff): GroundPlacesObject {
+  public applyGroundPlacesDiff(groundPlacesDiff: GroundPlacesDiff): GroundPlacesStored {
     // Uses all the handling methode to apply the diff
     // This method will be used by the backend (could also be used by front)
     // It should first check the integrity of our ground_places_diff.json

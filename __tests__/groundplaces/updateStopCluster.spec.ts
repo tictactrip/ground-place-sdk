@@ -1,7 +1,7 @@
 import { GroundPlaces } from '../../src/classes/groundplaces';
 import { fakeGroundPlacesJSON } from '../../mocks/groundPlaces';
 
-describe('updateStopCluster()', () => {
+describe('#updateStopCluster', () => {
   const GroundPlacesInstance: GroundPlaces = new GroundPlaces(fakeGroundPlacesJSON);
 
   it('should update the name of the StopCluster', () => {

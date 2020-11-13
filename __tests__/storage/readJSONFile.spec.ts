@@ -1,7 +1,7 @@
 import { Storage } from '../../src/classes/storage';
 import { fakeGroundPlacesJSON } from '../../mocks/groundPlaces';
 
-describe('readJSONFile()', () => {
+describe('#readJSONFile', () => {
   it('should parse a JSON file when the Storage is instanciate', () => {
     const readJSONFile = jest.spyOn(Storage.prototype, 'readJSONFile');
 

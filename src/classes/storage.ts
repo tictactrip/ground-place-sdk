@@ -1,5 +1,5 @@
 import {
-  GroundPlacesObject,
+  GroundPlacesStored,
   StopGroup,
   StopCluster,
   StopGroupGpuid,
@@ -14,8 +14,12 @@ import {
  * @description Manipulate GroundPlaces.
  */
 export class Storage {
-  private readonly groundPlaces: GroundPlacesObject;
+  private readonly groundPlaces: GroundPlacesStored;
 
+  /**
+   * @description Store and update GroundPlaces file.
+   * @param groundPlacesFile - The file to store and manipulate, can only be JSON for now.
+   */
   constructor(groundPlacesFile: string) {
     this.groundPlaces = this.readJSONFile(groundPlacesFile);
   }
@@ -23,17 +27,17 @@ export class Storage {
   /**
    * @description Parse the JSON File that have all the ground places.
    * @param {string} groundPlacesFile - The JSON File to parse.
-   * @returns {GroundPlacesArray}
+   * @returns {GroundPlacesStored}
    */
-  public readJSONFile(groundPlacesFile: string): GroundPlacesObject {
+  public readJSONFile(groundPlacesFile: string): GroundPlacesStored {
     return JSON.parse(groundPlacesFile);
   }
 
   /**
    * @description Getter to retrieve the Ground places.
-   * @returns {GroundPlacesObject}
+   * @returns {GroundPlacesStored}
    */
-  public getGroundPlaces(): GroundPlacesObject {
+  public getGroundPlaces(): GroundPlacesStored {
     return this.groundPlaces;
   }
 
@@ -43,7 +47,7 @@ export class Storage {
    * @returns {StopGroup}
    */
   public getStopGroupByGpuid(stopGroupGpuid: StopGroupGpuid): StopGroup {
-    const groundPlace = this.groundPlaces[stopGroupGpuid];
+    const groundPlace: StopCluster | StopGroup = this.groundPlaces[stopGroupGpuid];
 
     if (!groundPlace || groundPlace.type !== GroundPlaceType.GROUP) {
       throw new Error(`The StopGroup with the Gpuid ${stopGroupGpuid} is not found.`);
@@ -58,7 +62,7 @@ export class Storage {
    * @returns {StopCluster}
    */
   public getStopClusterByGpuid(stopClusterGpuid: StopClusterGpuid): StopCluster {
-    const groundPlace = this.groundPlaces[stopClusterGpuid];
+    const groundPlace: StopCluster | StopGroup = this.groundPlaces[stopClusterGpuid];
 
     if (!groundPlace || groundPlace.type !== GroundPlaceType.CLUSTER) {
       throw new Error(`The StopCluster with the Gpuid ${stopClusterGpuid} is not found.`);
@@ -74,9 +78,11 @@ export class Storage {
    * @returns {void}
    */
   public updatePlace(placeGpuid: Gpuid, propertiesToUpdate: StopGroupProperties | StopClusterProperties): void {
-    this.groundPlaces[placeGpuid] = {
+    const newGroundPlace: StopGroup | StopCluster = {
       ...this.groundPlaces[placeGpuid],
       ...propertiesToUpdate,
     };
+
+    this.groundPlaces[placeGpuid] = newGroundPlace;
   }
 }
