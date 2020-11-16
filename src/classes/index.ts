@@ -1,1 +1,1 @@
-export { GroundPlaces } from './groundplaces';
+export { GroundPlacesManager } from './groundplaces';

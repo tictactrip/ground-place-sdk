@@ -3,22 +3,21 @@ import { WebServices } from './webservices';
 import {
   AutoComplete,
   SegmentProviderStop,
-  StopGroupInfos,
-  StopClusterInfos,
   StopGroupGpuid,
   StopClusterGpuid,
-  StopGroupProperties,
-  StopClusterProperties,
+  CreateStopGroupProperties,
+  CreateStopClusterProperties,
+  UpdateStopProperties,
   AutoCompleteFilters,
   GroundPlacesDiff,
   GroundPlaceType,
-  GroundPlacesStored,
+  GroundPlaces,
 } from '../types';
 
 /**
  * @description GroundPlaces business logic.
  */
-export class GroundPlaces {
+export class GroundPlacesManager {
   private readonly storageService: Storage;
 
   private readonly webService: WebServices;
@@ -60,30 +59,30 @@ export class GroundPlaces {
   /**
    * @description Create a new StopGroup from a SegmentProviderStop.
    * @param {SegmentProviderStop} segmentProviderStop - The SegmentProviderStop on which is based the StopGroup.
-   * @param {StopGroupInfos} stopGroupInfos - StopGroup informations.
+   * @param {CreateStopGroupProperties} stopGroupProperties - Properties that are needed to create a new StopGroup.
    * @param {StopClusterGpuid} stopClusterGpuid - Ground place unique identifier of the stopCluster parent.
    * @returns {void}
    */
   public createStopGroup(
     segmentProviderStop: SegmentProviderStop,
-    stopGroupInfos: StopGroupInfos,
+    stopGroupProperties: CreateStopGroupProperties,
     stopClusterGpuid: StopClusterGpuid,
   ): void {}
 
   /**
    * @description Create a new StopCluster from a StopGroup.
-   * @param {StopClusterInfos} stopClusterInfos - StopCluster informations.
+   * @param {CreateStopClusterProperties} stopClusterProperties - Properties that are needed to create a new StopCluster.
    * @returns {void}
    */
-  public createStopCluster(stopClusterInfos: StopClusterInfos): void {}
+  public createStopCluster(stopClusterProperties: CreateStopClusterProperties): void {}
 
   /**
    * @description Update the stopGroup with the new values given.
    * @param {StopGroupGpuid} stopGroupGpuid - Ground place unique identifier of a StopGroup.
-   * @param {StopGroupProperties} propertiesToUpdate - Properties that need to be update.
+   * @param {UpdateStopProperties} propertiesToUpdate - Properties that need to be update.
    * @returns {void}
    */
-  public updateStopGroup(stopGroupGpuid: StopGroupGpuid, propertiesToUpdate: StopGroupProperties): void {
+  public updateStopGroup(stopGroupGpuid: StopGroupGpuid, propertiesToUpdate: UpdateStopProperties): void {
     // Before make call to storageService
     // Check if the rules are respected with the new properties to update
     this.checkValidity();
@@ -95,10 +94,10 @@ export class GroundPlaces {
   /**
    * @description Update the stopCluster with the new values given.
    * @param {StopClusterGpuid} stopClusterGpuid - Ground place unique identifier.
-   * @param {StopClusterProperties} propertiesToUpdate - Properties that need to be update.
+   * @param {UpdateStopProperties} propertiesToUpdate - Properties that need to be update.
    * @returns {void}
    */
-  public updateStopCluster(stopClusterGpuid: StopClusterGpuid, propertiesToUpdate: StopClusterProperties): void {
+  public updateStopCluster(stopClusterGpuid: StopClusterGpuid, propertiesToUpdate: UpdateStopProperties): void {
     // Before make call to storageService
     // Check if the rules are respected with the new properties to update
     this.checkValidity();
@@ -192,9 +191,9 @@ export class GroundPlaces {
 
   /**
    * @description Getter to retrieve the Ground places.
-   * @returns {GroundPlacesStored}
+   * @returns {GroundPlaces}
    */
-  public getGroundPlaces(): GroundPlacesStored {
+  public getGroundPlaces(): GroundPlaces {
     return this.storageService.getGroundPlaces();
   }
 
@@ -217,10 +216,10 @@ export class GroundPlaces {
   /**
    * @description Apply the diff file to the GroundPlacesDiff object.
    * @param {GroundPlacesDiff} groundPlacesDiff - Object that store the history of changes of the GroundPlaces.
-   * @returns {GroundPlacesStored}
+   * @returns {void}
    */
   // @ts-ignore
-  public applyGroundPlacesDiff(groundPlacesDiff: GroundPlacesDiff): GroundPlacesStored {
+  public applyGroundPlacesDiff(groundPlacesDiff: GroundPlacesDiff): void {
     // Uses all the handling methode to apply the diff
     // This method will be used by the backend (could also be used by front)
     // It should first check the integrity of our ground_places_diff.json

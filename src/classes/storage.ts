@@ -1,20 +1,19 @@
 import {
-  GroundPlacesStored,
+  GroundPlaces,
   StopGroup,
   StopCluster,
   StopGroupGpuid,
   StopClusterGpuid,
   GroundPlaceType,
   Gpuid,
-  StopGroupProperties,
-  StopClusterProperties,
+  UpdateStopProperties,
 } from '../types';
 
 /**
  * @description Manipulate GroundPlaces.
  */
 export class Storage {
-  private groundPlaces: GroundPlacesStored;
+  private groundPlaces: GroundPlaces;
 
   /**
    * @description Init and read the GroundPlaces file.
@@ -27,17 +26,17 @@ export class Storage {
   /**
    * @description Parse the JSON File that have all the ground places.
    * @param {string} groundPlacesFile - The JSON File to parse.
-   * @returns {GroundPlacesStored}
+   * @returns {GroundPlaces}
    */
-  public readJSONFile(groundPlacesFile: string): GroundPlacesStored {
+  public readJSONFile(groundPlacesFile: string): GroundPlaces {
     return JSON.parse(groundPlacesFile);
   }
 
   /**
    * @description Getter to retrieve the Ground places.
-   * @returns {GroundPlacesStored}
+   * @returns {GroundPlaces}
    */
-  public getGroundPlaces(): GroundPlacesStored {
+  public getGroundPlaces(): GroundPlaces {
     return this.groundPlaces;
   }
 
@@ -74,10 +73,10 @@ export class Storage {
   /**
    * @description Update StopGroup or StopCluster with new informations like name, latitude, longitude, etc.
    * @param {Gpuid} placeGpuid - Ground place unique identifier of the place to update.
-   * @param {StopGroupProperties|StopClusterProperties} propertiesToUpdate - Properties to update.
+   * @param {UpdateStopProperties} propertiesToUpdate - Properties to update.
    * @returns {void}
    */
-  public updatePlace(placeGpuid: Gpuid, propertiesToUpdate: StopGroupProperties | StopClusterProperties): void {
+  public updatePlace(placeGpuid: Gpuid, propertiesToUpdate: UpdateStopProperties): void {
     const newGroundPlace: StopGroup | StopCluster = {
       ...this.groundPlaces[placeGpuid],
       ...propertiesToUpdate,

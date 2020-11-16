@@ -2,7 +2,9 @@
 //  --------------------------------- TYPES ------------------------------------
 // -----------------------------------------------------------------------------
 
-type GroundPlacesStored = Record<Gpuid, StopGroup | StopCluster>;
+type GroundPlace = StopGroup | StopCluster;
+
+type GroundPlaces = Record<Gpuid, GroundPlace>;
 
 type Gpuid = string;
 
@@ -41,47 +43,6 @@ interface StopCluster {
   is_latest?: boolean;
 }
 
-interface StopGroupInfos {
-  countryCode: CountryCode;
-  name: string;
-  longitude: number;
-  latitude: number;
-  type: GroundPlaceType;
-  serviced: Serviced;
-}
-
-interface StopClusterInfos {
-  countryCode: CountryCode;
-  name: string;
-  longitude: number;
-  latitude: number;
-  type: GroundPlaceType;
-  createdFromStopGroupGpuid: StopGroupGpuid;
-  serviced: Serviced;
-}
-
-interface StopGroupProperties {
-  name?: string;
-  longitude?: number;
-  latitude?: number;
-}
-
-interface StopClusterProperties {
-  name?: string;
-  longitude?: number;
-  latitude?: number;
-}
-
-interface GroundPlaceGenerated {
-  id: StopGroupGpuid | StopClusterGpuid;
-  name: string;
-  latitude: number;
-  longitude: number;
-  countryCode: CountryCode;
-  type: GroundPlaceType;
-  ancestorId?: string;
-}
-
 interface SegmentProviderStop {
   unique_name: null;
   company_name: string;
@@ -93,9 +54,34 @@ interface SegmentProviderStop {
   id: string;
 }
 
+interface CreateStopGroupProperties {
+  countryCode: CountryCode;
+  name: string;
+  longitude: number;
+  latitude: number;
+  type: GroundPlaceType;
+  serviced: Serviced;
+}
+
+interface CreateStopClusterProperties {
+  countryCode: CountryCode;
+  name: string;
+  longitude: number;
+  latitude: number;
+  type: GroundPlaceType;
+  createdFromStopGroupGpuid: StopGroupGpuid;
+  serviced: Serviced;
+}
+
+interface UpdateStopProperties {
+  name?: string;
+  longitude?: number;
+  latitude?: number;
+}
+
 interface GroundPlacesDiff {
   [gpuid: string]: {
-    type: ActionType;
+    type: GroundPlaceActionType;
     into?: string;
   };
 }
@@ -110,7 +96,7 @@ interface Filters {}
 //  --------------------------------- ENUMS ------------------------------------
 // -----------------------------------------------------------------------------
 
-enum ActionType {
+enum GroundPlaceActionType {
   CREATE = 'create',
   MOVE = 'move',
   UPDATE = 'update',
@@ -390,19 +376,17 @@ export {
   AutoComplete,
   StopGroup,
   StopCluster,
-  GroundPlaceGenerated,
   SegmentProviderStop,
-  StopGroupInfos,
-  StopClusterInfos,
-  StopGroupProperties,
-  StopClusterProperties,
+  CreateStopGroupProperties,
+  CreateStopClusterProperties,
+  UpdateStopProperties,
   Filters,
   GroundPlacesDiff,
-  ActionType,
+  GroundPlaceActionType,
   Gpuid,
   StopGroupGpuid,
   StopClusterGpuid,
   GroundPlaceType,
   AutoCompleteFilters,
-  GroundPlacesStored,
+  GroundPlaces,
 };
