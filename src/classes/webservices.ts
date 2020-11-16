@@ -4,10 +4,10 @@
 export class WebServices {
   /**
    * @description Download the file from AWS S3.
-   * @returns {unknown}
+   * @returns {string}
    */
   // @ts-ignore
-  public downloadDistantGroundPlacesMaster(): void {}
+  public downloadDistantGroundPlacesMaster(): string {}
 
   /**
    * @description Upload the file to AWS S3.
@@ -17,8 +17,8 @@ export class WebServices {
 
   /**
    * @description Download the file from AWS S3 and store it on the desktop.
-   * @returns {unknown}
+   * @returns {void}
    */
   // @ts-ignore
-  public downloadToDesktop(): unknown {}
+  public downloadToDesktop(): void {}
 }

@@ -2,7 +2,8 @@ import { Storage } from '../../src/classes/storage';
 import { fakeGroundPlacesJSON } from '../../mocks/groundPlaces';
 
 describe('#getStopCluster', () => {
-  const StorageInstance: Storage = new Storage(fakeGroundPlacesJSON);
+  const StorageInstance: Storage = new Storage();
+  StorageInstance.initFile(fakeGroundPlacesJSON);
 
   it('should return the right StopCluster based on its Gpuid', () => {
     expect(StorageInstance.getStopClusterByGpuid('c|FRstrasbou@u0ts2')).toStrictEqual({

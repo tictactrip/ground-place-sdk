@@ -1,4 +1,5 @@
 import { Storage } from '../classes/storage';
+import { WebServices } from './webservices';
 import {
   AutoComplete,
   SegmentProviderStop,
@@ -20,22 +21,41 @@ import {
 export class GroundPlaces {
   private readonly storageService: Storage;
 
+  private readonly webService: WebServices;
+
   /**
    * @description Manipulate GroundPlaces file.
    * @param {string} groundPlacesFile - The file to manipulate, can only be JSON for now.
    */
-  constructor(groundPlacesFile: string) {
-    this.storageService = new Storage(groundPlacesFile);
+  constructor() {
+    this.storageService = new Storage();
+
+    this.webService = new WebServices();
+  }
+
+  /**
+   * @description Init GroundPlaces file.
+   * @param {string|undefined} groundPlacesFile - The file to manipulate, can only be JSON for now.
+   * If you provide empty value, the default file will be the file retrieved from Amazon S3.
+   */
+  public init(groundPlacesFile?: string): void {
+    if (groundPlacesFile) {
+      this.storageService.initFile(groundPlacesFile);
+    } else {
+      const groundPlacesFileS3 = this.webService.downloadDistantGroundPlacesMaster();
+
+      this.storageService.initFile(groundPlacesFileS3);
+    }
   }
 
   /**
    * @description Returns a list of places.
    * @param {string} query - Can be a name, a Gpuid, a unique name or other name.
    * @param {AutoCompleteFilters} filters - Filters with different options (StopGroup, StopCluster, Serviced, SegmentProvider).
-   * @returns {AutoComplete}
+   * @returns {AutoComplete[]}
    */
   // @ts-ignore
-  public autocomplete(query: string, filters: AutoCompleteFilters[]): AutoComplete {}
+  public autocomplete(query: string, filters: AutoCompleteFilters[]): AutoComplete[] {}
 
   /**
    * @description Create a new StopGroup from a SegmentProviderStop.

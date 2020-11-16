@@ -5,7 +5,8 @@ describe('#readJSONFile', () => {
   it('should parse a JSON file when the Storage is instanciate', () => {
     const readJSONFile = jest.spyOn(Storage.prototype, 'readJSONFile');
 
-    const StorageInstance: Storage = new Storage(fakeGroundPlacesJSON);
+    const StorageInstance: Storage = new Storage();
+    StorageInstance.initFile(fakeGroundPlacesJSON);
 
     expect(readJSONFile).toHaveBeenCalledTimes(1);
     expect(StorageInstance.getGroundPlaces()).toStrictEqual({

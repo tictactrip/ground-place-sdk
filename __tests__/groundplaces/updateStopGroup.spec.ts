@@ -2,7 +2,8 @@ import { GroundPlaces } from '../../src/classes/groundplaces';
 import { fakeGroundPlacesJSON } from '../../mocks/groundPlaces';
 
 describe('#updateStopGroup', () => {
-  const GroundPlacesInstance: GroundPlaces = new GroundPlaces(fakeGroundPlacesJSON);
+  const GroundPlacesInstance: GroundPlaces = new GroundPlaces();
+  GroundPlacesInstance.init(fakeGroundPlacesJSON);
 
   it('should update the name of the StopGroup', () => {
     GroundPlacesInstance.updateStopGroup('g|FRststbi__@u0tkxd', { name: 'Strasbourg, Grand-Est, France' });

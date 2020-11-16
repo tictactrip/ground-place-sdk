@@ -2,7 +2,8 @@ import { GroundPlaces } from '../../src/classes/groundplaces';
 import { fakeGroundPlacesJSON } from '../../mocks/groundPlaces';
 
 describe('#updateStopCluster', () => {
-  const GroundPlacesInstance: GroundPlaces = new GroundPlaces(fakeGroundPlacesJSON);
+  const GroundPlacesInstance: GroundPlaces = new GroundPlaces();
+  GroundPlacesInstance.init(fakeGroundPlacesJSON);
 
   it('should update the name of the StopCluster', () => {
     GroundPlacesInstance.updateStopCluster('c|FRstrasbou@u0ts2', { name: 'Strasbourg, Est, France' });

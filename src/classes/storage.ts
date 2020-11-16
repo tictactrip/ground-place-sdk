@@ -14,13 +14,13 @@ import {
  * @description Manipulate GroundPlaces.
  */
 export class Storage {
-  private readonly groundPlaces: GroundPlacesStored;
+  private groundPlaces: GroundPlacesStored;
 
   /**
-   * @description Store and update GroundPlaces file.
-   * @param groundPlacesFile - The file to store and manipulate, can only be JSON for now.
+   * @description Init and read the GroundPlaces file.
+   * @param {string} groundPlacesFile - The file to store and manipulate, can only be JSON for now.
    */
-  constructor(groundPlacesFile: string) {
+  public initFile(groundPlacesFile: string): void {
     this.groundPlaces = this.readJSONFile(groundPlacesFile);
   }
 

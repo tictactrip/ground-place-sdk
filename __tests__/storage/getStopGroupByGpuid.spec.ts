@@ -2,7 +2,8 @@ import { Storage } from '../../src/classes/storage';
 import { fakeGroundPlacesJSON } from '../../mocks/groundPlaces';
 
 describe('#getStopGroup', () => {
-  const StorageInstance: Storage = new Storage(fakeGroundPlacesJSON);
+  const StorageInstance: Storage = new Storage();
+  StorageInstance.initFile(fakeGroundPlacesJSON);
 
   it('should return the right StopGroup based on its Gpuid', () => {
     expect(StorageInstance.getStopGroupByGpuid('g|FRststbi__@u0tkxd')).toStrictEqual({
