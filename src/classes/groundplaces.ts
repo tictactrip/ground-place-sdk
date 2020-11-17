@@ -17,7 +17,7 @@ import {
 /**
  * @description GroundPlaces business logic.
  */
-export class GroundPlacesManager {
+export class GroundPlacesController {
   private readonly storageService: Storage;
 
   private readonly webService: WebServices;

@@ -1,8 +1,8 @@
-import { GroundPlacesManager } from '../../src/classes/groundplaces';
+import { GroundPlacesController } from '../../src/classes/groundplaces';
 import { fakeGroundPlacesJSON } from '../../mocks/groundPlaces';
 
 describe('#updateStopGroup', () => {
-  const GroundPlacesInstance: GroundPlacesManager = new GroundPlacesManager();
+  const GroundPlacesInstance: GroundPlacesController = new GroundPlacesController();
   GroundPlacesInstance.init(fakeGroundPlacesJSON);
 
   it('should update the name of the StopGroup', () => {
