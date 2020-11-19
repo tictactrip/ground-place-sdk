@@ -84,9 +84,16 @@ export class GroundPlacesController {
    * @returns {void}
    */
   public updateStopGroup(stopGroupGpuid: StopGroupGpuid, propertiesToUpdate: UpdateStopProperties): void {
+    const copyGroundPlaces: GroundPlaces = this.storageService.getGroundPlaces();
+
     this.storageService.updatePlace(stopGroupGpuid, propertiesToUpdate);
 
-    this.checkValidity();
+    const isUpdateValid: boolean = this.checkValidity();
+
+    // If the file is not valid after update, rollback to the previous version of the ground places stored
+    if (!isUpdateValid) {
+      this.storageService.setGroundPlaces(copyGroundPlaces);
+    }
   }
 
   /**
@@ -96,9 +103,16 @@ export class GroundPlacesController {
    * @returns {void}
    */
   public updateStopCluster(stopClusterGpuid: StopClusterGpuid, propertiesToUpdate: UpdateStopProperties): void {
+    const copyGroundPlaces: GroundPlaces = this.storageService.getGroundPlaces();
+
     this.storageService.updatePlace(stopClusterGpuid, propertiesToUpdate);
 
-    this.checkValidity();
+    const isUpdateValid: boolean = this.checkValidity();
+
+    // If the file is not valid after update, rollback to the previous version of the ground places stored
+    if (!isUpdateValid) {
+      this.storageService.setGroundPlaces(copyGroundPlaces);
+    }
   }
 
   /**

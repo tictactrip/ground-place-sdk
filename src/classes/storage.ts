@@ -32,6 +32,15 @@ export class Storage {
   }
 
   /**
+   * @description Setter to update the Ground places.
+   * @param {GroundPlaces} groundPlaces - Ground places to store inside the Storage.
+   * @returns {void}
+   */
+  public setGroundPlaces(groundPlaces: GroundPlaces): void {
+    this.groundPlaces = groundPlaces;
+  }
+
+  /**
    * @description Returns the stopGroup identified by its Gpuid.
    * @param {StopGroupGpuid} stopGroupGpuid - Ground Place unique identifier of the StopGroup to find.
    * @returns {StopGroup}
