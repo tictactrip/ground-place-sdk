@@ -1,17 +1,10 @@
-// @ts-ignore
-interface AutoComplete {}
+// -----------------------------------------------------------------------------
+//  --------------------------------- TYPES ------------------------------------
+// -----------------------------------------------------------------------------
 
-interface StopGroup {}
+type GroundPlace = StopGroup | StopCluster;
 
-interface StopCluster {}
-
-interface StopGroupProperties {}
-
-interface StopClusterProperties {}
-
-interface Filters {}
-
-interface GroundPlacesDiff {}
+type GroundPlaces = Record<Gpuid, GroundPlace>;
 
 type Gpuid = string;
 
@@ -19,28 +12,381 @@ type StopGroupGpuid = Gpuid;
 
 type StopClusterGpuid = Gpuid;
 
+// -----------------------------------------------------------------------------
+//  ------------------------------- INTERFACES ---------------------------------
+// -----------------------------------------------------------------------------
+
+interface StopGroup {
+  country_code: CountryCode;
+  name: string;
+  longitude: number;
+  latitude: number;
+  type: GroundPlaceType.GROUP;
+  childs: SegmentProviderStop[];
+  serviced: Serviced;
+  has_been_modified?: boolean;
+  warning?: boolean;
+  is_latest?: boolean;
+}
+
+interface StopCluster {
+  country_code: CountryCode;
+  name: string;
+  longitude: number;
+  latitude: number;
+  type: GroundPlaceType.CLUSTER;
+  childs: StopGroupGpuid[];
+  serviced: Serviced;
+  unique_name?: string;
+  has_been_modified?: boolean;
+  warning?: boolean;
+  is_latest?: boolean;
+}
+
+interface SegmentProviderStop {
+  unique_name: null;
+  company_name: string;
+  name: string;
+  latitude: number;
+  serviced: Serviced;
+  company_id: number;
+  longitude: number;
+  id: string;
+}
+
+interface CreateStopGroupProperties {
+  countryCode: CountryCode;
+  name: string;
+  longitude: number;
+  latitude: number;
+  type: GroundPlaceType;
+  serviced: Serviced;
+  segmentProviderStop: SegmentProviderStop;
+}
+
+interface CreateStopClusterProperties {
+  countryCode: CountryCode;
+  name: string;
+  longitude: number;
+  latitude: number;
+  type: GroundPlaceType;
+  serviced: Serviced;
+}
+
+interface UpdateStopProperties {
+  name?: string;
+  longitude?: number;
+  latitude?: number;
+}
+
+interface GroundPlacesDiff {
+  [gpuid: string]: {
+    type: GroundPlaceActionType;
+    into?: string;
+  };
+}
+
+// TODO: Implement these interfaces
+
+interface AutoComplete {}
+
+interface Filters {}
+
+// -----------------------------------------------------------------------------
+//  --------------------------------- ENUMS ------------------------------------
+// -----------------------------------------------------------------------------
+
+enum GroundPlaceActionType {
+  CREATE = 'create',
+  MOVE = 'move',
+  UPDATE = 'update',
+  DELETE = 'delete',
+}
+
 enum GroundPlaceType {
-  Group = 'group',
-  Cluster = 'cluster',
+  GROUP = 'group',
+  CLUSTER = 'cluster',
+}
+
+enum Serviced {
+  TRUE = 'True',
+  FALSE = 'False',
 }
 
 enum AutoCompleteFilters {
-  Name,
-  Gpuid,
-  Uniquename,
-  OtherName,
+  NAME,
+  GPUID,
+  UNIQUENAME,
+  OTHERNAME,
+}
+
+enum CountryCode {
+  AF = 'af',
+  AL = 'al',
+  DZ = 'dz',
+  AS = 'as',
+  AD = 'ad',
+  AO = 'ao',
+  AI = 'ai',
+  AQ = 'aq',
+  AG = 'ag',
+  AR = 'ar',
+  AM = 'am',
+  AW = 'aw',
+  AU = 'au',
+  AT = 'at',
+  AZ = 'az',
+  BS = 'bs',
+  BH = 'bh',
+  BD = 'bd',
+  BB = 'bb',
+  BY = 'by',
+  BE = 'be',
+  BZ = 'bz',
+  BJ = 'bj',
+  BM = 'bm',
+  BT = 'bt',
+  BO = 'bo',
+  BQ = 'bq',
+  BA = 'ba',
+  BW = 'bw',
+  BV = 'bv',
+  BR = 'br',
+  IO = 'io',
+  BN = 'bn',
+  BG = 'bg',
+  BF = 'bf',
+  BI = 'bi',
+  CV = 'cv',
+  KH = 'kh',
+  CM = 'cm',
+  CA = 'ca',
+  KY = 'ky',
+  CF = 'cf',
+  TD = 'td',
+  CL = 'cl',
+  CN = 'cn',
+  CX = 'cx',
+  CC = 'cc',
+  CO = 'co',
+  KM = 'km',
+  CD = 'cd',
+  CG = 'cg',
+  CK = 'ck',
+  CR = 'cr',
+  HR = 'hr',
+  CU = 'cu',
+  CW = 'cw',
+  CY = 'cy',
+  CZ = 'cz',
+  CI = 'ci',
+  DK = 'dk',
+  DJ = 'dj',
+  DM = 'dm',
+  DO = 'do',
+  EC = 'ec',
+  EG = 'eg',
+  SV = 'sv',
+  GQ = 'gq',
+  ER = 'er',
+  EE = 'ee',
+  SZ = 'sz',
+  ET = 'et',
+  FK = 'fk',
+  FO = 'fo',
+  FJ = 'fj',
+  FI = 'fi',
+  FR = 'fr',
+  GF = 'gf',
+  PF = 'pf',
+  TF = 'tf',
+  GA = 'ga',
+  GM = 'gm',
+  GE = 'ge',
+  DE = 'de',
+  GH = 'gh',
+  GI = 'gi',
+  GR = 'gr',
+  GL = 'gl',
+  GD = 'gd',
+  GP = 'gp',
+  GU = 'gu',
+  GT = 'gt',
+  GG = 'gg',
+  GN = 'gn',
+  GW = 'gw',
+  GY = 'gy',
+  HT = 'ht',
+  HM = 'hm',
+  VA = 'va',
+  HN = 'hn',
+  HK = 'hk',
+  HU = 'hu',
+  IS = 'is',
+  IN = 'in',
+  ID = 'id',
+  IR = 'ir',
+  IQ = 'iq',
+  IE = 'ie',
+  IM = 'im',
+  IL = 'il',
+  IT = 'it',
+  JM = 'jm',
+  JP = 'jp',
+  JE = 'je',
+  JO = 'jo',
+  KZ = 'kz',
+  KE = 'ke',
+  KI = 'ki',
+  KP = 'kp',
+  KR = 'kr',
+  KW = 'kw',
+  KG = 'kg',
+  LA = 'la',
+  LV = 'lv',
+  LB = 'lb',
+  LS = 'ls',
+  LR = 'lr',
+  LY = 'ly',
+  LI = 'li',
+  LT = 'lt',
+  LU = 'lu',
+  MO = 'mo',
+  MG = 'mg',
+  MW = 'mw',
+  MY = 'my',
+  MV = 'mv',
+  ML = 'ml',
+  MT = 'mt',
+  MH = 'mh',
+  MQ = 'mq',
+  MR = 'mr',
+  MU = 'mu',
+  YT = 'yt',
+  MX = 'mx',
+  FM = 'fm',
+  MD = 'md',
+  MC = 'mc',
+  MN = 'mn',
+  ME = 'me',
+  MS = 'ms',
+  MA = 'ma',
+  MZ = 'mz',
+  MM = 'mm',
+  NA = 'na',
+  NR = 'nr',
+  NP = 'np',
+  NL = 'nl',
+  NC = 'nc',
+  NZ = 'nz',
+  NI = 'ni',
+  NE = 'ne',
+  NG = 'ng',
+  NU = 'nu',
+  NF = 'nf',
+  MP = 'mp',
+  NO = 'no',
+  OM = 'om',
+  PK = 'pk',
+  PW = 'pw',
+  PS = 'ps',
+  PA = 'pa',
+  PG = 'pg',
+  PY = 'py',
+  PE = 'pe',
+  PH = 'ph',
+  PN = 'pn',
+  PL = 'pl',
+  PT = 'pt',
+  PR = 'pr',
+  QA = 'qa',
+  MK = 'mk',
+  RO = 'ro',
+  RU = 'ru',
+  RW = 'rw',
+  RE = 're',
+  BL = 'bl',
+  SH = 'sh',
+  KN = 'kn',
+  LC = 'lc',
+  MF = 'mf',
+  PM = 'pm',
+  VC = 'vc',
+  WS = 'ws',
+  SM = 'sm',
+  ST = 'st',
+  SA = 'sa',
+  SN = 'sn',
+  RS = 'rs',
+  SC = 'sc',
+  SL = 'sl',
+  SG = 'sg',
+  SX = 'sx',
+  SK = 'sk',
+  SI = 'si',
+  SB = 'sb',
+  SO = 'so',
+  ZA = 'za',
+  GS = 'gs',
+  SS = 'ss',
+  ES = 'es',
+  LK = 'lk',
+  SD = 'sd',
+  SR = 'sr',
+  SJ = 'sj',
+  SE = 'se',
+  CH = 'ch',
+  SY = 'sy',
+  TW = 'tw',
+  TJ = 'tj',
+  TZ = 'tz',
+  TH = 'th',
+  TL = 'tl',
+  TG = 'tg',
+  TK = 'tk',
+  TO = 'to',
+  TT = 'tt',
+  TN = 'tn',
+  TR = 'tr',
+  TM = 'tm',
+  TC = 'tc',
+  TV = 'tv',
+  UG = 'ug',
+  UA = 'ua',
+  AE = 'ae',
+  GB = 'gb',
+  UM = 'um',
+  US = 'us',
+  UY = 'uy',
+  UZ = 'uz',
+  VU = 'vu',
+  VE = 've',
+  VN = 'vn',
+  VG = 'vg',
+  VI = 'vi',
+  WF = 'wf',
+  EH = 'eh',
+  YE = 'ye',
+  ZM = 'zm',
+  ZW = 'zw',
+  AX = 'ax',
 }
 
 export {
   AutoComplete,
   StopGroup,
   StopCluster,
-  StopGroupProperties,
-  StopClusterProperties,
+  SegmentProviderStop,
+  CreateStopGroupProperties,
+  CreateStopClusterProperties,
+  UpdateStopProperties,
   Filters,
   GroundPlacesDiff,
+  GroundPlaceActionType,
+  Gpuid,
   StopGroupGpuid,
   StopClusterGpuid,
   GroundPlaceType,
   AutoCompleteFilters,
+  GroundPlaces,
 };
