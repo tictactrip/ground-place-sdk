@@ -84,16 +84,16 @@ export class GroundPlacesController {
    * @returns {void}
    */
   public updateStopGroup(stopGroupGpuid: StopGroupGpuid, propertiesToUpdate: UpdateStopProperties): void {
-    const copyGroundPlaces: GroundPlaces = this.storageService.getGroundPlaces();
+    // const copyGroundPlaces: GroundPlaces = cloneObject(this.storageService.getGroundPlaces());
 
     this.storageService.updatePlace(stopGroupGpuid, propertiesToUpdate);
 
-    const isUpdateValid: boolean = this.checkValidity();
+    // const isUpdateValid: boolean = this.checkValidity();
 
     // If the file is not valid after update, rollback to the previous version of the ground places stored
-    if (!isUpdateValid) {
+    /* if (!isUpdateValid) {
       this.storageService.setGroundPlaces(copyGroundPlaces);
-    }
+    } */
   }
 
   /**
@@ -103,16 +103,16 @@ export class GroundPlacesController {
    * @returns {void}
    */
   public updateStopCluster(stopClusterGpuid: StopClusterGpuid, propertiesToUpdate: UpdateStopProperties): void {
-    const copyGroundPlaces: GroundPlaces = this.storageService.getGroundPlaces();
+    // const copyGroundPlaces: GroundPlaces = cloneObject(this.storageService.getGroundPlaces());
 
     this.storageService.updatePlace(stopClusterGpuid, propertiesToUpdate);
 
-    const isUpdateValid: boolean = this.checkValidity();
+    // const isUpdateValid: boolean = this.checkValidity();
 
     // If the file is not valid after update, rollback to the previous version of the ground places stored
-    if (!isUpdateValid) {
+    /* if (!isUpdateValid) {
       this.storageService.setGroundPlaces(copyGroundPlaces);
-    }
+    } */
   }
 
   /**
@@ -212,7 +212,10 @@ export class GroundPlacesController {
    * @returns {boolean}
    */
   // @ts-ignore
-  private checkValidity(): boolean {}
+  private checkValidity(): boolean {
+    // TODO: Implement this
+    return true;
+  }
 
   /**
    * @description Check the validity of the GroundPlacesDiff structure.
