@@ -1,14 +1,15 @@
 import { GroundPlacesController } from '../../src/classes/groundplaces';
-import { fakeGroundPlacesJSON } from '../../mocks/groundPlaces';
+import * as mock from '../../mocks/mockGroundPlaces.json';
+import { GroundPlaces } from '../../src/types';
 
 describe('#updateStopGroup', () => {
-  const GroundPlacesInstance: GroundPlacesController = new GroundPlacesController();
-  GroundPlacesInstance.init(fakeGroundPlacesJSON);
+  const groundPlacesInstance: GroundPlacesController = new GroundPlacesController();
+  groundPlacesInstance.init(mock as GroundPlaces);
 
   it('should update the name of the StopGroup', () => {
-    GroundPlacesInstance.updateStopGroup('g|FRststbi__@u0tkxd', { name: 'Strasbourg, Grand-Est, France' });
+    groundPlacesInstance.updateStopGroup('g|FRststbi__@u0tkxd', { name: 'Strasbourg, Grand-Est, France' });
 
-    expect(GroundPlacesInstance.getGroundPlaces()).toStrictEqual({
+    expect(groundPlacesInstance.getGroundPlaces()).toStrictEqual({
       'c|FRstrasbou@u0ts2': {
         unique_name: 'strasbourg',
         childs: ['g|FRststbi__@u0tkxd'],

@@ -2,7 +2,6 @@ import { Storage } from '../classes/storage';
 import { WebServices } from './webservices';
 import {
   AutoComplete,
-  SegmentProviderStop,
   StopGroupGpuid,
   StopClusterGpuid,
   CreateStopGroupProperties,
@@ -37,11 +36,11 @@ export class GroundPlacesController {
    * @param {string|undefined} groundPlacesFile - The file to manipulate, can only be JSON for now.
    * If you provide empty value, the default file will be the file retrieved from Amazon S3.
    */
-  public init(groundPlacesFile?: string): void {
+  public init(groundPlacesFile?: GroundPlaces): void {
     if (groundPlacesFile) {
       this.storageService.initFile(groundPlacesFile);
     } else {
-      const groundPlacesFileS3 = this.webService.downloadDistantGroundPlacesMaster();
+      const groundPlacesFileS3: GroundPlaces = this.webService.downloadDistantGroundPlacesMaster();
 
       this.storageService.initFile(groundPlacesFileS3);
     }
@@ -58,23 +57,25 @@ export class GroundPlacesController {
 
   /**
    * @description Create a new StopGroup from a SegmentProviderStop.
-   * @param {SegmentProviderStop} segmentProviderStop - The SegmentProviderStop on which is based the StopGroup.
-   * @param {CreateStopGroupProperties} stopGroupProperties - Properties that are needed to create a new StopGroup.
-   * @param {StopClusterGpuid} stopClusterGpuid - Ground place unique identifier of the stopCluster parent.
+   * @param {CreateStopGroupProperties} createStopGroupProperties - Properties that are needed to create a new StopGroup.
+   * @param {StopClusterGpuid} stopClusterParentGpuid - Ground place unique identifier of the StopCluster parent.
    * @returns {void}
    */
   public createStopGroup(
-    segmentProviderStop: SegmentProviderStop,
-    stopGroupProperties: CreateStopGroupProperties,
-    stopClusterGpuid: StopClusterGpuid,
+    createStopGroupProperties: CreateStopGroupProperties,
+    stopClusterParentGpuid: StopClusterGpuid,
   ): void {}
 
   /**
    * @description Create a new StopCluster from a StopGroup.
-   * @param {CreateStopClusterProperties} stopClusterProperties - Properties that are needed to create a new StopCluster.
+   * @param {CreateStopClusterProperties} createStopClusterProperties - Properties that are needed to create a new StopCluster.
+   * @param {StopGroupGpuid} fromStopGroupGpuid - Ground place unique identifier of the StopGroup on which the StopCluster will be created.
    * @returns {void}
    */
-  public createStopCluster(stopClusterProperties: CreateStopClusterProperties): void {}
+  public createStopCluster(
+    createStopClusterProperties: CreateStopClusterProperties,
+    fromStopGroupGpuid: StopGroupGpuid,
+  ): void {}
 
   /**
    * @description Update the stopGroup with the new values given.
@@ -83,12 +84,9 @@ export class GroundPlacesController {
    * @returns {void}
    */
   public updateStopGroup(stopGroupGpuid: StopGroupGpuid, propertiesToUpdate: UpdateStopProperties): void {
-    // Before make call to storageService
-    // Check if the rules are respected with the new properties to update
-    this.checkValidity();
-
-    // Then process to update
     this.storageService.updatePlace(stopGroupGpuid, propertiesToUpdate);
+
+    this.checkValidity();
   }
 
   /**
@@ -98,12 +96,9 @@ export class GroundPlacesController {
    * @returns {void}
    */
   public updateStopCluster(stopClusterGpuid: StopClusterGpuid, propertiesToUpdate: UpdateStopProperties): void {
-    // Before make call to storageService
-    // Check if the rules are respected with the new properties to update
-    this.checkValidity();
-
-    // Then process to update
     this.storageService.updatePlace(stopClusterGpuid, propertiesToUpdate);
+
+    this.checkValidity();
   }
 
   /**

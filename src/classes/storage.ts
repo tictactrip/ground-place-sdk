@@ -17,19 +17,10 @@ export class Storage {
 
   /**
    * @description Init and read the GroundPlaces file.
-   * @param {string} groundPlacesFile - The file to store and manipulate, can only be JSON for now.
+   * @param {GroundPlaces} groundPlacesFile - The file to store and manipulate, can only be JSON for now.
    */
-  public initFile(groundPlacesFile: string): void {
-    this.groundPlaces = this.readJSONFile(groundPlacesFile);
-  }
-
-  /**
-   * @description Parse the JSON File that have all the ground places.
-   * @param {string} groundPlacesFile - The JSON File to parse.
-   * @returns {GroundPlaces}
-   */
-  public readJSONFile(groundPlacesFile: string): GroundPlaces {
-    return JSON.parse(groundPlacesFile);
+  public initFile(groundPlacesFile: GroundPlaces): void {
+    this.groundPlaces = groundPlacesFile;
   }
 
   /**

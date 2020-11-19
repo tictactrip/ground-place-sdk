@@ -61,6 +61,7 @@ interface CreateStopGroupProperties {
   latitude: number;
   type: GroundPlaceType;
   serviced: Serviced;
+  segmentProviderStop: SegmentProviderStop;
 }
 
 interface CreateStopClusterProperties {
@@ -69,7 +70,6 @@ interface CreateStopClusterProperties {
   longitude: number;
   latitude: number;
   type: GroundPlaceType;
-  createdFromStopGroupGpuid: StopGroupGpuid;
   serviced: Serviced;
 }
 

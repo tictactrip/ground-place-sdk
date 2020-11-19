@@ -1,12 +1,13 @@
 import { Storage } from '../../src/classes/storage';
-import { fakeGroundPlacesJSON } from '../../mocks/groundPlaces';
+import * as mock from '../../mocks/mockGroundPlaces.json';
+import { GroundPlaces } from '../../src/types';
 
 describe('#getStopCluster', () => {
-  const StorageInstance: Storage = new Storage();
-  StorageInstance.initFile(fakeGroundPlacesJSON);
+  const storageInstance: Storage = new Storage();
+  storageInstance.initFile(mock as GroundPlaces);
 
   it('should return the right StopCluster based on its Gpuid', () => {
-    expect(StorageInstance.getStopClusterByGpuid('c|FRstrasbou@u0ts2')).toStrictEqual({
+    expect(storageInstance.getStopClusterByGpuid('c|FRstrasbou@u0ts2')).toStrictEqual({
       unique_name: 'strasbourg',
       childs: ['g|FRststbi__@u0tkxd'],
       serviced: 'True',
@@ -22,10 +23,10 @@ describe('#getStopCluster', () => {
   });
 
   it('should throw an error if the StopCluster based on its Gpuid is not found', () => {
-    let thrownError;
+    let thrownError: Error;
 
     try {
-      StorageInstance.getStopClusterByGpuid('g|FRststbi__@');
+      storageInstance.getStopClusterByGpuid('g|FRststbi__@');
     } catch (error) {
       thrownError = error;
     }
@@ -34,10 +35,10 @@ describe('#getStopCluster', () => {
   });
 
   it('should throw an error if the StopCluster based on its Gpuid is found but not of type cluster', () => {
-    let thrownError;
+    let thrownError: Error;
 
     try {
-      StorageInstance.getStopClusterByGpuid('g|FRstraroet@u0tkr3');
+      storageInstance.getStopClusterByGpuid('g|FRstraroet@u0tkr3');
     } catch (error) {
       thrownError = error;
     }

@@ -1,12 +1,13 @@
 import { Storage } from '../../src/classes/storage';
-import { fakeGroundPlacesJSON } from '../../mocks/groundPlaces';
+import * as mock from '../../mocks/mockGroundPlaces.json';
+import { GroundPlaces } from '../../src/types';
 
 describe('#getStopGroup', () => {
-  const StorageInstance: Storage = new Storage();
-  StorageInstance.initFile(fakeGroundPlacesJSON);
+  const storageInstance: Storage = new Storage();
+  storageInstance.initFile(mock as GroundPlaces);
 
   it('should return the right StopGroup based on its Gpuid', () => {
-    expect(StorageInstance.getStopGroupByGpuid('g|FRststbi__@u0tkxd')).toStrictEqual({
+    expect(storageInstance.getStopGroupByGpuid('g|FRststbi__@u0tkxd')).toStrictEqual({
       childs: [
         {
           unique_name: null,
@@ -32,10 +33,10 @@ describe('#getStopGroup', () => {
   });
 
   it('should throw an error if the StopGroup based on its Gpuid is not found', () => {
-    let thrownError;
+    let thrownError: Error;
 
     try {
-      StorageInstance.getStopGroupByGpuid('g|FRststbi__@');
+      storageInstance.getStopGroupByGpuid('g|FRststbi__@');
     } catch (error) {
       thrownError = error;
     }
@@ -44,10 +45,10 @@ describe('#getStopGroup', () => {
   });
 
   it('should throw an error if the StopGroup based on its Gpuid is found but not of type group', () => {
-    let thrownError;
+    let thrownError: Error;
 
     try {
-      StorageInstance.getStopGroupByGpuid('c|FRstrasbou@u0ts2');
+      storageInstance.getStopGroupByGpuid('c|FRstrasbou@u0ts2');
     } catch (error) {
       thrownError = error;
     }

@@ -1,15 +1,13 @@
 import { Storage } from '../../src/classes/storage';
-import { fakeGroundPlacesJSON } from '../../mocks/groundPlaces';
+import * as mock from '../../mocks/mockGroundPlaces.json';
+import { GroundPlaces } from '../../src/types';
 
-describe('#readJSONFile', () => {
-  it('should parse a JSON file when the Storage is instanciate', () => {
-    const readJSONFile = jest.spyOn(Storage.prototype, 'readJSONFile');
+describe('#initFile', () => {
+  it('should store the GroundPlaces from the JSON file when the Storage is instanciate', () => {
+    const storageInstance: Storage = new Storage();
+    storageInstance.initFile(mock as GroundPlaces);
 
-    const StorageInstance: Storage = new Storage();
-    StorageInstance.initFile(fakeGroundPlacesJSON);
-
-    expect(readJSONFile).toHaveBeenCalledTimes(1);
-    expect(StorageInstance.getGroundPlaces()).toStrictEqual({
+    expect(storageInstance.getGroundPlaces()).toStrictEqual({
       'c|FRstrasbou@u0ts2': {
         unique_name: 'strasbourg',
         childs: ['g|FRststbi__@u0tkxd'],
