@@ -33,7 +33,9 @@ export class GroundPlacesController {
 
   /**
    * @description Init GroundPlaces file.
-   * @param {string|undefined} groundPlacesFile - The file to manipulate, can only be JSON for now.
+   * @param {string|undefined} groundPlacesFile
+   * The file to manipulate, can only be JSON for now.
+   *
    * If you provide empty value, the default file will be the file retrieved from Amazon S3.
    */
   public init(groundPlacesFile?: GroundPlaces): void {
@@ -47,7 +49,7 @@ export class GroundPlacesController {
   }
 
   /**
-   * @description Returns a list of places.
+   * @description Returns a list of ground places.
    * @param {string} query - Can be a name, a Gpuid, a unique name or other name.
    * @param {AutoCompleteFilters} filters - Filters with different options (StopGroup, StopCluster, Serviced, SegmentProvider).
    * @returns {AutoComplete[]}
@@ -84,16 +86,16 @@ export class GroundPlacesController {
    * @returns {void}
    */
   public updateStopGroup(stopGroupGpuid: StopGroupGpuid, propertiesToUpdate: UpdateStopProperties): void {
-    // const copyGroundPlaces: GroundPlaces = cloneObject(this.storageService.getGroundPlaces());
+    const copyGroundPlaces: GroundPlaces = this.storageService.cloneGroundPlaces();
 
     this.storageService.updatePlace(stopGroupGpuid, propertiesToUpdate);
 
-    // const isUpdateValid: boolean = this.checkValidity();
+    const isUpdateValid: boolean = this.checkValidity();
 
     // If the file is not valid after update, rollback to the previous version of the ground places stored
-    /* if (!isUpdateValid) {
+    if (!isUpdateValid) {
       this.storageService.setGroundPlaces(copyGroundPlaces);
-    } */
+    }
   }
 
   /**
@@ -103,16 +105,16 @@ export class GroundPlacesController {
    * @returns {void}
    */
   public updateStopCluster(stopClusterGpuid: StopClusterGpuid, propertiesToUpdate: UpdateStopProperties): void {
-    // const copyGroundPlaces: GroundPlaces = cloneObject(this.storageService.getGroundPlaces());
+    const copyGroundPlaces: GroundPlaces = this.storageService.cloneGroundPlaces();
 
     this.storageService.updatePlace(stopClusterGpuid, propertiesToUpdate);
 
-    // const isUpdateValid: boolean = this.checkValidity();
+    const isUpdateValid: boolean = this.checkValidity();
 
     // If the file is not valid after update, rollback to the previous version of the ground places stored
-    /* if (!isUpdateValid) {
+    if (!isUpdateValid) {
       this.storageService.setGroundPlaces(copyGroundPlaces);
-    } */
+    }
   }
 
   /**
@@ -125,6 +127,7 @@ export class GroundPlacesController {
 
   /**
    * @description Move a segmentProviderStop from a stopGroup to another stopGroup.
+   *
    * Warning: The segmentProviderStop cannot be without a parent.
    * @param {string} segmentProviderId - The identifier of the segmentProvider to move.
    * @param {StopGroupGpuid} fromStopGroupGpuid - Ground place unique identifier of the old stopGroup.
@@ -168,6 +171,7 @@ export class GroundPlacesController {
 
   /**
    * @description Merge two stopGroups. It means moving all segmentProviderStop of a stopGroup into another.
+   *
    * Warning: Check first if the merged stopGroup don't have two segmentStopProvider of the same segmentProvider in it.
    * @param {StopGroupGpuid} stopGroupToMergeGpuid - Ground place unique identifier of the stopGroup to merge.
    * @param {StopGroupGpuid} intoStopGroupGpuid - Ground Place unique identifier of the stopGroup to be merged.
@@ -208,6 +212,7 @@ export class GroundPlacesController {
 
   /**
    * @description Check if all the business rules are respected.
+   *
    * Returns true if everything ok, throw an error with all issues if not.
    * @returns {boolean}
    */
@@ -219,6 +224,7 @@ export class GroundPlacesController {
 
   /**
    * @description Check the validity of the GroundPlacesDiff structure.
+   *
    * Returns true if everything ok, throw an error with all issues if not.
    * @returns {boolean}
    */

@@ -41,6 +41,14 @@ export class Storage {
   }
 
   /**
+   * @description Clone current ground places stored.
+   * @returns {GroundPlaces}
+   */
+  public cloneGroundPlaces(): GroundPlaces {
+    return JSON.parse(JSON.stringify(this.groundPlaces));
+  }
+
+  /**
    * @description Returns the stopGroup identified by its Gpuid.
    * @param {StopGroupGpuid} stopGroupGpuid - Ground Place unique identifier of the StopGroup to find.
    * @returns {StopGroup}
