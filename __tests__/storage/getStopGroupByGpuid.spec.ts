@@ -2,7 +2,7 @@ import { Storage } from '../../src/classes/storage';
 import * as mock from '../../mocks/mockGroundPlaces.json';
 import { GroundPlaces } from '../../src/types';
 
-describe('#getStopGroup', () => {
+describe('#getStopGroupByGpuid', () => {
   const storageInstance: Storage = new Storage();
   storageInstance.initFile(mock as GroundPlaces);
 

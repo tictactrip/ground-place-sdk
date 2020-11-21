@@ -31,6 +31,10 @@ export class GroundPlacesController {
     this.webService = new WebServices();
   }
 
+  // -----------------------------------------------------------------------------
+  // ----------------------------- PUBLIC METHODS --------------------------------
+  // -----------------------------------------------------------------------------
+
   /**
    * @description Init GroundPlaces file.
    * @param {string|undefined} groundPlacesFile
@@ -52,10 +56,14 @@ export class GroundPlacesController {
    * @description Returns a list of ground places.
    * @param {string} query - Can be a name, a Gpuid, a unique name or other name.
    * @param {AutoCompleteFilters} filters - Filters with different options (StopGroup, StopCluster, Serviced, SegmentProvider).
-   * @returns {AutoComplete[]}
+   * @returns {AutoComplete}
    */
   // @ts-ignore
-  public autocomplete(query: string, filters: AutoCompleteFilters[]): AutoComplete[] {}
+  public autocomplete(query: string, filters: AutoCompleteFilters[]): AutoComplete[] {
+    // const groundPlacesFiltered: AutoComplete[] = this.storageService.filterGroundPlaces(filters);
+    // const groundPlaces: AutoComplete = this.storageService.search(groundPlacesFiltered, query);
+    // return groundPlaces;
+  }
 
   /**
    * @description Create a new StopGroup from a SegmentProviderStop.
@@ -181,6 +189,7 @@ export class GroundPlacesController {
 
   /**
    * @description Merge two stopClusters. It Means moving all stopGroup of a stopCluster into another.
+   *
    * Warning: A stopGroup can belong to both stopCluster, in this case, just remove it from the first stopCluster.
    * @param {StopClusterGpuid} stopClusterToMergeGpuid - Ground place unique identifier of the stopCluster to merge.
    * @param {StopClusterGpuid} intoStopClusterGpuid - Ground place unique identifier of the stopCluster to be merged.
@@ -211,6 +220,24 @@ export class GroundPlacesController {
   }
 
   /**
+   * @description Apply the diff file to the GroundPlacesDiff object.
+   * @param {GroundPlacesDiff} groundPlacesDiff - Object that store the history of changes of the GroundPlaces.
+   * @returns {void}
+   */
+  // @ts-ignore
+  public applyGroundPlacesDiff(groundPlacesDiff: GroundPlacesDiff): void {
+    // Uses all the handling methode to apply the diff
+    // This method will be used by the backend (could also be used by front)
+    // It should first check the integrity of our ground_places_diff.json
+    // Then apply it to the object
+    // Then check the integrity of the resulting file
+  }
+
+  // -----------------------------------------------------------------------------
+  // ----------------------------- PRIVATE METHODS -------------------------------
+  // -----------------------------------------------------------------------------
+
+  /**
    * @description Check if all the business rules are respected.
    *
    * Returns true if everything ok, throw an error with all issues if not.
@@ -230,18 +257,4 @@ export class GroundPlacesController {
    */
   // @ts-ignore
   private checkGroundPlacesDiffValidity(): boolean {}
-
-  /**
-   * @description Apply the diff file to the GroundPlacesDiff object.
-   * @param {GroundPlacesDiff} groundPlacesDiff - Object that store the history of changes of the GroundPlaces.
-   * @returns {void}
-   */
-  // @ts-ignore
-  public applyGroundPlacesDiff(groundPlacesDiff: GroundPlacesDiff): void {
-    // Uses all the handling methode to apply the diff
-    // This method will be used by the backend (could also be used by front)
-    // It should first check the integrity of our ground_places_diff.json
-    // Then apply it to the object
-    // Then check the integrity of the resulting file
-  }
 }

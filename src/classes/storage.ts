@@ -7,6 +7,8 @@ import {
   GroundPlaceType,
   Gpuid,
   UpdateStopProperties,
+  AutoCompleteFilters,
+  AutoComplete,
 } from '../types';
 
 /**
@@ -14,6 +16,10 @@ import {
  */
 export class Storage {
   private groundPlaces: GroundPlaces;
+
+  // -----------------------------------------------------------------------------
+  // ----------------------------- PUBLIC METHODS --------------------------------
+  // -----------------------------------------------------------------------------
 
   /**
    * @description Init and read the GroundPlaces file.
@@ -60,7 +66,7 @@ export class Storage {
       throw new Error(`The StopGroup with the Gpuid ${stopGroupGpuid} is not found.`);
     }
 
-    return groundPlace as StopGroup;
+    return groundPlace;
   }
 
   /**
@@ -75,7 +81,7 @@ export class Storage {
       throw new Error(`The StopCluster with the Gpuid ${stopClusterGpuid} is not found.`);
     }
 
-    return groundPlace as StopCluster;
+    return groundPlace;
   }
 
   /**
@@ -91,5 +97,34 @@ export class Storage {
     };
 
     this.groundPlaces[placeGpuid] = newGroundPlace;
+  }
+
+  /**
+   * @description Allows you to filter the ground places according to criteria such as name, gpuid, etc.
+   * @param {AutoCompleteFilters[]} filters
+   * @returns {AutoComplete[]}
+   */
+  public filterGroundPlaces(filters?: AutoCompleteFilters[]): AutoComplete[] {
+    const groundPlacesAutocomplete = this.parseGroundPlaces();
+
+    // Returns early the Ground places if there is no filters to use.
+    if (!filters || !filters.length) return groundPlacesAutocomplete;
+  }
+
+  // -----------------------------------------------------------------------------
+  // ----------------------------- PRIVATE METHODS -------------------------------
+  // -----------------------------------------------------------------------------
+
+  /**
+   * @description Converts the Ground places to an array list manipulable.
+   * @returns {void}
+   */
+  private parseGroundPlaces(): AutoComplete[] {
+    return Object.entries(this.groundPlaces).map(
+      ([gpuid, place]: [StopGroupGpuid | StopClusterGpuid, StopGroup | StopCluster]) => ({
+        gpuid,
+        ...place,
+      }),
+    );
   }
 }

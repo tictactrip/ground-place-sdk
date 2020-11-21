@@ -12,6 +12,8 @@ type StopGroupGpuid = Gpuid;
 
 type StopClusterGpuid = Gpuid;
 
+type AutoComplete = StopGroupAutocomplete | StopClusterAutocomplete;
+
 // -----------------------------------------------------------------------------
 //  ------------------------------- INTERFACES ---------------------------------
 // -----------------------------------------------------------------------------
@@ -88,9 +90,13 @@ interface GroundPlacesDiff {
 
 // TODO: Implement these interfaces
 
-interface AutoComplete {}
+interface StopGroupAutocomplete extends StopGroup {
+  gpuid: StopGroupGpuid;
+}
 
-interface Filters {}
+interface StopClusterAutocomplete extends StopCluster {
+  gpuid: StopClusterGpuid;
+}
 
 // -----------------------------------------------------------------------------
 //  --------------------------------- ENUMS ------------------------------------
@@ -373,20 +379,19 @@ enum CountryCode {
 }
 
 export {
-  AutoComplete,
-  StopGroup,
-  StopCluster,
-  SegmentProviderStop,
-  CreateStopGroupProperties,
-  CreateStopClusterProperties,
-  UpdateStopProperties,
-  Filters,
-  GroundPlacesDiff,
-  GroundPlaceActionType,
   Gpuid,
   StopGroupGpuid,
   StopClusterGpuid,
-  GroundPlaceType,
+  StopGroup,
+  StopCluster,
+  SegmentProviderStop,
+  AutoComplete,
   AutoCompleteFilters,
   GroundPlaces,
+  GroundPlacesDiff,
+  GroundPlaceType,
+  GroundPlaceActionType,
+  CreateStopGroupProperties,
+  CreateStopClusterProperties,
+  UpdateStopProperties,
 };

@@ -1,1 +1,1 @@
-export { GroundPlacesController } from './groundplaces';
+export { GroundPlacesController as GroundPlaces } from './groundplaces';
