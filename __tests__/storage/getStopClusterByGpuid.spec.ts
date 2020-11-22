@@ -1,10 +1,10 @@
 import { Storage } from '../../src/classes/storage';
-import * as mock from '../../mocks/mockGroundPlaces.json';
+import * as mockSmallGroundPlacesFile from '../../mocks/smallGroundPlacesFile.json';
 import { GroundPlaces } from '../../src/types';
 
 describe('#getStopClusterByGpuid', () => {
   const storageInstance: Storage = new Storage();
-  storageInstance.initFile(mock as GroundPlaces);
+  storageInstance.initFile(mockSmallGroundPlacesFile as GroundPlaces);
 
   it('should return the right StopCluster based on its Gpuid', () => {
     expect(storageInstance.getStopClusterByGpuid('c|FRstrasbou@u0ts2')).toStrictEqual({

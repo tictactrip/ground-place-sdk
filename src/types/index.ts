@@ -25,7 +25,7 @@ interface StopGroup {
   latitude: number;
   type: GroundPlaceType.GROUP;
   childs: SegmentProviderStop[];
-  serviced: Serviced;
+  serviced: GroundPlaceServiced;
   has_been_modified?: boolean;
   warning?: boolean;
   is_latest?: boolean;
@@ -38,7 +38,7 @@ interface StopCluster {
   latitude: number;
   type: GroundPlaceType.CLUSTER;
   childs: StopGroupGpuid[];
-  serviced: Serviced;
+  serviced: GroundPlaceServiced;
   unique_name?: string;
   has_been_modified?: boolean;
   warning?: boolean;
@@ -50,7 +50,7 @@ interface SegmentProviderStop {
   company_name: string;
   name: string;
   latitude: number;
-  serviced: Serviced;
+  serviced: GroundPlaceServiced;
   company_id: number;
   longitude: number;
   id: string;
@@ -62,7 +62,7 @@ interface CreateStopGroupProperties {
   longitude: number;
   latitude: number;
   type: GroundPlaceType;
-  serviced: Serviced;
+  serviced: GroundPlaceServiced;
   segmentProviderStop: SegmentProviderStop;
 }
 
@@ -72,7 +72,7 @@ interface CreateStopClusterProperties {
   longitude: number;
   latitude: number;
   type: GroundPlaceType;
-  serviced: Serviced;
+  serviced: GroundPlaceServiced;
 }
 
 interface UpdateStopProperties {
@@ -114,16 +114,16 @@ enum GroundPlaceType {
   CLUSTER = 'cluster',
 }
 
-enum Serviced {
+enum GroundPlaceServiced {
   TRUE = 'True',
   FALSE = 'False',
 }
 
 enum AutoCompleteFilters {
-  NAME,
-  GPUID,
-  UNIQUENAME,
-  OTHERNAME,
+  STOP_GROUP = 'stopGroup',
+  STOP_CLUSTER = 'stopCluster',
+  SERVICED = 'serviced',
+  SEGMENT_PROVIDER_STOP = 'segmentProviderStop',
 }
 
 enum CountryCode {
@@ -390,6 +390,7 @@ export {
   GroundPlaces,
   GroundPlacesDiff,
   GroundPlaceType,
+  GroundPlaceServiced,
   GroundPlaceActionType,
   CreateStopGroupProperties,
   CreateStopClusterProperties,

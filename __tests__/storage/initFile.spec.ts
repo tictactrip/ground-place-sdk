@@ -1,11 +1,11 @@
 import { Storage } from '../../src/classes/storage';
-import * as mock from '../../mocks/mockGroundPlaces.json';
+import * as mockSmallGroundPlacesFile from '../../mocks/smallGroundPlacesFile.json';
 import { GroundPlaces } from '../../src/types';
 
 describe('#initFile', () => {
   it('should store the GroundPlaces from the JSON file when the Storage is instanciate', () => {
     const storageInstance: Storage = new Storage();
-    storageInstance.initFile(mock as GroundPlaces);
+    storageInstance.initFile(mockSmallGroundPlacesFile as GroundPlaces);
 
     expect(storageInstance.getGroundPlaces()).toStrictEqual({
       'c|FRstrasbou@u0ts2': {

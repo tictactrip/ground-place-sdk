@@ -1,10 +1,10 @@
 import { GroundPlacesController } from '../../src/classes/groundplaces';
-import * as mock from '../../mocks/mockGroundPlaces.json';
+import * as mockSmallGroundPlacesFile from '../../mocks/smallGroundPlacesFile.json';
 import { GroundPlaces } from '../../src/types';
 
 describe('#updateStopGroup', () => {
   const groundPlacesInstance: GroundPlacesController = new GroundPlacesController();
-  groundPlacesInstance.init(mock as GroundPlaces);
+  groundPlacesInstance.init(mockSmallGroundPlacesFile as GroundPlaces);
 
   it('should update the name of the StopGroup', () => {
     groundPlacesInstance.updateStopGroup('g|FRststbi__@u0tkxd', { name: 'Strasbourg, Grand-Est, France' });

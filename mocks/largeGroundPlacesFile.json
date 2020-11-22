@@ -1,0 +1,15 @@
+{
+  "c|FRstrasbou@u0ts2":{
+     "unique_name":"strasbourg",
+     "childs": [],
+     "serviced":"True",
+     "has_been_modified":false,
+     "warning":false,
+     "country_code":"fr",
+     "is_latest":true,
+     "name":"Strasbourg, Grand-Est, France",
+     "longitude":7.74815,
+     "latitude":48.583,
+     "type":"cluster"
+  }
+}

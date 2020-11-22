@@ -55,13 +55,15 @@ export class GroundPlacesController {
   /**
    * @description Returns a list of ground places.
    * @param {string} query - Can be a name, a Gpuid, a unique name or other name.
-   * @param {AutoCompleteFilters} filters - Filters with different options (StopGroup, StopCluster, Serviced, SegmentProvider).
-   * @returns {AutoComplete}
+   * @param {AutoCompleteFilters[]|undefined} filters - Filters with different options (StopGroup, StopCluster, Serviced, SegmentProvider).
+   *
+   * If you do not give filters, the list will not be filtered.
+   * @returns {AutoComplete[]}
    */
   // @ts-ignore
-  public autocomplete(query: string, filters: AutoCompleteFilters[]): AutoComplete[] {
+  public autocomplete(query: string, filters?: AutoCompleteFilters[]): AutoComplete[] {
     // const groundPlacesFiltered: AutoComplete[] = this.storageService.filterGroundPlaces(filters);
-    // const groundPlaces: AutoComplete = this.storageService.search(groundPlacesFiltered, query);
+    // const groundPlaces: AutoComplete[] = this.storageService.search(groundPlacesFiltered, query);
     // return groundPlaces;
   }
 
