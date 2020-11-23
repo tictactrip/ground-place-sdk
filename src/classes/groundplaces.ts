@@ -41,6 +41,7 @@ export class GroundPlacesController {
    * The file to manipulate, can only be JSON for now.
    *
    * If you provide empty value, the default file will be the file retrieved from Amazon S3.
+   * @returns {void}
    */
   public init(groundPlacesFile?: GroundPlaces): void {
     if (groundPlacesFile) {
@@ -98,16 +99,16 @@ export class GroundPlacesController {
    * @returns {void}
    */
   public updateStopGroup(stopGroupGpuid: StopGroupGpuid, propertiesToUpdate: UpdateStopProperties): void {
-    const copyGroundPlaces: GroundPlaces = this.storageService.cloneGroundPlaces();
+    // const copyGroundPlaces: GroundPlaces = this.storageService.cloneGroundPlaces();
 
     this.storageService.updatePlace(stopGroupGpuid, propertiesToUpdate);
 
-    const isUpdateValid: boolean = this.checkValidity();
+    // const isUpdateValid: boolean = this.checkValidity();
 
-    // If the file is not valid after update, rollback to the previous version of the ground places stored
+    /* If the file is not valid after update, rollback to the previous version of the ground places stored
     if (!isUpdateValid) {
       this.storageService.setGroundPlaces(copyGroundPlaces);
-    }
+    } */
   }
 
   /**
@@ -117,16 +118,16 @@ export class GroundPlacesController {
    * @returns {void}
    */
   public updateStopCluster(stopClusterGpuid: StopClusterGpuid, propertiesToUpdate: UpdateStopProperties): void {
-    const copyGroundPlaces: GroundPlaces = this.storageService.cloneGroundPlaces();
+    // const copyGroundPlaces: GroundPlaces = this.storageService.cloneGroundPlaces();
 
     this.storageService.updatePlace(stopClusterGpuid, propertiesToUpdate);
 
-    const isUpdateValid: boolean = this.checkValidity();
+    // const isUpdateValid: boolean = this.checkValidity();
 
     // If the file is not valid after update, rollback to the previous version of the ground places stored
-    if (!isUpdateValid) {
+    /* if (!isUpdateValid) {
       this.storageService.setGroundPlaces(copyGroundPlaces);
-    }
+    } */
   }
 
   /**

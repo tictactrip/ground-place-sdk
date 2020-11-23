@@ -88,8 +88,6 @@ interface GroundPlacesDiff {
   };
 }
 
-// TODO: Implement these interfaces
-
 interface StopGroupAutocomplete extends StopGroup {
   gpuid: StopGroupGpuid;
 }

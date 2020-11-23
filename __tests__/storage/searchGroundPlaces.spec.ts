@@ -84,13 +84,16 @@ describe('#searchGroundPlaces', () => {
   ];
 
   it('should return all places if the search is empty', () => {
-    const groundPlaces = storageService.searchGroundPlaces(groundPlacesAutocomplete, '');
+    const groundPlaces: AutoComplete[] = storageService.searchGroundPlaces(groundPlacesAutocomplete, '');
 
     expect(groundPlaces).toStrictEqual(groundPlacesAutocomplete);
   });
 
   it('should return places based on name', () => {
-    const groundPlaces = storageService.searchGroundPlaces(groundPlacesAutocomplete, 'Strasbourg Roethig');
+    const groundPlaces: AutoComplete[] = storageService.searchGroundPlaces(
+      groundPlacesAutocomplete,
+      'Strasbourg Roethig',
+    );
 
     expect(groundPlaces).toStrictEqual([
       {
@@ -121,7 +124,7 @@ describe('#searchGroundPlaces', () => {
   });
 
   it('should return places based on Gpuid', () => {
-    const groundPlaces = storageService.searchGroundPlaces(groundPlacesAutocomplete, 'FRstrasbou');
+    const groundPlaces: AutoComplete[] = storageService.searchGroundPlaces(groundPlacesAutocomplete, 'FRstrasbou');
 
     expect(groundPlaces).toStrictEqual([
       {
@@ -166,7 +169,7 @@ describe('#searchGroundPlaces', () => {
   });
 
   it('should return places based on unique name', () => {
-    const groundPlaces = storageService.searchGroundPlaces(groundPlacesAutocomplete, 'nancy---');
+    const groundPlaces: AutoComplete[] = storageService.searchGroundPlaces(groundPlacesAutocomplete, 'nancy---');
 
     expect(groundPlaces).toStrictEqual([
       {
