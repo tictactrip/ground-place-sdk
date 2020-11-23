@@ -3,6 +3,8 @@ import * as mockSmallGroundPlacesFile from '../../mocks/smallGroundPlacesFile.js
 import * as mockLargeGroundPlacesFile from '../../mocks/largeGroundPlacesFile.json';
 import { AutoComplete, GroundPlaces, AutoCompleteFilters } from '../../src/types';
 
+const { STOP_GROUP, STOP_CLUSTER, SEGMENT_PROVIDER_STOP, SERVICED } = AutoCompleteFilters;
+
 describe('#filterGroundPlaces', () => {
   const storageInstance: Storage = new Storage();
 
@@ -56,9 +58,7 @@ describe('#filterGroundPlaces', () => {
   it('should filter Ground places only by Group', () => {
     storageInstance.initFile(mockSmallGroundPlacesFile as GroundPlaces);
 
-    const autocompleteGroundPlaces: AutoComplete[] = storageInstance.filterGroundPlaces([
-      AutoCompleteFilters.STOP_GROUP,
-    ]);
+    const autocompleteGroundPlaces: AutoComplete[] = storageInstance.filterGroundPlaces([STOP_GROUP]);
 
     expect(autocompleteGroundPlaces).toStrictEqual([
       {
@@ -91,9 +91,7 @@ describe('#filterGroundPlaces', () => {
   it('should filter Ground places only by Cluster', () => {
     storageInstance.initFile(mockSmallGroundPlacesFile as GroundPlaces);
 
-    const autocompleteGroundPlaces: AutoComplete[] = storageInstance.filterGroundPlaces([
-      AutoCompleteFilters.STOP_CLUSTER,
-    ]);
+    const autocompleteGroundPlaces: AutoComplete[] = storageInstance.filterGroundPlaces([STOP_CLUSTER]);
 
     expect(autocompleteGroundPlaces).toStrictEqual([
       {
@@ -116,56 +114,93 @@ describe('#filterGroundPlaces', () => {
   it('should filter Ground places only by Segment Provider in it', () => {
     storageInstance.initFile(mockLargeGroundPlacesFile as GroundPlaces);
 
-    const autocompleteGroundPlaces: AutoComplete[] = storageInstance.filterGroundPlaces([
-      AutoCompleteFilters.SEGMENT_PROVIDER_STOP,
-    ]);
-
-    expect(autocompleteGroundPlaces).toStrictEqual([]);
-  });
-
-  it('should filter Ground places only by Serviced', () => {
-    storageInstance.initFile(mockSmallGroundPlacesFile as GroundPlaces);
-
-    const autocompleteGroundPlaces: AutoComplete[] = storageInstance.filterGroundPlaces([AutoCompleteFilters.SERVICED]);
+    const autocompleteGroundPlaces: AutoComplete[] = storageInstance.filterGroundPlaces([SEGMENT_PROVIDER_STOP]);
 
     expect(autocompleteGroundPlaces).toStrictEqual([
       {
-        childs: ['g|FRststbi__@u0tkxd'],
-        country_code: 'fr',
         gpuid: 'c|FRstrasbou@u0ts2',
-        has_been_modified: false,
-        is_latest: true,
-        latitude: 48.583,
-        longitude: 7.74815,
-        name: 'Strasbourg, Grand-Est, France',
-        serviced: 'True',
-        type: 'cluster',
         unique_name: 'strasbourg',
+        childs: ['g|FRststbi__@u0tkxd', 'g|FRstrasbou@u0tkru', 'g|FRstraroet@u0tkr3'],
+        serviced: 'False',
+        has_been_modified: false,
         warning: false,
+        country_code: 'fr',
+        is_latest: true,
+        name: 'Strasbourg, Grand-Est, France',
+        longitude: 7.74815,
+        latitude: 48.583,
+        type: 'cluster',
       },
       {
+        gpuid: 'g|FRstrasbou@u0tkru',
         childs: [
           {
-            company_id: 5,
-            company_name: 'flixbus',
-            id: '19528',
-            latitude: 48.616228,
-            longitude: 7.719863,
-            name: 'Strasbourg, Strasbourg - Bischheim',
-            serviced: 'True',
             unique_name: null,
+            company_name: 'flixbus',
+            name: 'Strasbourg',
+            latitude: 48.574179,
+            serviced: 'False',
+            company_id: 5,
+            longitude: 7.754266,
+            id: '23',
           },
         ],
-        country_code: 'fr',
-        gpuid: 'g|FRststbi__@u0tkxd',
+        name: 'Strasbourg',
+        longitude: 7.73417,
+        serviced: 'False',
         has_been_modified: false,
-        is_latest: true,
-        latitude: 48.616228,
-        longitude: 7.719863,
-        name: 'Strasbourg, Strasbourg - Bischheim',
-        serviced: 'True',
-        type: 'group',
         warning: false,
+        country_code: 'fr',
+        latitude: 48.58392,
+        is_latest: true,
+        type: 'group',
+      },
+      {
+        gpuid: 'g|FRstraroet@u0tkr3',
+        childs: [
+          {
+            unique_name: null,
+            company_name: 'vsc',
+            name: 'Strasbourg Roethig',
+            latitude: 48.569,
+            serviced: 'False',
+            company_id: 10,
+            longitude: 7.704,
+            id: 'FRBUK',
+          },
+        ],
+        name: 'Strasbourg Roethig',
+        longitude: 7.704,
+        serviced: 'False',
+        has_been_modified: false,
+        warning: false,
+        country_code: 'fr',
+        latitude: 48.569,
+        is_latest: true,
+        type: 'group',
+      },
+    ]);
+  });
+
+  it('should filter Ground places only by Serviced', () => {
+    storageInstance.initFile(mockLargeGroundPlacesFile as GroundPlaces);
+
+    const autocompleteGroundPlaces: AutoComplete[] = storageInstance.filterGroundPlaces([SERVICED]);
+
+    expect(autocompleteGroundPlaces).toStrictEqual([
+      {
+        gpuid: 'c|FRnaarto__@u0skg',
+        unique_name: 'nancy---tous-les-arrets',
+        childs: [],
+        serviced: 'True',
+        has_been_modified: false,
+        warning: false,
+        country_code: 'fr',
+        is_latest: true,
+        name: 'Nancy - Tous les arrêts, Grand Est, France',
+        longitude: 6.1444727044,
+        latitude: 48.6484863111,
+        type: 'cluster',
       },
     ]);
   });
@@ -173,10 +208,7 @@ describe('#filterGroundPlaces', () => {
   it('should filter Ground places by StopGroup and StopCluster', () => {
     storageInstance.initFile(mockSmallGroundPlacesFile as GroundPlaces);
 
-    const autocompleteGroundPlaces: AutoComplete[] = storageInstance.filterGroundPlaces([
-      AutoCompleteFilters.STOP_GROUP,
-      AutoCompleteFilters.STOP_CLUSTER,
-    ]);
+    const autocompleteGroundPlaces: AutoComplete[] = storageInstance.filterGroundPlaces([STOP_GROUP, STOP_CLUSTER]);
 
     expect(autocompleteGroundPlaces).toStrictEqual([
       {
@@ -224,9 +256,9 @@ describe('#filterGroundPlaces', () => {
     storageInstance.initFile(mockSmallGroundPlacesFile as GroundPlaces);
 
     const autocompleteGroundPlaces: AutoComplete[] = storageInstance.filterGroundPlaces([
-      AutoCompleteFilters.STOP_GROUP,
-      AutoCompleteFilters.STOP_CLUSTER,
-      AutoCompleteFilters.SEGMENT_PROVIDER_STOP,
+      STOP_GROUP,
+      STOP_CLUSTER,
+      SEGMENT_PROVIDER_STOP,
     ]);
 
     expect(autocompleteGroundPlaces).toStrictEqual([
@@ -275,10 +307,10 @@ describe('#filterGroundPlaces', () => {
     storageInstance.initFile(mockSmallGroundPlacesFile as GroundPlaces);
 
     const autocompleteGroundPlaces: AutoComplete[] = storageInstance.filterGroundPlaces([
-      AutoCompleteFilters.STOP_GROUP,
-      AutoCompleteFilters.STOP_CLUSTER,
-      AutoCompleteFilters.SEGMENT_PROVIDER_STOP,
-      AutoCompleteFilters.SERVICED,
+      STOP_GROUP,
+      STOP_CLUSTER,
+      SEGMENT_PROVIDER_STOP,
+      SERVICED,
     ]);
 
     expect(autocompleteGroundPlaces).toStrictEqual([
