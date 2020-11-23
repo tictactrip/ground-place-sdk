@@ -395,4 +395,5 @@ export {
   CreateStopGroupProperties,
   CreateStopClusterProperties,
   UpdateStopProperties,
+  CountryCode,
 };

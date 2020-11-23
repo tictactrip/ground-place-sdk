@@ -3,11 +3,11 @@ import * as mockSmallGroundPlacesFile from '../../mocks/smallGroundPlacesFile.js
 import { GroundPlaces } from '../../src/types';
 
 describe('#getStopGroupByGpuid', () => {
-  const storageInstance: Storage = new Storage();
-  storageInstance.initFile(mockSmallGroundPlacesFile as GroundPlaces);
+  const storageService: Storage = new Storage();
+  storageService.initFile(mockSmallGroundPlacesFile as GroundPlaces);
 
   it('should return the right StopGroup based on its Gpuid', () => {
-    expect(storageInstance.getStopGroupByGpuid('g|FRststbi__@u0tkxd')).toStrictEqual({
+    expect(storageService.getStopGroupByGpuid('g|FRststbi__@u0tkxd')).toStrictEqual({
       childs: [
         {
           unique_name: null,
@@ -36,7 +36,7 @@ describe('#getStopGroupByGpuid', () => {
     let thrownError: Error;
 
     try {
-      storageInstance.getStopGroupByGpuid('g|FRststbi__@');
+      storageService.getStopGroupByGpuid('g|FRststbi__@');
     } catch (error) {
       thrownError = error;
     }
@@ -48,7 +48,7 @@ describe('#getStopGroupByGpuid', () => {
     let thrownError: Error;
 
     try {
-      storageInstance.getStopGroupByGpuid('c|FRstrasbou@u0ts2');
+      storageService.getStopGroupByGpuid('c|FRstrasbou@u0ts2');
     } catch (error) {
       thrownError = error;
     }

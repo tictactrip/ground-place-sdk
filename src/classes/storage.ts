@@ -139,6 +139,29 @@ export class Storage {
     return filteredByService;
   }
 
+  /**
+   * @description Search through ground places with specific words.
+   * @param {AutoComplete[]} groundPlaces - The places on which the search is used.
+   * @param {string} search - The search to find the requested places.
+   * @returns {AutoComplete[]}
+   */
+  public searchGroundPlaces(groundPlaces: AutoComplete[], search: string): AutoComplete[] {
+    return groundPlaces.filter((place) => {
+      // Method toLowerCase() is used because the includes() method is case sensitive
+      const currentSearch = search.toLowerCase();
+
+      /* Search by unique name. This search only concern StopCluster. */
+      if (place.type === GroundPlaceType.CLUSTER && place.unique_name.toLowerCase().includes(currentSearch)) {
+        return place;
+      }
+
+      /* Search by Gpuid and by name */
+      if (place.gpuid.toLowerCase().includes(currentSearch) || place.name.toLowerCase().includes(currentSearch)) {
+        return place;
+      }
+    });
+  }
+
   // -----------------------------------------------------------------------------
   // ----------------------------- PRIVATE METHODS -------------------------------
   // -----------------------------------------------------------------------------

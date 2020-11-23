@@ -4,10 +4,10 @@ import { GroundPlaces } from '../../src/types';
 
 describe('#initFile', () => {
   it('should store the GroundPlaces from the JSON file when the Storage is instanciate', () => {
-    const storageInstance: Storage = new Storage();
-    storageInstance.initFile(mockSmallGroundPlacesFile as GroundPlaces);
+    const storageService: Storage = new Storage();
+    storageService.initFile(mockSmallGroundPlacesFile as GroundPlaces);
 
-    expect(storageInstance.getGroundPlaces()).toStrictEqual({
+    expect(storageService.getGroundPlaces()).toStrictEqual({
       'c|FRstrasbou@u0ts2': {
         unique_name: 'strasbourg',
         childs: ['g|FRststbi__@u0tkxd'],

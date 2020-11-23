@@ -62,9 +62,11 @@ export class GroundPlacesController {
    */
   // @ts-ignore
   public autocomplete(query: string, filters?: AutoCompleteFilters[]): AutoComplete[] {
-    // const groundPlacesFiltered: AutoComplete[] = this.storageService.filterGroundPlaces(filters);
-    // const groundPlaces: AutoComplete[] = this.storageService.search(groundPlacesFiltered, query);
-    // return groundPlaces;
+    const groundPlacesFiltered: AutoComplete[] = this.storageService.filterGroundPlaces(filters);
+
+    const groundPlaces: AutoComplete[] = this.storageService.searchGroundPlaces(groundPlacesFiltered, query);
+
+    return groundPlaces;
   }
 
   /**

@@ -3,13 +3,13 @@ import * as mockSmallGroundPlacesFile from '../../mocks/smallGroundPlacesFile.js
 import { GroundPlaces } from '../../src/types';
 
 describe('#updateStopCluster', () => {
-  const groundPlacesInstance: GroundPlacesController = new GroundPlacesController();
-  groundPlacesInstance.init(mockSmallGroundPlacesFile as GroundPlaces);
+  const groundPlacesService: GroundPlacesController = new GroundPlacesController();
+  groundPlacesService.init(mockSmallGroundPlacesFile as GroundPlaces);
 
   it('should update the name of the StopCluster', () => {
-    groundPlacesInstance.updateStopCluster('c|FRstrasbou@u0ts2', { name: 'Strasbourg, Est, France' });
+    groundPlacesService.updateStopCluster('c|FRstrasbou@u0ts2', { name: 'Strasbourg, Est, France' });
 
-    expect(groundPlacesInstance.getGroundPlaces()).toStrictEqual({
+    expect(groundPlacesService.getGroundPlaces()).toStrictEqual({
       'c|FRstrasbou@u0ts2': {
         unique_name: 'strasbourg',
         childs: ['g|FRststbi__@u0tkxd'],
