@@ -2,17 +2,15 @@
 //  --------------------------------- TYPES ------------------------------------
 // -----------------------------------------------------------------------------
 
-type GroundPlace = StopGroup | StopCluster;
+type GroundPlace = StopGroupWithGpuid | StopClusterWithGpuid;
 
-type GroundPlaces = Record<Gpuid, GroundPlace>;
+type GroundPlacesFile = Record<Gpuid, StopGroup | StopCluster>;
 
 type Gpuid = string;
 
 type StopGroupGpuid = Gpuid;
 
 type StopClusterGpuid = Gpuid;
-
-type AutoComplete = StopGroupAutocomplete | StopClusterAutocomplete;
 
 // -----------------------------------------------------------------------------
 //  ------------------------------- INTERFACES ---------------------------------
@@ -88,11 +86,11 @@ interface GroundPlacesDiff {
   };
 }
 
-interface StopGroupAutocomplete extends StopGroup {
+interface StopGroupWithGpuid extends StopGroup {
   gpuid: StopGroupGpuid;
 }
 
-interface StopClusterAutocomplete extends StopCluster {
+interface StopClusterWithGpuid extends StopCluster {
   gpuid: StopClusterGpuid;
 }
 
@@ -378,14 +376,14 @@ enum CountryCode {
 
 export {
   Gpuid,
+  GroundPlace,
   StopGroupGpuid,
   StopClusterGpuid,
   StopGroup,
   StopCluster,
   SegmentProviderStop,
-  AutoComplete,
   AutoCompleteFilters,
-  GroundPlaces,
+  GroundPlacesFile,
   GroundPlacesDiff,
   GroundPlaceType,
   GroundPlaceServiced,

@@ -1,4 +1,4 @@
-import { GroundPlaces } from '../types';
+import { GroundPlacesFile } from '../types';
 
 /**
  * @description APIs to push or retrieve GroundPlaces.
@@ -9,7 +9,7 @@ export class WebServices {
    * @returns {string}
    */
   // @ts-ignore
-  public downloadDistantGroundPlacesMaster(): GroundPlaces {}
+  public downloadDistantGroundPlacesMaster(): GroundPlacesFile {}
 
   /**
    * @description Upload the file to AWS S3.
