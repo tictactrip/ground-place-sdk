@@ -3,8 +3,6 @@ import * as mockSmallGroundPlacesFile from '../../mocks/smallGroundPlacesFile.js
 import * as mockLargeGroundPlacesFile from '../../mocks/largeGroundPlacesFile.json';
 import { AutoComplete, GroundPlaces, AutoCompleteFilters } from '../../src/types';
 
-const { STOP_GROUP, STOP_CLUSTER, SEGMENT_PROVIDER_STOP, SERVICED } = AutoCompleteFilters;
-
 describe('#filterGroundPlaces', () => {
   const storageService: Storage = new Storage();
 
@@ -58,7 +56,9 @@ describe('#filterGroundPlaces', () => {
   it('should filter Ground places only by Group', () => {
     storageService.initFile(mockSmallGroundPlacesFile as GroundPlaces);
 
-    const autocompleteGroundPlaces: AutoComplete[] = storageService.filterGroundPlaces([STOP_GROUP]);
+    const autocompleteGroundPlaces: AutoComplete[] = storageService.filterGroundPlaces([
+      AutoCompleteFilters.STOP_GROUP,
+    ]);
 
     expect(autocompleteGroundPlaces).toStrictEqual([
       {
@@ -91,7 +91,9 @@ describe('#filterGroundPlaces', () => {
   it('should filter Ground places only by Cluster', () => {
     storageService.initFile(mockSmallGroundPlacesFile as GroundPlaces);
 
-    const autocompleteGroundPlaces: AutoComplete[] = storageService.filterGroundPlaces([STOP_CLUSTER]);
+    const autocompleteGroundPlaces: AutoComplete[] = storageService.filterGroundPlaces([
+      AutoCompleteFilters.STOP_CLUSTER,
+    ]);
 
     expect(autocompleteGroundPlaces).toStrictEqual([
       {
@@ -114,7 +116,9 @@ describe('#filterGroundPlaces', () => {
   it('should filter Ground places only by Segment Provider in it', () => {
     storageService.initFile(mockLargeGroundPlacesFile as GroundPlaces);
 
-    const autocompleteGroundPlaces: AutoComplete[] = storageService.filterGroundPlaces([SEGMENT_PROVIDER_STOP]);
+    const autocompleteGroundPlaces: AutoComplete[] = storageService.filterGroundPlaces([
+      AutoCompleteFilters.SEGMENT_PROVIDER_STOP,
+    ]);
 
     expect(autocompleteGroundPlaces).toStrictEqual([
       {
@@ -185,7 +189,7 @@ describe('#filterGroundPlaces', () => {
   it('should filter Ground places only by Serviced', () => {
     storageService.initFile(mockLargeGroundPlacesFile as GroundPlaces);
 
-    const autocompleteGroundPlaces: AutoComplete[] = storageService.filterGroundPlaces([SERVICED]);
+    const autocompleteGroundPlaces: AutoComplete[] = storageService.filterGroundPlaces([AutoCompleteFilters.SERVICED]);
 
     expect(autocompleteGroundPlaces).toStrictEqual([
       {
@@ -208,7 +212,10 @@ describe('#filterGroundPlaces', () => {
   it('should filter Ground places by StopGroup and StopCluster', () => {
     storageService.initFile(mockSmallGroundPlacesFile as GroundPlaces);
 
-    const autocompleteGroundPlaces: AutoComplete[] = storageService.filterGroundPlaces([STOP_GROUP, STOP_CLUSTER]);
+    const autocompleteGroundPlaces: AutoComplete[] = storageService.filterGroundPlaces([
+      AutoCompleteFilters.STOP_GROUP,
+      AutoCompleteFilters.STOP_CLUSTER,
+    ]);
 
     expect(autocompleteGroundPlaces).toStrictEqual([
       {
@@ -256,9 +263,9 @@ describe('#filterGroundPlaces', () => {
     storageService.initFile(mockSmallGroundPlacesFile as GroundPlaces);
 
     const autocompleteGroundPlaces: AutoComplete[] = storageService.filterGroundPlaces([
-      STOP_GROUP,
-      STOP_CLUSTER,
-      SEGMENT_PROVIDER_STOP,
+      AutoCompleteFilters.STOP_GROUP,
+      AutoCompleteFilters.STOP_CLUSTER,
+      AutoCompleteFilters.SEGMENT_PROVIDER_STOP,
     ]);
 
     expect(autocompleteGroundPlaces).toStrictEqual([
@@ -307,10 +314,10 @@ describe('#filterGroundPlaces', () => {
     storageService.initFile(mockSmallGroundPlacesFile as GroundPlaces);
 
     const autocompleteGroundPlaces: AutoComplete[] = storageService.filterGroundPlaces([
-      STOP_GROUP,
-      STOP_CLUSTER,
-      SEGMENT_PROVIDER_STOP,
-      SERVICED,
+      AutoCompleteFilters.STOP_GROUP,
+      AutoCompleteFilters.STOP_CLUSTER,
+      AutoCompleteFilters.SEGMENT_PROVIDER_STOP,
+      AutoCompleteFilters.SERVICED,
     ]);
 
     expect(autocompleteGroundPlaces).toStrictEqual([
