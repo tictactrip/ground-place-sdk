@@ -1,16 +1,17 @@
 import { GroundPlacesController } from '../../src/classes/groundplaces';
 import * as mockSmallGroundPlacesFile from '../../mocks/smallGroundPlacesFile.json';
-import { GroundPlaces } from '../../src/types';
+import { GroundPlacesFile } from '../../src/types';
 
 describe('#updateStopGroup', () => {
   const groundPlacesService: GroundPlacesController = new GroundPlacesController();
-  groundPlacesService.init(mockSmallGroundPlacesFile as GroundPlaces);
+  groundPlacesService.init(mockSmallGroundPlacesFile as GroundPlacesFile);
 
   it('should update the name of the StopGroup', () => {
     groundPlacesService.updateStopGroup('g|FRststbi__@u0tkxd', { name: 'Strasbourg, Grand-Est, France' });
 
-    expect(groundPlacesService.getGroundPlaces()).toStrictEqual({
-      'c|FRstrasbou@u0ts2': {
+    expect(groundPlacesService.getGroundPlaces()).toStrictEqual([
+      {
+        gpuid: 'c|FRstrasbou@u0ts2',
         unique_name: 'strasbourg',
         childs: ['g|FRststbi__@u0tkxd'],
         serviced: 'True',
@@ -23,7 +24,8 @@ describe('#updateStopGroup', () => {
         latitude: 48.583,
         type: 'cluster',
       },
-      'g|FRststbi__@u0tkxd': {
+      {
+        gpuid: 'g|FRststbi__@u0tkxd',
         childs: [
           {
             unique_name: null,
@@ -46,6 +48,6 @@ describe('#updateStopGroup', () => {
         is_latest: true,
         type: 'group',
       },
-    });
+    ]);
   });
 });

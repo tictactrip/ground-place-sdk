@@ -8,6 +8,7 @@ import {
   GroundPlaceType,
   Gpuid,
   UpdateStopProperties,
+  GroundPlaceFromFile,
 } from '../types';
 
 /**
@@ -23,7 +24,7 @@ export class Storage {
    */
   public initFile(groundPlacesFile: GroundPlacesFile): void {
     const groundPlaces: GroundPlace[] = Object.entries(groundPlacesFile).map(
-      ([gpuid, place]: [StopGroupGpuid | StopClusterGpuid, StopGroup | StopCluster]) => ({
+      ([gpuid, place]: [Gpuid, GroundPlaceFromFile]): GroundPlace => ({
         gpuid,
         ...place,
       }),
@@ -34,7 +35,7 @@ export class Storage {
 
   /**
    * @description Getter to retrieve the Ground places.
-   * @returns {GroundPlaces}
+   * @returns {GroundPlace[]}
    */
   public getGroundPlaces(): GroundPlace[] {
     return this.groundPlaces;
@@ -55,7 +56,9 @@ export class Storage {
    * @returns {StopGroup}
    */
   public getStopGroupByGpuid(stopGroupGpuid: StopGroupGpuid): StopGroup {
-    const groundPlace: StopCluster | StopGroup = this.groundPlaces[stopGroupGpuid];
+    const placeIndex: number = this.groundPlaces.findIndex(({ gpuid }: GroundPlace) => gpuid === stopGroupGpuid);
+
+    const groundPlace: GroundPlace = this.groundPlaces[placeIndex];
 
     if (!groundPlace || groundPlace.type !== GroundPlaceType.GROUP) {
       throw new Error(`The StopGroup with the Gpuid ${stopGroupGpuid} is not found.`);
@@ -70,7 +73,9 @@ export class Storage {
    * @returns {StopCluster}
    */
   public getStopClusterByGpuid(stopClusterGpuid: StopClusterGpuid): StopCluster {
-    const groundPlace: StopCluster | StopGroup = this.groundPlaces[stopClusterGpuid];
+    const placeIndex: number = this.groundPlaces.findIndex(({ gpuid }: GroundPlace) => gpuid === stopClusterGpuid);
+
+    const groundPlace: GroundPlace = this.groundPlaces[placeIndex];
 
     if (!groundPlace || groundPlace.type !== GroundPlaceType.CLUSTER) {
       throw new Error(`The StopCluster with the Gpuid ${stopClusterGpuid} is not found.`);
@@ -86,11 +91,13 @@ export class Storage {
    * @returns {void}
    */
   public updatePlace(placeGpuid: Gpuid, propertiesToUpdate: UpdateStopProperties): void {
-    const newGroundPlace: StopGroup | StopCluster = {
-      ...this.groundPlaces[placeGpuid],
+    const placeIndex: number = this.groundPlaces.findIndex(({ gpuid }: GroundPlace) => gpuid === placeGpuid);
+
+    const newGroundPlace: GroundPlace = {
+      ...this.groundPlaces[placeIndex],
       ...propertiesToUpdate,
     };
 
-    this.groundPlaces[placeGpuid] = newGroundPlace;
+    this.groundPlaces[placeIndex] = newGroundPlace;
   }
 }

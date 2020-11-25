@@ -1,13 +1,14 @@
 import { Storage } from '../../src/classes/storage';
 import * as mockSmallGroundPlacesFile from '../../mocks/smallGroundPlacesFile.json';
-import { GroundPlaces } from '../../src/types';
+import { GroundPlacesFile } from '../../src/types';
 
 describe('#getStopGroupByGpuid', () => {
   const storageService: Storage = new Storage();
-  storageService.initFile(mockSmallGroundPlacesFile as GroundPlaces);
+  storageService.initFile(mockSmallGroundPlacesFile as GroundPlacesFile);
 
   it('should return the right StopGroup based on its Gpuid', () => {
     expect(storageService.getStopGroupByGpuid('g|FRststbi__@u0tkxd')).toStrictEqual({
+      gpuid: 'g|FRststbi__@u0tkxd',
       childs: [
         {
           unique_name: null,

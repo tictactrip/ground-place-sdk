@@ -1,22 +1,16 @@
-// -----------------------------------------------------------------------------
-//  --------------------------------- TYPES ------------------------------------
-// -----------------------------------------------------------------------------
-
-type GroundPlace = StopGroupWithGpuid | StopClusterWithGpuid;
-
-type GroundPlacesFile = Record<Gpuid, StopGroup | StopCluster>;
-
 type Gpuid = string;
 
 type StopGroupGpuid = Gpuid;
 
 type StopClusterGpuid = Gpuid;
 
-// -----------------------------------------------------------------------------
-//  ------------------------------- INTERFACES ---------------------------------
-// -----------------------------------------------------------------------------
+type GroundPlaceFromFile = StopGroupFromFile | StopClusterFromFile;
 
-interface StopGroup {
+type GroundPlacesFile = Record<Gpuid, GroundPlaceFromFile>;
+
+type GroundPlace = StopGroup | StopCluster;
+
+interface StopGroupFromFile {
   country_code: CountryCode;
   name: string;
   longitude: number;
@@ -29,7 +23,7 @@ interface StopGroup {
   is_latest?: boolean;
 }
 
-interface StopCluster {
+interface StopClusterFromFile {
   country_code: CountryCode;
   name: string;
   longitude: number;
@@ -41,6 +35,14 @@ interface StopCluster {
   has_been_modified?: boolean;
   warning?: boolean;
   is_latest?: boolean;
+}
+
+interface StopGroup extends StopGroupFromFile {
+  gpuid: StopGroupGpuid;
+}
+
+interface StopCluster extends StopClusterFromFile {
+  gpuid: StopClusterGpuid;
 }
 
 interface SegmentProviderStop {
@@ -85,18 +87,6 @@ interface GroundPlacesDiff {
     into?: string;
   };
 }
-
-interface StopGroupWithGpuid extends StopGroup {
-  gpuid: StopGroupGpuid;
-}
-
-interface StopClusterWithGpuid extends StopCluster {
-  gpuid: StopClusterGpuid;
-}
-
-// -----------------------------------------------------------------------------
-//  --------------------------------- ENUMS ------------------------------------
-// -----------------------------------------------------------------------------
 
 enum GroundPlaceActionType {
   CREATE = 'create',
@@ -392,4 +382,7 @@ export {
   CreateStopClusterProperties,
   UpdateStopProperties,
   CountryCode,
+  StopGroupFromFile,
+  StopClusterFromFile,
+  GroundPlaceFromFile,
 };

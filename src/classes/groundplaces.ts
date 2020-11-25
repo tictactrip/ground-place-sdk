@@ -32,10 +32,6 @@ export class GroundPlacesController {
     this.webService = new WebServices();
   }
 
-  // -----------------------------------------------------------------------------
-  // ----------------------------- PUBLIC METHODS --------------------------------
-  // -----------------------------------------------------------------------------
-
   /**
    * @description Init GroundPlaces file.
    * @param {string|undefined} groundPlacesFile
@@ -64,53 +60,44 @@ export class GroundPlacesController {
    */
   // @ts-ignore
   public autocomplete(query: string, filters?: AutoCompleteFilters[]): GroundPlace[] {
-    const groundPlaces = this.getGroundPlaces();
+    const groundPlaces: GroundPlace[] = this.getGroundPlaces();
 
-    // If there is no filters to use
-    // Return only the places that matching the query
-    if (!filters || !filters.length) {
-      return groundPlaces.filter((place) => {
+    const isFilterByStopGroupActive: boolean = filters.includes(AutoCompleteFilters.STOP_GROUP);
+    const isFilterByStopClusterActive: boolean = filters.includes(AutoCompleteFilters.STOP_CLUSTER);
+    const isFilterByServicedActive: boolean = filters.includes(AutoCompleteFilters.SERVICED);
+    const isFilterWithChildrenActive: boolean = filters.includes(AutoCompleteFilters.SEGMENT_PROVIDER_STOP);
+
+    return groundPlaces.filter(
+      (place: GroundPlace): GroundPlace => {
         // Method toLowerCase() is used because the includes() method is case sensitive
-        const currentQuery = query.toLowerCase();
+        const currentQuery: string = query.toLowerCase();
 
         if (
-          (place.type === GroundPlaceType.CLUSTER && place.unique_name.toLowerCase().includes(currentQuery)) ||
-          place.gpuid.toLowerCase().includes(currentQuery) ||
-          place.name.toLowerCase().includes(currentQuery)
+          // Search ground places that matching with the query
+          ((place.type === GroundPlaceType.CLUSTER && place.unique_name.toLowerCase().includes(currentQuery)) ||
+            place.gpuid.toLowerCase().includes(currentQuery) ||
+            place.name.toLowerCase().includes(currentQuery)) &&
+          // Filter by type (StopGroup|StopCluster)
+          ((!isFilterByStopGroupActive && !isFilterByStopClusterActive) ||
+            (isFilterByStopGroupActive && place.type === GroundPlaceType.GROUP) ||
+            (isFilterByStopClusterActive && place.type === GroundPlaceType.CLUSTER)) &&
+          // Filter by serviced
+          (!isFilterByServicedActive || (isFilterByServicedActive && place.serviced === GroundPlaceServiced.TRUE))
         ) {
-          return place;
-        }
-      });
-    }
-
-    const isFilterByStopGroupActive = filters.includes(AutoCompleteFilters.STOP_GROUP);
-    const isFilterByStopClusterActive = filters.includes(AutoCompleteFilters.STOP_CLUSTER);
-    const isFilterByServicedActive = filters.includes(AutoCompleteFilters.SERVICED);
-    const isFilterWithChildrenActive = filters.includes(AutoCompleteFilters.SEGMENT_PROVIDER_STOP);
-
-    return groundPlaces.filter((place) => {
-      // Method toLowerCase() is used because the includes() method is case sensitive
-      const currentQuery = query.toLowerCase();
-
-      if (
-        // Search ground places that matching with the query
-        ((place.type === GroundPlaceType.CLUSTER && place.unique_name.toLowerCase().includes(currentQuery)) ||
-          place.gpuid.toLowerCase().includes(currentQuery) ||
-          place.name.toLowerCase().includes(currentQuery)) &&
-        // And Filter ground places with the filters provided
-        ((!isFilterByStopGroupActive && !isFilterByStopClusterActive) ||
-          (isFilterByStopGroupActive && place.type === GroundPlaceType.GROUP) ||
-          (isFilterByStopClusterActive && place.type === GroundPlaceType.CLUSTER))
-      ) {
-        if (!isFilterByServicedActive || (isFilterByServicedActive && place.serviced === GroundPlaceServiced.TRUE)) {
+          // Filter by segmentProviderStop in childrens
           if (!isFilterWithChildrenActive) {
             return place;
           } else {
             // Since StopGroups and StopClusters do not share the same structures
-            // We have to search the StopGroups from the StopCluster in order to find potential segmentProviderStop in childrens.
+            // We have to search the StopGroups from the StopCluster parent
+            // In order to find potential segmentProviderStop in childrens
             if (place.type === GroundPlaceType.CLUSTER) {
-              const isSegmentProviderExist = place.childs.find((stopGroupGpuid) =>
-                groundPlaces.find((place) => place.gpuid === stopGroupGpuid && place.childs.length),
+              const isSegmentProviderExist: StopGroupGpuid = place.childs.find((stopGroupGpuid: StopGroupGpuid):
+                | GroundPlace
+                | undefined =>
+                groundPlaces.find((place: GroundPlace): boolean =>
+                  Boolean(place.gpuid === stopGroupGpuid && place.childs.length),
+                ),
               );
 
               if (isSegmentProviderExist) {
@@ -122,8 +109,8 @@ export class GroundPlacesController {
             }
           }
         }
-      }
-    });
+      },
+    );
   }
 
   /**
@@ -293,10 +280,6 @@ export class GroundPlacesController {
     // Then apply it to the object
     // Then check the integrity of the resulting file
   }
-
-  // -----------------------------------------------------------------------------
-  // ----------------------------- PRIVATE METHODS -------------------------------
-  // -----------------------------------------------------------------------------
 
   /**
    * @description Check if all the business rules are respected.
