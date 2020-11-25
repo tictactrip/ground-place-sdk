@@ -58,7 +58,7 @@ export class Storage {
   public getStopGroupByGpuid(stopGroupGpuid: StopGroupGpuid): StopGroup {
     const placeIndex: number = this.groundPlaces.findIndex(({ gpuid }: GroundPlace) => gpuid === stopGroupGpuid);
 
-    const groundPlace: GroundPlace = this.groundPlaces[placeIndex];
+    const groundPlace: GroundPlace | undefined = this.groundPlaces[placeIndex];
 
     if (!groundPlace || groundPlace.type !== GroundPlaceType.GROUP) {
       throw new Error(`The StopGroup with the Gpuid ${stopGroupGpuid} is not found.`);
@@ -75,7 +75,7 @@ export class Storage {
   public getStopClusterByGpuid(stopClusterGpuid: StopClusterGpuid): StopCluster {
     const placeIndex: number = this.groundPlaces.findIndex(({ gpuid }: GroundPlace) => gpuid === stopClusterGpuid);
 
-    const groundPlace: GroundPlace = this.groundPlaces[placeIndex];
+    const groundPlace: GroundPlace | undefined = this.groundPlaces[placeIndex];
 
     if (!groundPlace || groundPlace.type !== GroundPlaceType.CLUSTER) {
       throw new Error(`The StopCluster with the Gpuid ${stopClusterGpuid} is not found.`);

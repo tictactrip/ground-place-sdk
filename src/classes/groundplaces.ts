@@ -34,7 +34,7 @@ export class GroundPlacesController {
 
   /**
    * @description Init GroundPlaces file.
-   * @param {string|undefined} groundPlacesFile
+   * @param {GroundPlacesFile|undefined} groundPlacesFile
    * The file to manipulate, can only be JSON for now.
    *
    * If you provide empty value, the default file will be the file retrieved from Amazon S3.
@@ -85,9 +85,7 @@ export class GroundPlacesController {
           (!isFilterByServicedActive || (isFilterByServicedActive && place.serviced === GroundPlaceServiced.TRUE))
         ) {
           // Filter by segmentProviderStop in childrens
-          if (!isFilterWithChildrenActive) {
-            return place;
-          } else {
+          if (isFilterWithChildrenActive) {
             // Since StopGroups and StopClusters do not share the same structures
             // We have to search the StopGroups from the StopCluster parent
             // In order to find potential segmentProviderStop in childrens
@@ -107,6 +105,8 @@ export class GroundPlacesController {
             } else if (place.type === GroundPlaceType.GROUP && place.childs.length) {
               return place;
             }
+          } else {
+            return place;
           }
         }
       },
@@ -261,7 +261,7 @@ export class GroundPlacesController {
 
   /**
    * @description Getter to retrieve the Ground places.
-   * @returns {GroundPlaces}
+   * @returns {GroundPlace[]}
    */
   public getGroundPlaces(): GroundPlace[] {
     return this.storageService.getGroundPlaces();
