@@ -105,7 +105,7 @@ enum GroundPlaceServiced {
   FALSE = 'False',
 }
 
-enum AutoCompleteFilters {
+enum AutocompleteFilter {
   STOP_GROUP = 'stopGroup',
   STOP_CLUSTER = 'stopCluster',
   SERVICED = 'serviced',
@@ -372,7 +372,7 @@ export {
   StopGroup,
   StopCluster,
   SegmentProviderStop,
-  AutoCompleteFilters,
+  AutocompleteFilter,
   GroundPlacesFile,
   GroundPlacesDiff,
   GroundPlaceType,

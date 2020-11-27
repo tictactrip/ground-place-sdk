@@ -6,7 +6,7 @@ import {
   CreateStopGroupProperties,
   CreateStopClusterProperties,
   UpdateStopProperties,
-  AutoCompleteFilters,
+  AutocompleteFilter,
   GroundPlacesDiff,
   GroundPlaceType,
   GroundPlacesFile,
@@ -59,19 +59,20 @@ export class GroundPlacesController {
    * @returns {GroundPlace[]}
    */
   // @ts-ignore
-  public autocomplete(query: string, filters?: AutoCompleteFilters[]): GroundPlace[] {
+  public autocomplete(query: string, filters?: AutocompleteFilter[]): GroundPlace[] {
     const groundPlaces: GroundPlace[] = this.getGroundPlaces();
 
     // Method toLowerCase() is used because the includes() method is case sensitive
     const currentQuery: string = query.toLowerCase();
 
-    const isFilterByStopGroupActive: boolean = filters?.includes(AutoCompleteFilters.STOP_GROUP);
-    const isFilterByStopClusterActive: boolean = filters?.includes(AutoCompleteFilters.STOP_CLUSTER);
-    const isFilterByServicedActive: boolean = filters?.includes(AutoCompleteFilters.SERVICED);
-    const isFilterWithChildrenActive: boolean = filters?.includes(AutoCompleteFilters.SEGMENT_PROVIDER_STOP);
+    const isFilterByStopGroupActive: boolean = filters?.includes(AutocompleteFilter.STOP_GROUP);
+    const isFilterByStopClusterActive: boolean = filters?.includes(AutocompleteFilter.STOP_CLUSTER);
+    const isFilterByServicedActive: boolean = filters?.includes(AutocompleteFilter.SERVICED);
+    const isFilterWithChildrenActive: boolean = filters?.includes(AutocompleteFilter.SEGMENT_PROVIDER_STOP);
 
     return groundPlaces.filter(
       (place: GroundPlace): GroundPlace => {
+        // Checking that the place matching the search query
         if (
           !(place.type === GroundPlaceType.CLUSTER && place.unique_name.toLowerCase().includes(currentQuery)) &&
           !place.gpuid.toLowerCase().includes(currentQuery) &&
@@ -80,15 +81,16 @@ export class GroundPlacesController {
           return;
         }
 
-        if (isFilterByStopGroupActive && place.type !== GroundPlaceType.GROUP) {
-          return;
+        // Return the place earlier if there is no filters to use
+        if (!filters || !filters.length) {
+          return place;
         }
 
-        if (isFilterByStopClusterActive && place.type !== GroundPlaceType.CLUSTER) {
-          return;
-        }
-
-        if (isFilterByServicedActive && place.serviced !== GroundPlaceServiced.TRUE) {
+        if (
+          (isFilterByStopGroupActive && place.type !== GroundPlaceType.GROUP) ||
+          (isFilterByStopClusterActive && place.type !== GroundPlaceType.CLUSTER) ||
+          (isFilterByServicedActive && place.serviced !== GroundPlaceServiced.TRUE)
+        ) {
           return;
         }
 

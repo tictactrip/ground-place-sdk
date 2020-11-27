@@ -1,6 +1,6 @@
 import { GroundPlacesController } from '../../src/classes/groundplaces';
 import * as largeGroundPlacesFile from '../../mocks/largeGroundPlacesFile.json';
-import { GroundPlacesFile, GroundPlace, AutoCompleteFilters } from '../../src/types';
+import { GroundPlacesFile, GroundPlace, AutocompleteFilter } from '../../src/types';
 
 describe('#autocomplete', () => {
   const groundPlacesService: GroundPlacesController = new GroundPlacesController();
@@ -104,7 +104,7 @@ describe('#autocomplete', () => {
 
   it('should only returns StopGroups matching strasbourg', () => {
     const groundPlacesFiltered: GroundPlace[] = groundPlacesService.autocomplete('strasbourg', [
-      AutoCompleteFilters.STOP_GROUP,
+      AutocompleteFilter.STOP_GROUP,
     ]);
 
     expect(groundPlacesFiltered).toStrictEqual([
@@ -174,8 +174,8 @@ describe('#autocomplete', () => {
 
   it('should returns only StopClusters that having SegmentProvider in it and matching strasbourg', () => {
     const groundPlacesFiltered: GroundPlace[] = groundPlacesService.autocomplete('strasbourg', [
-      AutoCompleteFilters.STOP_CLUSTER,
-      AutoCompleteFilters.SEGMENT_PROVIDER_STOP,
+      AutocompleteFilter.STOP_CLUSTER,
+      AutocompleteFilter.SEGMENT_PROVIDER_STOP,
     ]);
 
     expect(groundPlacesFiltered).toStrictEqual([
@@ -231,9 +231,7 @@ describe('#autocomplete', () => {
   });
 
   it('should returns only StopGroups matching __', () => {
-    const groundPlacesFiltered: GroundPlace[] = groundPlacesService.autocomplete('__', [
-      AutoCompleteFilters.STOP_GROUP,
-    ]);
+    const groundPlacesFiltered: GroundPlace[] = groundPlacesService.autocomplete('__', [AutocompleteFilter.STOP_GROUP]);
 
     expect(groundPlacesFiltered).toStrictEqual([
       {
@@ -254,8 +252,8 @@ describe('#autocomplete', () => {
 
   it('should returns only StopGroups that having SegmentProvider in it', () => {
     const groundPlacesFiltered: GroundPlace[] = groundPlacesService.autocomplete('', [
-      AutoCompleteFilters.STOP_GROUP,
-      AutoCompleteFilters.SEGMENT_PROVIDER_STOP,
+      AutocompleteFilter.STOP_GROUP,
+      AutocompleteFilter.SEGMENT_PROVIDER_STOP,
     ]);
 
     expect(groundPlacesFiltered).toStrictEqual([
@@ -312,15 +310,15 @@ describe('#autocomplete', () => {
 
   it('should returns nothing if the query doesnt matching', () => {
     const groundPlacesFiltered: GroundPlace[] = groundPlacesService.autocomplete('Paris', [
-      AutoCompleteFilters.STOP_GROUP,
-      AutoCompleteFilters.SEGMENT_PROVIDER_STOP,
+      AutocompleteFilter.STOP_GROUP,
+      AutocompleteFilter.SEGMENT_PROVIDER_STOP,
     ]);
 
     expect(groundPlacesFiltered).toStrictEqual([]);
   });
 
   it('should returns only places that are serviced', () => {
-    const groundPlacesFiltered: GroundPlace[] = groundPlacesService.autocomplete('', [AutoCompleteFilters.SERVICED]);
+    const groundPlacesFiltered: GroundPlace[] = groundPlacesService.autocomplete('', [AutocompleteFilter.SERVICED]);
 
     expect(groundPlacesFiltered).toStrictEqual([
       {
