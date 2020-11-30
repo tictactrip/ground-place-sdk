@@ -74,9 +74,9 @@ export class GroundPlacesController {
       (place: GroundPlace): GroundPlace => {
         // Checking that the place matching the search query
         if (
-          !(place.type === GroundPlaceType.CLUSTER && place.unique_name.toLowerCase().includes(currentQuery)) &&
           !place.gpuid.toLowerCase().includes(currentQuery) &&
-          !place.name.toLowerCase().includes(currentQuery)
+          !place.name.toLowerCase().includes(currentQuery) &&
+          !(place.type === GroundPlaceType.CLUSTER && place.unique_name.toLowerCase().includes(currentQuery))
         ) {
           return;
         }
