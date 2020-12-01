@@ -2,8 +2,8 @@
   "compilerOptions": {
     "baseUrl": ".",
     "outDir": "dist",
-    "lib": ["ES2019"],
-    "target": "ES2019",
+    "lib": ["ES2018"],
+    "target": "ES2018",
     "module": "commonjs",
     "moduleResolution": "node",
     "alwaysStrict": true,

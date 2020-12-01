@@ -100,4 +100,30 @@ export class Storage {
 
     this.groundPlaces[placeIndex] = newGroundPlace;
   }
+
+  /**
+   * @description Delete place only if it's empty.
+   * @param {Gpuid} placeToRemoveGpuid - Ground place unique identifier of the place to remove.
+   * @param {GroundPlaceType} placeType - The type of the place to remove, can be StopGroup or StopCluster.
+   * @returns {void}
+   */
+  public deletePlace(placeToRemoveGpuid: Gpuid, placeType: GroundPlaceType): void {
+    const placeIndex: number = this.groundPlaces.findIndex(({ gpuid }: GroundPlace) => gpuid === placeToRemoveGpuid);
+
+    const groundPlace: GroundPlace | undefined = this.groundPlaces[placeIndex];
+
+    if (!groundPlace || groundPlace.type !== placeType) {
+      throw new Error(
+        `The ${placeType} with the Gpuid ${placeToRemoveGpuid} cannot be deleted because it cannot be found.`,
+      );
+    }
+
+    if (groundPlace.childs.length) {
+      throw new Error(
+        `The ${placeType} with the Gpuid ${placeToRemoveGpuid} cannot be deleted because it is not empty.`,
+      );
+    }
+
+    this.groundPlaces.splice(placeIndex, 1);
+  }
 }
