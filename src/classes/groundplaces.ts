@@ -1,16 +1,17 @@
 import { Storage } from '../classes/storage';
 import { WebServices } from './webservices';
 import {
-  AutoComplete,
   StopGroupGpuid,
   StopClusterGpuid,
   CreateStopGroupProperties,
   CreateStopClusterProperties,
   UpdateStopProperties,
-  AutoCompleteFilters,
+  AutocompleteFilter,
   GroundPlacesDiff,
   GroundPlaceType,
-  GroundPlaces,
+  GroundPlacesFile,
+  GroundPlace,
+  GroundPlaceServiced,
 } from '../types';
 
 /**
@@ -33,27 +34,90 @@ export class GroundPlacesController {
 
   /**
    * @description Init GroundPlaces file.
-   * @param {string|undefined} groundPlacesFile - The file to manipulate, can only be JSON for now.
+   * @param {GroundPlacesFile|undefined} groundPlacesFile
+   * The file to manipulate, can only be JSON for now.
+   *
    * If you provide empty value, the default file will be the file retrieved from Amazon S3.
+   * @returns {void}
    */
-  public init(groundPlacesFile?: GroundPlaces): void {
+  public init(groundPlacesFile?: GroundPlacesFile): void {
     if (groundPlacesFile) {
       this.storageService.initFile(groundPlacesFile);
     } else {
-      const groundPlacesFileS3: GroundPlaces = this.webService.downloadDistantGroundPlacesMaster();
+      const groundPlacesFileS3: GroundPlacesFile = this.webService.downloadDistantGroundPlacesMaster();
 
       this.storageService.initFile(groundPlacesFileS3);
     }
   }
 
   /**
-   * @description Returns a list of places.
+   * @description Returns a list of ground places.
    * @param {string} query - Can be a name, a Gpuid, a unique name or other name.
-   * @param {AutoCompleteFilters} filters - Filters with different options (StopGroup, StopCluster, Serviced, SegmentProvider).
-   * @returns {AutoComplete[]}
+   * @param {AutoCompleteFilters[]|undefined} filters - Filters with different options (StopGroup, StopCluster, Serviced, SegmentProvider).
+   *
+   * If you do not give filters, the list will not be filtered.
+   * @returns {GroundPlace[]}
    */
   // @ts-ignore
-  public autocomplete(query: string, filters: AutoCompleteFilters[]): AutoComplete[] {}
+  public autocomplete(query: string, filters?: AutocompleteFilter[]): GroundPlace[] {
+    const groundPlaces: GroundPlace[] = this.getGroundPlaces();
+
+    // Method toLowerCase() is used because the includes() method is case sensitive
+    const currentQuery: string = query.toLowerCase();
+
+    const isFilterByStopGroupActive: boolean = filters?.includes(AutocompleteFilter.STOP_GROUP);
+    const isFilterByStopClusterActive: boolean = filters?.includes(AutocompleteFilter.STOP_CLUSTER);
+    const isFilterByServicedActive: boolean = filters?.includes(AutocompleteFilter.SERVICED);
+    const isFilterWithChildrenActive: boolean = filters?.includes(AutocompleteFilter.SEGMENT_PROVIDER_STOP);
+
+    return groundPlaces.filter(
+      (place: GroundPlace): GroundPlace => {
+        // Checking that the place matching the search query
+        if (
+          !place.gpuid.toLowerCase().includes(currentQuery) &&
+          !place.name.toLowerCase().includes(currentQuery) &&
+          !(place.type === GroundPlaceType.CLUSTER && place.unique_name.toLowerCase().includes(currentQuery))
+        ) {
+          return;
+        }
+
+        // Return the place earlier if there is no filters to use
+        if (!filters || !filters.length) {
+          return place;
+        }
+
+        if (
+          (isFilterByStopGroupActive && place.type !== GroundPlaceType.GROUP) ||
+          (isFilterByStopClusterActive && place.type !== GroundPlaceType.CLUSTER) ||
+          (isFilterByServicedActive && place.serviced !== GroundPlaceServiced.TRUE)
+        ) {
+          return;
+        }
+
+        if (isFilterWithChildrenActive) {
+          // Since StopGroups and StopClusters do not share the same structure
+          // We have to search the StopGroups from the StopCluster parent
+          // In order to find potential segmentProviderStop in childrens
+          if (place.type === GroundPlaceType.CLUSTER) {
+            const isSegmentProviderExist: StopGroupGpuid | undefined = place.childs.find(
+              (stopGroupGpuid: StopGroupGpuid): GroundPlace =>
+                groundPlaces.find((place: GroundPlace): boolean =>
+                  Boolean(place.gpuid === stopGroupGpuid && place.childs.length),
+                ),
+            );
+
+            if (!isSegmentProviderExist) {
+              return;
+            }
+          } else if (place.type === GroundPlaceType.GROUP && !place.childs.length) {
+            return;
+          }
+        }
+
+        return place;
+      },
+    );
+  }
 
   /**
    * @description Create a new StopGroup from a SegmentProviderStop.
@@ -84,14 +148,14 @@ export class GroundPlacesController {
    * @returns {void}
    */
   public updateStopGroup(stopGroupGpuid: StopGroupGpuid, propertiesToUpdate: UpdateStopProperties): void {
-    // const copyGroundPlaces: GroundPlaces = cloneObject(this.storageService.getGroundPlaces());
+    // const copyGroundPlaces: GroundPlaces = this.storageService.cloneGroundPlaces();
 
     this.storageService.updatePlace(stopGroupGpuid, propertiesToUpdate);
 
     // const isUpdateValid: boolean = this.checkValidity();
 
-    // If the file is not valid after update, rollback to the previous version of the ground places stored
-    /* if (!isUpdateValid) {
+    /* If the file is not valid after update, rollback to the previous version of the ground places stored
+    if (!isUpdateValid) {
       this.storageService.setGroundPlaces(copyGroundPlaces);
     } */
   }
@@ -103,7 +167,7 @@ export class GroundPlacesController {
    * @returns {void}
    */
   public updateStopCluster(stopClusterGpuid: StopClusterGpuid, propertiesToUpdate: UpdateStopProperties): void {
-    // const copyGroundPlaces: GroundPlaces = cloneObject(this.storageService.getGroundPlaces());
+    // const copyGroundPlaces: GroundPlaces = this.storageService.cloneGroundPlaces();
 
     this.storageService.updatePlace(stopClusterGpuid, propertiesToUpdate);
 
@@ -125,6 +189,7 @@ export class GroundPlacesController {
 
   /**
    * @description Move a segmentProviderStop from a stopGroup to another stopGroup.
+   *
    * Warning: The segmentProviderStop cannot be without a parent.
    * @param {string} segmentProviderId - The identifier of the segmentProvider to move.
    * @param {StopGroupGpuid} fromStopGroupGpuid - Ground place unique identifier of the old stopGroup.
@@ -168,6 +233,7 @@ export class GroundPlacesController {
 
   /**
    * @description Merge two stopGroups. It means moving all segmentProviderStop of a stopGroup into another.
+   *
    * Warning: Check first if the merged stopGroup don't have two segmentStopProvider of the same segmentProvider in it.
    * @param {StopGroupGpuid} stopGroupToMergeGpuid - Ground place unique identifier of the stopGroup to merge.
    * @param {StopGroupGpuid} intoStopGroupGpuid - Ground Place unique identifier of the stopGroup to be merged.
@@ -177,6 +243,7 @@ export class GroundPlacesController {
 
   /**
    * @description Merge two stopClusters. It Means moving all stopGroup of a stopCluster into another.
+   *
    * Warning: A stopGroup can belong to both stopCluster, in this case, just remove it from the first stopCluster.
    * @param {StopClusterGpuid} stopClusterToMergeGpuid - Ground place unique identifier of the stopCluster to merge.
    * @param {StopClusterGpuid} intoStopClusterGpuid - Ground place unique identifier of the stopCluster to be merged.
@@ -200,30 +267,11 @@ export class GroundPlacesController {
 
   /**
    * @description Getter to retrieve the Ground places.
-   * @returns {GroundPlaces}
+   * @returns {GroundPlace[]}
    */
-  public getGroundPlaces(): GroundPlaces {
+  public getGroundPlaces(): GroundPlace[] {
     return this.storageService.getGroundPlaces();
   }
-
-  /**
-   * @description Check if all the business rules are respected.
-   * Returns true if everything ok, throw an error with all issues if not.
-   * @returns {boolean}
-   */
-  // @ts-ignore
-  private checkValidity(): boolean {
-    // TODO: Implement this
-    return true;
-  }
-
-  /**
-   * @description Check the validity of the GroundPlacesDiff structure.
-   * Returns true if everything ok, throw an error with all issues if not.
-   * @returns {boolean}
-   */
-  // @ts-ignore
-  private checkGroundPlacesDiffValidity(): boolean {}
 
   /**
    * @description Apply the diff file to the GroundPlacesDiff object.
@@ -238,4 +286,25 @@ export class GroundPlacesController {
     // Then apply it to the object
     // Then check the integrity of the resulting file
   }
+
+  /**
+   * @description Check if all the business rules are respected.
+   *
+   * Returns true if everything ok, throw an error with all issues if not.
+   * @returns {boolean}
+   */
+  // @ts-ignore
+  private checkValidity(): boolean {
+    // TODO: Implement this
+    return true;
+  }
+
+  /**
+   * @description Check the validity of the GroundPlacesDiff structure.
+   *
+   * Returns true if everything ok, throw an error with all issues if not.
+   * @returns {boolean}
+   */
+  // @ts-ignore
+  private checkGroundPlacesDiffValidity(): boolean {}
 }

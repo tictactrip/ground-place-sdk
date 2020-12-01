@@ -1,14 +1,15 @@
 import { Storage } from '../../src/classes/storage';
-import * as mock from '../../mocks/mockGroundPlaces.json';
-import { GroundPlaces } from '../../src/types';
+import * as mockSmallGroundPlacesFile from '../../mocks/smallGroundPlacesFile.json';
+import { GroundPlacesFile } from '../../src/types';
 
 describe('#initFile', () => {
   it('should store the GroundPlaces from the JSON file when the Storage is instanciate', () => {
-    const storageInstance: Storage = new Storage();
-    storageInstance.initFile(mock as GroundPlaces);
+    const storageService: Storage = new Storage();
+    storageService.initFile(mockSmallGroundPlacesFile as GroundPlacesFile);
 
-    expect(storageInstance.getGroundPlaces()).toStrictEqual({
-      'c|FRstrasbou@u0ts2': {
+    expect(storageService.getGroundPlaces()).toStrictEqual([
+      {
+        gpuid: 'c|FRstrasbou@u0ts2',
         unique_name: 'strasbourg',
         childs: ['g|FRststbi__@u0tkxd'],
         serviced: 'True',
@@ -21,7 +22,8 @@ describe('#initFile', () => {
         latitude: 48.583,
         type: 'cluster',
       },
-      'g|FRststbi__@u0tkxd': {
+      {
+        gpuid: 'g|FRststbi__@u0tkxd',
         childs: [
           {
             unique_name: null,
@@ -44,6 +46,6 @@ describe('#initFile', () => {
         is_latest: true,
         type: 'group',
       },
-    });
+    ]);
   });
 });

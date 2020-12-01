@@ -1,46 +1,48 @@
-// -----------------------------------------------------------------------------
-//  --------------------------------- TYPES ------------------------------------
-// -----------------------------------------------------------------------------
-
-type GroundPlace = StopGroup | StopCluster;
-
-type GroundPlaces = Record<Gpuid, GroundPlace>;
-
 type Gpuid = string;
 
 type StopGroupGpuid = Gpuid;
 
 type StopClusterGpuid = Gpuid;
 
-// -----------------------------------------------------------------------------
-//  ------------------------------- INTERFACES ---------------------------------
-// -----------------------------------------------------------------------------
+type GroundPlaceFromFile = StopGroupFromFile | StopClusterFromFile;
 
-interface StopGroup {
+type GroundPlacesFile = Record<Gpuid, GroundPlaceFromFile>;
+
+type GroundPlace = StopGroup | StopCluster;
+
+interface StopGroupFromFile {
   country_code: CountryCode;
   name: string;
   longitude: number;
   latitude: number;
   type: GroundPlaceType.GROUP;
   childs: SegmentProviderStop[];
-  serviced: Serviced;
+  serviced: GroundPlaceServiced;
   has_been_modified?: boolean;
   warning?: boolean;
   is_latest?: boolean;
 }
 
-interface StopCluster {
+interface StopClusterFromFile {
   country_code: CountryCode;
   name: string;
   longitude: number;
   latitude: number;
   type: GroundPlaceType.CLUSTER;
   childs: StopGroupGpuid[];
-  serviced: Serviced;
+  serviced: GroundPlaceServiced;
   unique_name?: string;
   has_been_modified?: boolean;
   warning?: boolean;
   is_latest?: boolean;
+}
+
+interface StopGroup extends StopGroupFromFile {
+  gpuid: StopGroupGpuid;
+}
+
+interface StopCluster extends StopClusterFromFile {
+  gpuid: StopClusterGpuid;
 }
 
 interface SegmentProviderStop {
@@ -48,7 +50,7 @@ interface SegmentProviderStop {
   company_name: string;
   name: string;
   latitude: number;
-  serviced: Serviced;
+  serviced: GroundPlaceServiced;
   company_id: number;
   longitude: number;
   id: string;
@@ -60,7 +62,7 @@ interface CreateStopGroupProperties {
   longitude: number;
   latitude: number;
   type: GroundPlaceType;
-  serviced: Serviced;
+  serviced: GroundPlaceServiced;
   segmentProviderStop: SegmentProviderStop;
 }
 
@@ -70,7 +72,7 @@ interface CreateStopClusterProperties {
   longitude: number;
   latitude: number;
   type: GroundPlaceType;
-  serviced: Serviced;
+  serviced: GroundPlaceServiced;
 }
 
 interface UpdateStopProperties {
@@ -86,16 +88,6 @@ interface GroundPlacesDiff {
   };
 }
 
-// TODO: Implement these interfaces
-
-interface AutoComplete {}
-
-interface Filters {}
-
-// -----------------------------------------------------------------------------
-//  --------------------------------- ENUMS ------------------------------------
-// -----------------------------------------------------------------------------
-
 enum GroundPlaceActionType {
   CREATE = 'create',
   MOVE = 'move',
@@ -108,16 +100,16 @@ enum GroundPlaceType {
   CLUSTER = 'cluster',
 }
 
-enum Serviced {
+enum GroundPlaceServiced {
   TRUE = 'True',
   FALSE = 'False',
 }
 
-enum AutoCompleteFilters {
-  NAME,
-  GPUID,
-  UNIQUENAME,
-  OTHERNAME,
+enum AutocompleteFilter {
+  STOP_GROUP = 'stopGroup',
+  STOP_CLUSTER = 'stopCluster',
+  SERVICED = 'serviced',
+  SEGMENT_PROVIDER_STOP = 'segmentProviderStop',
 }
 
 enum CountryCode {
@@ -373,20 +365,24 @@ enum CountryCode {
 }
 
 export {
-  AutoComplete,
+  Gpuid,
+  GroundPlace,
+  StopGroupGpuid,
+  StopClusterGpuid,
   StopGroup,
   StopCluster,
   SegmentProviderStop,
+  AutocompleteFilter,
+  GroundPlacesFile,
+  GroundPlacesDiff,
+  GroundPlaceType,
+  GroundPlaceServiced,
+  GroundPlaceActionType,
   CreateStopGroupProperties,
   CreateStopClusterProperties,
   UpdateStopProperties,
-  Filters,
-  GroundPlacesDiff,
-  GroundPlaceActionType,
-  Gpuid,
-  StopGroupGpuid,
-  StopClusterGpuid,
-  GroundPlaceType,
-  AutoCompleteFilters,
-  GroundPlaces,
+  CountryCode,
+  StopGroupFromFile,
+  StopClusterFromFile,
+  GroundPlaceFromFile,
 };

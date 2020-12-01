@@ -1,5 +1,6 @@
 import {
-  GroundPlaces,
+  GroundPlace,
+  GroundPlacesFile,
   StopGroup,
   StopCluster,
   StopGroupGpuid,
@@ -7,27 +8,36 @@ import {
   GroundPlaceType,
   Gpuid,
   UpdateStopProperties,
+  GroundPlaceFromFile,
 } from '../types';
 
 /**
  * @description Manipulate GroundPlaces.
  */
 export class Storage {
-  private groundPlaces: GroundPlaces;
+  private groundPlaces: GroundPlace[];
 
   /**
-   * @description Init and read the GroundPlaces file.
+   * @description Init and parse the GroundPlaces file into an array manipulable.
    * @param {GroundPlaces} groundPlacesFile - The file to store and manipulate, can only be JSON for now.
+   * @returns {void}
    */
-  public initFile(groundPlacesFile: GroundPlaces): void {
-    this.groundPlaces = groundPlacesFile;
+  public initFile(groundPlacesFile: GroundPlacesFile): void {
+    const groundPlaces: GroundPlace[] = Object.entries(groundPlacesFile).map(
+      ([gpuid, place]: [Gpuid, GroundPlaceFromFile]): GroundPlace => ({
+        gpuid,
+        ...place,
+      }),
+    );
+
+    this.groundPlaces = groundPlaces;
   }
 
   /**
    * @description Getter to retrieve the Ground places.
-   * @returns {GroundPlaces}
+   * @returns {GroundPlace[]}
    */
-  public getGroundPlaces(): GroundPlaces {
+  public getGroundPlaces(): GroundPlace[] {
     return this.groundPlaces;
   }
 
@@ -36,7 +46,7 @@ export class Storage {
    * @param {GroundPlaces} groundPlaces - Ground places to store inside the Storage.
    * @returns {void}
    */
-  public setGroundPlaces(groundPlaces: GroundPlaces): void {
+  public setGroundPlaces(groundPlaces: GroundPlace[]): void {
     this.groundPlaces = groundPlaces;
   }
 
@@ -46,13 +56,15 @@ export class Storage {
    * @returns {StopGroup}
    */
   public getStopGroupByGpuid(stopGroupGpuid: StopGroupGpuid): StopGroup {
-    const groundPlace: StopCluster | StopGroup = this.groundPlaces[stopGroupGpuid];
+    const placeIndex: number = this.groundPlaces.findIndex(({ gpuid }: GroundPlace) => gpuid === stopGroupGpuid);
+
+    const groundPlace: GroundPlace | undefined = this.groundPlaces[placeIndex];
 
     if (!groundPlace || groundPlace.type !== GroundPlaceType.GROUP) {
       throw new Error(`The StopGroup with the Gpuid ${stopGroupGpuid} is not found.`);
     }
 
-    return groundPlace as StopGroup;
+    return groundPlace;
   }
 
   /**
@@ -61,13 +73,15 @@ export class Storage {
    * @returns {StopCluster}
    */
   public getStopClusterByGpuid(stopClusterGpuid: StopClusterGpuid): StopCluster {
-    const groundPlace: StopCluster | StopGroup = this.groundPlaces[stopClusterGpuid];
+    const placeIndex: number = this.groundPlaces.findIndex(({ gpuid }: GroundPlace) => gpuid === stopClusterGpuid);
+
+    const groundPlace: GroundPlace | undefined = this.groundPlaces[placeIndex];
 
     if (!groundPlace || groundPlace.type !== GroundPlaceType.CLUSTER) {
       throw new Error(`The StopCluster with the Gpuid ${stopClusterGpuid} is not found.`);
     }
 
-    return groundPlace as StopCluster;
+    return groundPlace;
   }
 
   /**
@@ -77,11 +91,13 @@ export class Storage {
    * @returns {void}
    */
   public updatePlace(placeGpuid: Gpuid, propertiesToUpdate: UpdateStopProperties): void {
-    const newGroundPlace: StopGroup | StopCluster = {
-      ...this.groundPlaces[placeGpuid],
+    const placeIndex: number = this.groundPlaces.findIndex(({ gpuid }: GroundPlace) => gpuid === placeGpuid);
+
+    const newGroundPlace: GroundPlace = {
+      ...this.groundPlaces[placeIndex],
       ...propertiesToUpdate,
     };
 
-    this.groundPlaces[placeGpuid] = newGroundPlace;
+    this.groundPlaces[placeIndex] = newGroundPlace;
   }
 }
