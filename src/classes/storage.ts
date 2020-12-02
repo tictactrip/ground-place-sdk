@@ -114,16 +114,35 @@ export class Storage {
 
     if (!groundPlace || groundPlace.type !== placeType) {
       throw new Error(
-        `The ${placeType} with the Gpuid ${placeToRemoveGpuid} cannot be deleted because it cannot be found.`,
+        `The "${placeType}" with the Gpuid "${placeToRemoveGpuid}" cannot be deleted because it cannot be found.`,
       );
     }
 
     if (groundPlace.childs.length) {
       throw new Error(
-        `The ${placeType} with the Gpuid ${placeToRemoveGpuid} cannot be deleted because it is not empty.`,
+        `The "${placeType}" with the Gpuid "${placeToRemoveGpuid}" cannot be deleted because it has children.`,
       );
     }
 
+    // Delete the place from the GroundPlaces list.
     this.groundPlaces.splice(placeIndex, 1);
+
+    // If the place is a StopGroup, all references to this StopGroup are also removed from its possible StopCluster parent.
+    if (placeType === GroundPlaceType.GROUP) {
+      this.groundPlaces.reduce((reduceGroundPlaces: GroundPlace[], groundPlace: GroundPlace): GroundPlace[] => {
+        // Search through children from StopCluster that have a reference to the StopGroup deleted.
+        if (groundPlace.type === GroundPlaceType.CLUSTER && groundPlace.childs.includes(placeToRemoveGpuid)) {
+          const referenceIndex: number = groundPlace.childs.findIndex(
+            (stopGroupGpuid: StopGroupGpuid) => stopGroupGpuid === placeToRemoveGpuid,
+          );
+
+          groundPlace.childs.splice(referenceIndex, 1);
+        }
+
+        reduceGroundPlaces.push(groundPlace);
+
+        return reduceGroundPlaces;
+      }, []);
+    }
   }
 }

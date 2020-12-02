@@ -88,7 +88,7 @@ describe('#deleteStopCluster', () => {
     ]);
   });
 
-  it('should throw an error if the StopCluster to delete is not empty', () => {
+  it('should throw an error if the StopCluster to delete has children', () => {
     let thrownError: Error;
 
     try {
@@ -98,7 +98,7 @@ describe('#deleteStopCluster', () => {
     }
 
     expect(thrownError).toEqual(
-      new Error('The cluster with the Gpuid c|FRstrasbou@u0ts2 cannot be deleted because it is not empty.'),
+      new Error('The "cluster" with the Gpuid "c|FRstrasbou@u0ts2" cannot be deleted because it has children.'),
     );
   });
 
@@ -112,7 +112,7 @@ describe('#deleteStopCluster', () => {
     }
 
     expect(thrownError).toEqual(
-      new Error('The cluster with the Gpuid c|FRstrasbou@u0ts22 cannot be deleted because it cannot be found.'),
+      new Error('The "cluster" with the Gpuid "c|FRstrasbou@u0ts22" cannot be deleted because it cannot be found.'),
     );
   });
 
@@ -126,7 +126,7 @@ describe('#deleteStopCluster', () => {
     }
 
     expect(thrownError).toEqual(
-      new Error('The cluster with the Gpuid g|FRststbi__@u0tkxd cannot be deleted because it cannot be found.'),
+      new Error('The "cluster" with the Gpuid "g|FRststbi__@u0tkxd" cannot be deleted because it cannot be found.'),
     );
   });
 });

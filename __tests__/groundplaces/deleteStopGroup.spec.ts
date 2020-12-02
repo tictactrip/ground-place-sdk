@@ -6,14 +6,14 @@ describe('#deleteStopGroup', () => {
   const groundPlacesService: GroundPlacesController = new GroundPlacesController();
   groundPlacesService.init(largeGroundPlacesFile as GroundPlacesFile);
 
-  it('should delete the StopGroup if its empty (no childs) and the Gpuid exist', () => {
+  it('should delete the StopGroup if its empty (no childs) and the Gpuid exist and remove reference inside its StopCluster parent', () => {
     groundPlacesService.deleteStopGroup('g|FRststbi__@u0tkxd');
 
     expect(groundPlacesService.getGroundPlaces()).toStrictEqual([
       {
         gpuid: 'c|FRstrasbou@u0ts2',
         unique_name: 'strasbourg',
-        childs: ['g|FRststbi__@u0tkxd', 'g|FRstrasbou@u0tkru', 'g|FRstraroet@u0tkr3'],
+        childs: ['g|FRstrasbou@u0tkru', 'g|FRstraroet@u0tkr3'],
         serviced: 'False',
         has_been_modified: false,
         warning: false,
@@ -89,7 +89,7 @@ describe('#deleteStopGroup', () => {
     ]);
   });
 
-  it('should throw an error if the StopGroup to delete is not empty', () => {
+  it('should throw an error if the StopGroup to delete has children', () => {
     let thrownError: Error;
 
     try {
@@ -99,7 +99,7 @@ describe('#deleteStopGroup', () => {
     }
 
     expect(thrownError).toEqual(
-      new Error('The group with the Gpuid g|FRstrasbou@u0tkru cannot be deleted because it is not empty.'),
+      new Error('The "group" with the Gpuid "g|FRstrasbou@u0tkru" cannot be deleted because it has children.'),
     );
   });
 
@@ -113,7 +113,7 @@ describe('#deleteStopGroup', () => {
     }
 
     expect(thrownError).toEqual(
-      new Error('The group with the Gpuid g|FRstrasbou@u0tkruu cannot be deleted because it cannot be found.'),
+      new Error('The "group" with the Gpuid "g|FRstrasbou@u0tkruu" cannot be deleted because it cannot be found.'),
     );
   });
 
@@ -127,7 +127,7 @@ describe('#deleteStopGroup', () => {
     }
 
     expect(thrownError).toEqual(
-      new Error('The group with the Gpuid c|FRnaarto__@u0skg cannot be deleted because it cannot be found.'),
+      new Error('The "group" with the Gpuid "c|FRnaarto__@u0skg" cannot be deleted because it cannot be found.'),
     );
   });
 });
