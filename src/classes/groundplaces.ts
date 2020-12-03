@@ -58,7 +58,6 @@ export class GroundPlacesController {
    * If you do not give filters, the list will not be filtered.
    * @returns {GroundPlace[]}
    */
-  // @ts-ignore
   public autocomplete(query: string, filters?: AutocompleteFilter[]): GroundPlace[] {
     const groundPlaces: GroundPlace[] = this.getGroundPlaces();
 
@@ -216,14 +215,6 @@ export class GroundPlacesController {
   ): void {}
 
   /**
-   * @description Delete place only if it's empty.
-   * @param {GroundPlaceType} groundPlaceType - Ground place type 'cluster' or 'group'.
-   * @param {StopGroupGpuid|StopClusterGpuid} placeToRemoveGpuid - Ground place unique identifier of the place to remove.
-   * @returns {void}
-   */
-  public deletePlace(groundPlaceType: GroundPlaceType, placeToRemoveGpuid: StopGroupGpuid | StopClusterGpuid): void {}
-
-  /**
    * @description Add a stopGroup to a stopCluster.
    * @param {StopGroupGpuid} stopGroupToAddGpuid - Ground place unique identifier of the stopGroup to add.
    * @param {StopClusterGpuid} intoStopClusterGpuid - Ground Place unique identifier of the stopCluster.
@@ -256,14 +247,18 @@ export class GroundPlacesController {
    * @param {StopGroupGpuid} stopGroupGpuid - Ground place unique identifier of the StopGroup to remove.
    * @returns {void}
    */
-  public deleteStopGroup(stopGroupGpuid: StopGroupGpuid): void {}
+  public deleteStopGroup(stopGroupGpuid: StopGroupGpuid): void {
+    this.storageService.deletePlace(stopGroupGpuid, GroundPlaceType.GROUP);
+  }
 
   /**
    * @description Delete StopCluster only if empty.
    * @param {StopClusterGpuid} stopClusterGpuid - Ground place unique identifier of the StopCluster to remove.
    * @returns {void}
    */
-  public deleteStopCluster(stopClusterGpuid: StopClusterGpuid): void {}
+  public deleteStopCluster(stopClusterGpuid: StopClusterGpuid): void {
+    this.storageService.deletePlace(stopClusterGpuid, GroundPlaceType.CLUSTER);
+  }
 
   /**
    * @description Getter to retrieve the Ground places.
