@@ -129,20 +129,19 @@ export class Storage {
 
     // If the place is a StopGroup, all references to this StopGroup are also removed from its possible StopCluster parent.
     if (placeType === GroundPlaceType.GROUP) {
-      this.groundPlaces.reduce((reduceGroundPlaces: GroundPlace[], groundPlace: GroundPlace): GroundPlace[] => {
-        // Search through children from StopCluster that have a reference to the StopGroup deleted.
-        if (groundPlace.type === GroundPlaceType.CLUSTER && groundPlace.childs.includes(placeToRemoveGpuid)) {
-          const referenceIndex: number = groundPlace.childs.findIndex(
-            (stopGroupGpuid: StopGroupGpuid) => stopGroupGpuid === placeToRemoveGpuid,
-          );
+      this.groundPlaces.map(
+        (groundPlace: GroundPlace): GroundPlace => {
+          if (groundPlace.type === GroundPlaceType.CLUSTER && groundPlace.childs.includes(placeToRemoveGpuid)) {
+            const referenceIndex: number = groundPlace.childs.findIndex(
+              (stopGroupGpuid: StopGroupGpuid) => stopGroupGpuid === placeToRemoveGpuid,
+            );
 
-          groundPlace.childs.splice(referenceIndex, 1);
-        }
+            groundPlace.childs.splice(referenceIndex, 1);
+          }
 
-        reduceGroundPlaces.push(groundPlace);
-
-        return reduceGroundPlaces;
-      }, []);
+          return groundPlace;
+        },
+      );
     }
   }
 }
