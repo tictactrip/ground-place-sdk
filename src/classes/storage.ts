@@ -19,7 +19,7 @@ export class Storage {
 
   /**
    * @description Init and parse the GroundPlaces file into an array manipulable.
-   * @param {GroundPlaces} groundPlacesFile - The file to store and manipulate, can only be JSON for now.
+   * @param {GroundPlacesFile} groundPlacesFile - The file to store and manipulate, can only be JSON for now.
    * @returns {void}
    */
   public initFile(groundPlacesFile: GroundPlacesFile): void {
@@ -43,11 +43,21 @@ export class Storage {
 
   /**
    * @description Setter to update the Ground places.
-   * @param {GroundPlaces} groundPlaces - Ground places to store inside the Storage.
+   * @param {GroundPlace[]} groundPlaces - Ground places to store inside the Storage.
    * @returns {void}
    */
   public setGroundPlaces(groundPlaces: GroundPlace[]): void {
     this.groundPlaces = groundPlaces;
+  }
+
+  /**
+   * @description Clone the current Ground places stored.
+   * @returns {GroundPlace[]}
+   */
+  public cloneGroundPlaces(): GroundPlace[] {
+    const groundPlaces: GroundPlace[] = this.getGroundPlaces();
+
+    return JSON.parse(JSON.stringify(groundPlaces));
   }
 
   /**
@@ -64,7 +74,7 @@ export class Storage {
       throw new Error(`The StopGroup with the Gpuid ${stopGroupGpuid} is not found.`);
     }
 
-    return groundPlace;
+    return JSON.parse(JSON.stringify(groundPlace));
   }
 
   /**
@@ -81,7 +91,7 @@ export class Storage {
       throw new Error(`The StopCluster with the Gpuid ${stopClusterGpuid} is not found.`);
     }
 
-    return groundPlace;
+    return JSON.parse(JSON.stringify(groundPlace));
   }
 
   /**
@@ -143,5 +153,48 @@ export class Storage {
         },
       );
     }
+  }
+
+  /**
+   * @description Remove a stopGroup from a stopCluster.
+   * @param {StopGroupGpuid} stopGroupGpuid - Ground place unique identifier of the SopGroup to remove.
+   * @param {StopClusterGpuid} stopClusterGpuid - Ground place unique identifier of the StopCluster parent.
+   * @returns {void}
+   */
+  public removeStopGroupFromStopCluster(
+    stopGroupGpuidToRemove: StopGroupGpuid,
+    stopClusterGpuidParent: StopClusterGpuid,
+  ): void {
+    const stopClusterParent: StopCluster = this.getStopClusterByGpuid(stopClusterGpuidParent);
+
+    const stopGroupIndex: number = stopClusterParent.childs.findIndex(
+      (stopGroupGpuid: StopGroupGpuid) => stopGroupGpuid === stopGroupGpuidToRemove,
+    );
+
+    const stopClusterIndex: number = this.groundPlaces.findIndex(
+      ({ gpuid }: GroundPlace) => gpuid === stopClusterGpuidParent,
+    );
+
+    stopClusterParent.childs.splice(stopGroupIndex, 1);
+
+    this.groundPlaces[stopClusterIndex] = stopClusterParent;
+  }
+
+  /**
+   * @description Add a stopGroup to a stopCluster.
+   * @param {StopGroupGpuid} stopGroupGpuidToAdd - Ground place unique identifier of the StopGroup to add.
+   * @param {StopClusterGpuid} intoStopClusterGpuid - Ground Place unique identifier of the new StopCluster parent.
+   * @returns {void}
+   */
+  public addStopGroupToStopCluster(stopGroupGpuidToAdd: StopGroupGpuid, intoStopClusterGpuid: StopClusterGpuid): void {
+    const updateStopCluster: StopCluster = this.getStopClusterByGpuid(intoStopClusterGpuid);
+
+    const stopClusterIndex: number = this.groundPlaces.findIndex(
+      ({ gpuid }: GroundPlace) => gpuid === intoStopClusterGpuid,
+    );
+
+    updateStopCluster.childs.push(stopGroupGpuidToAdd);
+
+    this.groundPlaces[stopClusterIndex] = updateStopCluster;
   }
 }
