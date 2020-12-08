@@ -213,15 +213,21 @@ export class GroundPlacesController {
   ): void {
     if (fromStopClusterGpuid === intoStopClusterGpuid) {
       throw new Error(
-        `You can't move the StopGroup with the Gpuid ${stopGroupToMoveGpuid} because it already exists inside the StopCluster specified.`,
+        `You can't move the StopGroup with the Gpuid "${stopGroupToMoveGpuid}" because it already exists inside the final StopCluster specified.`,
       );
     }
 
     const copyGroundPlaces: GroundPlace[] = this.storageService.cloneGroundPlaces();
 
-    this.storageService.removeStopGroupFromStopCluster(stopGroupToMoveGpuid, fromStopClusterGpuid);
+    try {
+      this.storageService.removeStopGroupFromStopCluster(stopGroupToMoveGpuid, fromStopClusterGpuid);
+      this.storageService.addStopGroupToStopCluster(stopGroupToMoveGpuid, intoStopClusterGpuid);
+    } catch (error) {
+      // If there is error in the processing, rollback to the previous version of the ground places stored
+      this.storageService.setGroundPlaces(copyGroundPlaces);
 
-    this.storageService.addStopGroupToStopCluster(stopGroupToMoveGpuid, intoStopClusterGpuid);
+      throw new Error(error.message);
+    }
 
     const isUpdateValid: boolean = this.checkValidity();
 

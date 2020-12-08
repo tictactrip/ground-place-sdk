@@ -71,7 +71,7 @@ export class Storage {
     const groundPlace: GroundPlace | undefined = this.groundPlaces[placeIndex];
 
     if (!groundPlace || groundPlace.type !== GroundPlaceType.GROUP) {
-      throw new Error(`The StopGroup with the Gpuid ${stopGroupGpuid} is not found.`);
+      throw new Error(`The StopGroup with the Gpuid "${stopGroupGpuid}" is not found.`);
     }
 
     return JSON.parse(JSON.stringify(groundPlace));
@@ -88,7 +88,7 @@ export class Storage {
     const groundPlace: GroundPlace | undefined = this.groundPlaces[placeIndex];
 
     if (!groundPlace || groundPlace.type !== GroundPlaceType.CLUSTER) {
-      throw new Error(`The StopCluster with the Gpuid ${stopClusterGpuid} is not found.`);
+      throw new Error(`The StopCluster with the Gpuid "${stopClusterGpuid}" is not found.`);
     }
 
     return JSON.parse(JSON.stringify(groundPlace));
@@ -157,8 +157,8 @@ export class Storage {
 
   /**
    * @description Remove a stopGroup from a stopCluster.
-   * @param {StopGroupGpuid} stopGroupGpuid - Ground place unique identifier of the SopGroup to remove.
-   * @param {StopClusterGpuid} stopClusterGpuid - Ground place unique identifier of the StopCluster parent.
+   * @param {StopGroupGpuid} stopGroupGpuidToRemove - Ground place unique identifier of the SopGroup to remove.
+   * @param {StopClusterGpuid} stopClusterGpuidParent - Ground place unique identifier of the StopCluster parent.
    * @returns {void}
    */
   public removeStopGroupFromStopCluster(
@@ -170,6 +170,12 @@ export class Storage {
     const stopGroupIndex: number = stopClusterParent.childs.findIndex(
       (stopGroupGpuid: StopGroupGpuid) => stopGroupGpuid === stopGroupGpuidToRemove,
     );
+
+    if (stopGroupIndex === -1) {
+      throw new Error(
+        `The StopGroup with the Gpuid "${stopGroupGpuidToRemove}" cannot be removed from the StopCluster with the Gpuid "${stopClusterGpuidParent}" because it does not belong to it.`,
+      );
+    }
 
     const stopClusterIndex: number = this.groundPlaces.findIndex(
       ({ gpuid }: GroundPlace) => gpuid === stopClusterGpuidParent,
