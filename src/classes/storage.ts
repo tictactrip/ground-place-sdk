@@ -112,6 +112,24 @@ export class Storage {
   }
 
   /**
+   * @description Replace the specified ground place with a new one.
+   * @param {GroundPlace} groundPlace - The place to replace.
+   */
+  public replacePlace(groundPlace: GroundPlace): void {
+    const groundPlaceIndex: number = this.groundPlaces.findIndex(
+      ({ gpuid }: GroundPlace) => gpuid === groundPlace.gpuid,
+    );
+
+    if (groundPlaceIndex === -1) {
+      throw new Error(
+        `The "${groundPlace.type}" with the Gpuid "${groundPlace.gpuid}" cannot be replace because it doesn't exist inside the Ground places list.`,
+      );
+    }
+
+    this.groundPlaces[groundPlaceIndex] = groundPlace;
+  }
+
+  /**
    * @description Delete place only if it's empty.
    * @param {Gpuid} placeToRemoveGpuid - Ground place unique identifier of the place to remove.
    * @param {GroundPlaceType} placeType - The type of the place to remove, can be StopGroup or StopCluster.
@@ -153,54 +171,5 @@ export class Storage {
         },
       );
     }
-  }
-
-  /**
-   * @description Remove a stopGroup from a stopCluster.
-   * @param {StopGroupGpuid} stopGroupGpuidToRemove - Ground place unique identifier of the SopGroup to remove.
-   * @param {StopClusterGpuid} stopClusterGpuidParent - Ground place unique identifier of the StopCluster parent.
-   * @returns {void}
-   */
-  public removeStopGroupFromStopCluster(
-    stopGroupGpuidToRemove: StopGroupGpuid,
-    stopClusterGpuidParent: StopClusterGpuid,
-  ): void {
-    const stopClusterParent: StopCluster = this.getStopClusterByGpuid(stopClusterGpuidParent);
-
-    const stopGroupIndex: number = stopClusterParent.childs.findIndex(
-      (stopGroupGpuid: StopGroupGpuid) => stopGroupGpuid === stopGroupGpuidToRemove,
-    );
-
-    if (stopGroupIndex === -1) {
-      throw new Error(
-        `The StopGroup with the Gpuid "${stopGroupGpuidToRemove}" cannot be removed from the StopCluster with the Gpuid "${stopClusterGpuidParent}" because it does not belong to it.`,
-      );
-    }
-
-    const stopClusterIndex: number = this.groundPlaces.findIndex(
-      ({ gpuid }: GroundPlace) => gpuid === stopClusterGpuidParent,
-    );
-
-    stopClusterParent.childs.splice(stopGroupIndex, 1);
-
-    this.groundPlaces[stopClusterIndex] = stopClusterParent;
-  }
-
-  /**
-   * @description Add a stopGroup to a stopCluster.
-   * @param {StopGroupGpuid} stopGroupGpuidToAdd - Ground place unique identifier of the StopGroup to add.
-   * @param {StopClusterGpuid} intoStopClusterGpuid - Ground Place unique identifier of the new StopCluster parent.
-   * @returns {void}
-   */
-  public addStopGroupToStopCluster(stopGroupGpuidToAdd: StopGroupGpuid, intoStopClusterGpuid: StopClusterGpuid): void {
-    const updateStopCluster: StopCluster = this.getStopClusterByGpuid(intoStopClusterGpuid);
-
-    const stopClusterIndex: number = this.groundPlaces.findIndex(
-      ({ gpuid }: GroundPlace) => gpuid === intoStopClusterGpuid,
-    );
-
-    updateStopCluster.childs.push(stopGroupGpuidToAdd);
-
-    this.groundPlaces[stopClusterIndex] = updateStopCluster;
   }
 }
