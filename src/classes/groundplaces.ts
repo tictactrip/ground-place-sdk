@@ -192,13 +192,13 @@ export class GroundPlacesController {
     const stopClusterParent: StopCluster = this.storageService.getStopClusterByGpuid(intoStopClusterGpuid);
 
     // Check if the StopGroup does not already exist in the new StopCluster parent
-    const stopGroupAlreadyExist = Boolean(
+    const isStopGroupAlreadyExist = Boolean(
       stopClusterParent.childs.find((stopGroupGpuid: StopGroupGpuid) => stopGroupGpuid === stopGroupGpuidToAdd),
     );
 
-    if (stopGroupAlreadyExist) {
+    if (isStopGroupAlreadyExist) {
       throw new Error(
-        `The StopGroup with the Gpuid "${stopGroupGpuidToAdd}" can't be add to the StopCluster with the Gpuid "${intoStopClusterGpuid} because it already exist in it.`,
+        `The StopGroup with the Gpuid "${stopGroupGpuidToAdd}" cannot be added to the StopCluster with the Gpuid "${intoStopClusterGpuid} because it already exist in it.`,
       );
     }
 

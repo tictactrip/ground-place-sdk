@@ -2,22 +2,18 @@ import { GroundPlacesController } from '../../src/classes/groundplaces';
 import * as largeGroundPlacesFile from '../../mocks/largeGroundPlacesFile.json';
 import { GroundPlacesFile } from '../../src/types';
 
-describe('#moveStopGroup', () => {
-  const groundPlacesService: GroundPlacesController = new GroundPlacesController();
-  groundPlacesService.init(largeGroundPlacesFile as GroundPlacesFile);
+describe('#addStopGroupToStopCluster', () => {
+  it('should add StopGroup to a StopCluster', () => {
+    const groundPlacesService: GroundPlacesController = new GroundPlacesController();
+    groundPlacesService.init(largeGroundPlacesFile as GroundPlacesFile);
 
-  it('should move the desired StopGroup to the StopCluster specified', () => {
-    const stopGroupToMoveGpuid = 'g|FRststbi__@u0tkxd';
-    const fromStopClusterGpuid = 'c|FRstrasbou@u0ts2';
-    const intoStopClusterGpuid = 'c|FRnaarto__@u0skg';
-
-    groundPlacesService.moveStopGroup(stopGroupToMoveGpuid, fromStopClusterGpuid, intoStopClusterGpuid);
+    groundPlacesService.addStopGroupToStopCluster('g|FRststbi__@u0tkxd', 'c|FRnaarto__@u0skg');
 
     expect(groundPlacesService.getGroundPlaces()).toStrictEqual([
       {
         gpuid: 'c|FRstrasbou@u0ts2',
         unique_name: 'strasbourg',
-        childs: ['g|FRstrasbou@u0tkru', 'g|FRstraroet@u0tkr3'],
+        childs: ['g|FRststbi__@u0tkxd', 'g|FRstrasbou@u0tkru', 'g|FRstraroet@u0tkr3'],
         serviced: 'False',
         has_been_modified: false,
         warning: false,
@@ -106,35 +102,29 @@ describe('#moveStopGroup', () => {
     ]);
   });
 
-  xit('should throw an error if the StopGroup to move does not belong to the StopCluster parent specified', () => {
-    const stopGroupToMoveGpuid = 'g|FRstrasbou@u0tkru';
-    const fromStopClusterGpuid = 'c|FRnaarto__@u0skg';
-    const intoStopClusterGpuid = 'c|FRstrasbou@u0ts2';
+  it('should not add the StopGroup in a new StopCluster if the StopGroup does not exist', () => {
+    const groundPlacesService: GroundPlacesController = new GroundPlacesController();
+    groundPlacesService.init(largeGroundPlacesFile as GroundPlacesFile);
 
     let thrownError: Error;
 
     try {
-      groundPlacesService.moveStopGroup(stopGroupToMoveGpuid, fromStopClusterGpuid, intoStopClusterGpuid);
+      groundPlacesService.addStopGroupToStopCluster('g|FRststbi__@u0tkxdd', 'c|FRnaarto__@u0skg');
     } catch (error) {
       thrownError = error;
     }
 
-    expect(thrownError).toEqual(
-      new Error(
-        'The StopGroup with the Gpuid "g|FRstrasbou@u0tkru" cannot be removed from the StopCluster with the Gpuid "c|FRnaarto__@u0skg" because it does not belong to it.',
-      ),
-    );
+    expect(thrownError).toEqual(new Error('The StopGroup with the Gpuid "g|FRststbi__@u0tkxdd" is not found.'));
   });
 
-  it('should throw an error if the StopCluster parent is not found', () => {
-    const stopGroupToMoveGpuid = 'g|FRststbi__@u0tkxd';
-    const fromStopClusterGpuid = 'c|FRnaarto__@u0skgg';
-    const intoStopClusterGpuid = 'c|FRstrasbou@u0ts2';
+  it('should not add the StopGroup in a new StopCluster if the StopCluster does not exist', () => {
+    const groundPlacesService: GroundPlacesController = new GroundPlacesController();
+    groundPlacesService.init(largeGroundPlacesFile as GroundPlacesFile);
 
     let thrownError: Error;
 
     try {
-      groundPlacesService.moveStopGroup(stopGroupToMoveGpuid, fromStopClusterGpuid, intoStopClusterGpuid);
+      groundPlacesService.addStopGroupToStopCluster('g|FRststbi__@u0tkxd', 'c|FRnaarto__@u0skgg');
     } catch (error) {
       thrownError = error;
     }
@@ -142,38 +132,21 @@ describe('#moveStopGroup', () => {
     expect(thrownError).toEqual(new Error('The StopCluster with the Gpuid "c|FRnaarto__@u0skgg" is not found.'));
   });
 
-  it('should throw an error if the new StopCluster parent is not found', () => {
-    const stopGroupToMoveGpuid = 'g|FRststbi__@u0tkxd';
-    const fromStopClusterGpuid = 'c|FRnaarto__@u0skg';
-    const intoStopClusterGpuid = 'c|FRstrasbou@u0ts22';
+  it('should not add the StopGroup in a new StopCluster if the StopGroup already belong to this new StopCluster', () => {
+    const groundPlacesService: GroundPlacesController = new GroundPlacesController();
+    groundPlacesService.init(largeGroundPlacesFile as GroundPlacesFile);
 
     let thrownError: Error;
 
     try {
-      groundPlacesService.moveStopGroup(stopGroupToMoveGpuid, fromStopClusterGpuid, intoStopClusterGpuid);
-    } catch (error) {
-      thrownError = error;
-    }
-
-    expect(thrownError).toEqual(new Error('The StopCluster with the Gpuid "c|FRstrasbou@u0ts22" is not found.'));
-  });
-
-  it('should throw an error if the new StopCluster is the same as the StopCluster parent used', () => {
-    const stopGroupToMoveGpuid = 'g|FRststbi__@u0tkxd';
-    const fromStopClusterGpuid = 'c|FRnaarto__@u0skg';
-    const intoStopClusterGpuid = 'c|FRnaarto__@u0skg';
-
-    let thrownError: Error;
-
-    try {
-      groundPlacesService.moveStopGroup(stopGroupToMoveGpuid, fromStopClusterGpuid, intoStopClusterGpuid);
+      groundPlacesService.addStopGroupToStopCluster('g|FRststbi__@u0tkxd', 'c|FRstrasbou@u0ts2');
     } catch (error) {
       thrownError = error;
     }
 
     expect(thrownError).toEqual(
       new Error(
-        `You can't move the StopGroup with the Gpuid "g|FRststbi__@u0tkxd" because it already exists inside the new StopCluster parent specified.`,
+        'The StopGroup with the Gpuid "g|FRststbi__@u0tkxd" cannot be added to the StopCluster with the Gpuid "c|FRstrasbou@u0ts2 because it already exist in it.',
       ),
     );
   });
