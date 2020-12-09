@@ -252,8 +252,7 @@ export class GroundPlacesController {
       this.storageService.setGroundPlaces(copyGroundPlaces);
 
       throw new Error(
-        `Impossible to remove the StopGroup with the Gpuid "${stopGroupGpuidToRemove}" from the StopCluster with the Gpuid "${stopClusterGpuidParent}".
-         Make sure that the StopGroup will not be alone after this operation.`,
+        `Impossible to remove the StopGroup with the Gpuid "${stopGroupGpuidToRemove}" from the StopCluster with the Gpuid "${stopClusterGpuidParent}". Make sure that the StopGroup will not be alone after this operation.`,
       );
     }
   }
@@ -286,13 +285,6 @@ export class GroundPlacesController {
       this.storageService.setGroundPlaces(copyGroundPlaces);
 
       throw new Error(error.message);
-    }
-
-    const isUpdateValid: boolean = this.checkValidity();
-
-    // If the file is not valid after update, rollback to the previous version of the ground places stored
-    if (!isUpdateValid) {
-      this.storageService.setGroundPlaces(copyGroundPlaces);
     }
   }
 

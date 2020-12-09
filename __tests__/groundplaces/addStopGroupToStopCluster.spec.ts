@@ -5,8 +5,8 @@ import { GroundPlacesFile } from '../../src/types';
 describe('#addStopGroupToStopCluster', () => {
   it('should add StopGroup to a StopCluster', () => {
     const groundPlacesService: GroundPlacesController = new GroundPlacesController();
-    groundPlacesService.init(largeGroundPlacesFile as GroundPlacesFile);
 
+    groundPlacesService.init(largeGroundPlacesFile as GroundPlacesFile);
     groundPlacesService.addStopGroupToStopCluster('g|FRststbi__@u0tkxd', 'c|FRnaarto__@u0skg');
 
     expect(groundPlacesService.getGroundPlaces()).toStrictEqual([
@@ -102,8 +102,9 @@ describe('#addStopGroupToStopCluster', () => {
     ]);
   });
 
-  it('should not add the StopGroup in a new StopCluster if the StopGroup does not exist', () => {
+  it('should throw an error if the StopGroup to add does not exist', () => {
     const groundPlacesService: GroundPlacesController = new GroundPlacesController();
+
     groundPlacesService.init(largeGroundPlacesFile as GroundPlacesFile);
 
     let thrownError: Error;
@@ -117,7 +118,7 @@ describe('#addStopGroupToStopCluster', () => {
     expect(thrownError).toEqual(new Error('The StopGroup with the Gpuid "g|FRststbi__@u0tkxdd" is not found.'));
   });
 
-  it('should not add the StopGroup in a new StopCluster if the StopCluster does not exist', () => {
+  it('should throw an error if the new StopCluster parent does not exist', () => {
     const groundPlacesService: GroundPlacesController = new GroundPlacesController();
     groundPlacesService.init(largeGroundPlacesFile as GroundPlacesFile);
 
@@ -132,8 +133,9 @@ describe('#addStopGroupToStopCluster', () => {
     expect(thrownError).toEqual(new Error('The StopCluster with the Gpuid "c|FRnaarto__@u0skgg" is not found.'));
   });
 
-  it('should not add the StopGroup in a new StopCluster if the StopGroup already belong to this new StopCluster', () => {
+  it('should throw an error if the StopGroup to add already belong to the new StopCluster', () => {
     const groundPlacesService: GroundPlacesController = new GroundPlacesController();
+
     groundPlacesService.init(largeGroundPlacesFile as GroundPlacesFile);
 
     let thrownError: Error;
