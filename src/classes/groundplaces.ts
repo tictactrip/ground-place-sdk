@@ -180,6 +180,21 @@ export class GroundPlacesController {
   }
 
   /**
+   * @description Move a segmentProviderStop from a stopGroup to another stopGroup.
+   *
+   * Warning: The segmentProviderStop cannot be without a parent.
+   * @param {string} segmentProviderId - The identifier of the segmentProvider to move.
+   * @param {StopGroupGpuid} fromStopGroupGpuid - Ground place unique identifier of the old stopGroup.
+   * @param {StopGroupGpuid} intoStopGroupGpuid - Ground place unique identifier of the new stopGroup.
+   * @returns {void}
+   */
+  public moveSegmentProviderStop(
+    segmentProviderId: string,
+    fromStopGroupGpuid: StopGroupGpuid,
+    intoStopGroupGpuid: StopGroupGpuid,
+  ): void {}
+
+  /**
    * @description Add a stopGroup to a stopCluster.
    * @param {StopGroupGpuid} stopGroupGpuidToAdd - Ground place unique identifier of the StopGroup to add.
    * @param {StopClusterGpuid} intoStopClusterGpuid - Ground Place unique identifier of the new StopCluster parent.
@@ -198,7 +213,7 @@ export class GroundPlacesController {
 
     if (isStopGroupAlreadyExist) {
       throw new Error(
-        `The StopGroup with the Gpuid "${stopGroupGpuidToAdd}" cannot be added to the StopCluster with the Gpuid "${intoStopClusterGpuid} because it already exist in it.`,
+        `The StopGroup with the Gpuid "${stopGroupGpuidToAdd}" cannot be added to the StopCluster with the Gpuid "${intoStopClusterGpuid}" because it already exist in it.`,
       );
     }
 
@@ -252,7 +267,7 @@ export class GroundPlacesController {
       this.storageService.setGroundPlaces(copyGroundPlaces);
 
       throw new Error(
-        `Impossible to remove the StopGroup with the Gpuid "${stopGroupGpuidToRemove}" from the StopCluster with the Gpuid "${stopClusterGpuidParent}". Make sure that the StopGroup will not be alone after this operation.`,
+        `Impossible to remove the StopGroup with the Gpuid "${stopGroupGpuidToRemove}". Make sure that the StopGroup you want to remove will not be without any StopCluster parent after this operation.`,
       );
     }
   }
@@ -287,21 +302,6 @@ export class GroundPlacesController {
       throw new Error(error.message);
     }
   }
-
-  /**
-   * @description Move a segmentProviderStop from a stopGroup to another stopGroup.
-   *
-   * Warning: The segmentProviderStop cannot be without a parent.
-   * @param {string} segmentProviderId - The identifier of the segmentProvider to move.
-   * @param {StopGroupGpuid} fromStopGroupGpuid - Ground place unique identifier of the old stopGroup.
-   * @param {StopGroupGpuid} intoStopGroupGpuid - Ground place unique identifier of the new stopGroup.
-   * @returns {void}
-   */
-  public moveSegmentProviderStop(
-    segmentProviderId: string,
-    fromStopGroupGpuid: StopGroupGpuid,
-    intoStopGroupGpuid: StopGroupGpuid,
-  ): void {}
 
   /**
    * @description Merge two stopGroups. It means moving all segmentProviderStop of a stopGroup into another.
