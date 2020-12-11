@@ -1,3 +1,4 @@
+import * as cloneDeep from 'lodash.clonedeep';
 import {
   GroundPlace,
   GroundPlacesFile,
@@ -51,16 +52,6 @@ export class Storage {
   }
 
   /**
-   * @description Clone the current Ground places stored.
-   * @returns {GroundPlace[]}
-   */
-  public cloneGroundPlaces(): GroundPlace[] {
-    const groundPlaces: GroundPlace[] = this.getGroundPlaces();
-
-    return JSON.parse(JSON.stringify(groundPlaces));
-  }
-
-  /**
    * @description Returns the stopGroup identified by its Gpuid.
    * @param {StopGroupGpuid} stopGroupGpuid - Ground Place unique identifier of the StopGroup to find.
    * @returns {StopGroup}
@@ -74,7 +65,7 @@ export class Storage {
       throw new Error(`The StopGroup with the Gpuid "${stopGroupGpuid}" is not found.`);
     }
 
-    return JSON.parse(JSON.stringify(groundPlace));
+    return cloneDeep(groundPlace);
   }
 
   /**
@@ -91,7 +82,7 @@ export class Storage {
       throw new Error(`The StopCluster with the Gpuid "${stopClusterGpuid}" is not found.`);
     }
 
-    return JSON.parse(JSON.stringify(groundPlace));
+    return cloneDeep(groundPlace);
   }
 
   /**

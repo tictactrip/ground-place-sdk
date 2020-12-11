@@ -1,3 +1,4 @@
+import * as cloneDeep from 'lodash.clonedeep';
 import { Storage } from '../classes/storage';
 import { WebServices } from './webservices';
 import {
@@ -237,7 +238,7 @@ export class GroundPlacesController {
   ): void {
     const stopClusterParent: StopCluster = this.storageService.getStopClusterByGpuid(stopClusterGpuidParent);
     const groundPlaces: GroundPlace[] = this.storageService.getGroundPlaces();
-    const copyGroundPlaces: GroundPlace[] = this.storageService.cloneGroundPlaces();
+    const cloneGroundPlaces: GroundPlace[] = cloneDeep(this.storageService.getGroundPlaces());
 
     const stopGroupIndex: number = stopClusterParent.childs.findIndex(
       (stopGroupGpuid: StopGroupGpuid) => stopGroupGpuid === stopGroupGpuidToRemove,
@@ -255,16 +256,16 @@ export class GroundPlacesController {
     // Update the place with the new StopCluster parent
     this.storageService.replacePlace(stopClusterParent);
 
-    // Check if the StopGroup is not lonely after the operation
-    const stopGroupExist = groundPlaces.find(
-      (groundPlace: GroundPlace): boolean =>
+    // Check if the StopGroup is not orphan after the operation
+    const stopGroupExist: boolean = groundPlaces.some(
+      (groundPlace: GroundPlace): string =>
         groundPlace.type === GroundPlaceType.CLUSTER &&
-        Boolean(groundPlace.childs.find((stopGroupGpuid) => stopGroupGpuid === stopGroupGpuidToRemove)),
+        groundPlace.childs.find((stopGroupGpuid) => stopGroupGpuid === stopGroupGpuidToRemove),
     );
 
-    // If the StopGroup is lonely, rollback to the previous version of the ground places stored
+    // If the StopGroup is orphan, rollback to the previous version of the ground places stored
     if (!stopGroupExist) {
-      this.storageService.setGroundPlaces(copyGroundPlaces);
+      this.storageService.setGroundPlaces(cloneGroundPlaces);
 
       throw new Error(
         `Impossible to remove the StopGroup with the Gpuid "${stopGroupGpuidToRemove}". Make sure that the StopGroup you want to remove will not be without any StopCluster parent after this operation.`,
@@ -290,14 +291,14 @@ export class GroundPlacesController {
       );
     }
 
-    const copyGroundPlaces: GroundPlace[] = this.storageService.cloneGroundPlaces();
+    const cloneGroundPlaces: GroundPlace[] = cloneDeep(this.storageService.getGroundPlaces());
 
     try {
       this.addStopGroupToStopCluster(stopGroupToMoveGpuid, intoStopClusterGpuid);
       this.removeStopGroupFromStopCluster(stopGroupToMoveGpuid, fromStopClusterGpuid);
     } catch (error) {
       // If there is error in the process, rollback to the previous version of the ground places stored
-      this.storageService.setGroundPlaces(copyGroundPlaces);
+      this.storageService.setGroundPlaces(cloneGroundPlaces);
 
       throw new Error(error.message);
     }
