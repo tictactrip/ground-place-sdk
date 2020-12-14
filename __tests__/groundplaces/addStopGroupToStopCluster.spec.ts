@@ -148,7 +148,7 @@ describe('#addStopGroupToStopCluster', () => {
 
     expect(thrownError).toEqual(
       new Error(
-        'The StopGroup with the Gpuid "g|FRststbi__@u0tkxd" cannot be added to the StopCluster with the Gpuid "c|FRstrasbou@u0ts2" because it already exist in it.',
+        'The StopGroup with the Gpuid "g|FRststbi__@u0tkxd" cannot be added to the StopCluster with the Gpuid "c|FRstrasbou@u0ts2" because it already exists in it.',
       ),
     );
   });

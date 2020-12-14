@@ -113,7 +113,7 @@ export class Storage {
 
     if (groundPlaceIndex === -1) {
       throw new Error(
-        `The "${groundPlace.type}" with the Gpuid "${groundPlace.gpuid}" cannot be replace because it doesn't exist inside the Ground places list.`,
+        `The "${groundPlace.type}" with the Gpuid "${groundPlace.gpuid}" cannot be replace because it doesn't exists inside the Ground places list.`,
       );
     }
 
