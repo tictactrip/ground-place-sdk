@@ -1,3 +1,4 @@
+import * as cloneDeep from 'lodash.clonedeep';
 import {
   GroundPlace,
   GroundPlacesFile,
@@ -19,7 +20,7 @@ export class Storage {
 
   /**
    * @description Init and parse the GroundPlaces file into an array manipulable.
-   * @param {GroundPlaces} groundPlacesFile - The file to store and manipulate, can only be JSON for now.
+   * @param {GroundPlacesFile} groundPlacesFile - The file to store and manipulate, can only be JSON for now.
    * @returns {void}
    */
   public initFile(groundPlacesFile: GroundPlacesFile): void {
@@ -43,7 +44,7 @@ export class Storage {
 
   /**
    * @description Setter to update the Ground places.
-   * @param {GroundPlaces} groundPlaces - Ground places to store inside the Storage.
+   * @param {GroundPlace[]} groundPlaces - Ground places to store inside the Storage.
    * @returns {void}
    */
   public setGroundPlaces(groundPlaces: GroundPlace[]): void {
@@ -61,10 +62,10 @@ export class Storage {
     const groundPlace: GroundPlace | undefined = this.groundPlaces[placeIndex];
 
     if (!groundPlace || groundPlace.type !== GroundPlaceType.GROUP) {
-      throw new Error(`The StopGroup with the Gpuid ${stopGroupGpuid} is not found.`);
+      throw new Error(`The StopGroup with the Gpuid "${stopGroupGpuid}" is not found.`);
     }
 
-    return groundPlace;
+    return cloneDeep(groundPlace);
   }
 
   /**
@@ -78,10 +79,10 @@ export class Storage {
     const groundPlace: GroundPlace | undefined = this.groundPlaces[placeIndex];
 
     if (!groundPlace || groundPlace.type !== GroundPlaceType.CLUSTER) {
-      throw new Error(`The StopCluster with the Gpuid ${stopClusterGpuid} is not found.`);
+      throw new Error(`The StopCluster with the Gpuid "${stopClusterGpuid}" is not found.`);
     }
 
-    return groundPlace;
+    return cloneDeep(groundPlace);
   }
 
   /**
@@ -99,6 +100,24 @@ export class Storage {
     };
 
     this.groundPlaces[placeIndex] = newGroundPlace;
+  }
+
+  /**
+   * @description Replace the specified ground place with a new one.
+   * @param {GroundPlace} groundPlace - The place to replace.
+   */
+  public replacePlace(groundPlace: GroundPlace): void {
+    const groundPlaceIndex: number = this.groundPlaces.findIndex(
+      ({ gpuid }: GroundPlace) => gpuid === groundPlace.gpuid,
+    );
+
+    if (groundPlaceIndex === -1) {
+      throw new Error(
+        `The "${groundPlace.type}" with the Gpuid "${groundPlace.gpuid}" cannot be replace because it doesn't exists inside the Ground places list.`,
+      );
+    }
+
+    this.groundPlaces[groundPlaceIndex] = groundPlace;
   }
 
   /**

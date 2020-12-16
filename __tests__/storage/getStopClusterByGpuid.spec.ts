@@ -32,7 +32,7 @@ describe('#getStopClusterByGpuid', () => {
       thrownError = error;
     }
 
-    expect(thrownError).toEqual(new Error('The StopCluster with the Gpuid g|FRststbi__@ is not found.'));
+    expect(thrownError).toEqual(new Error('The StopCluster with the Gpuid "g|FRststbi__@" is not found.'));
   });
 
   it('should throw an error if the StopCluster based on its Gpuid is found but not of type cluster', () => {
@@ -44,6 +44,6 @@ describe('#getStopClusterByGpuid', () => {
       thrownError = error;
     }
 
-    expect(thrownError).toEqual(new Error('The StopCluster with the Gpuid g|FRstraroet@u0tkr3 is not found.'));
+    expect(thrownError).toEqual(new Error('The StopCluster with the Gpuid "g|FRstraroet@u0tkr3" is not found.'));
   });
 });

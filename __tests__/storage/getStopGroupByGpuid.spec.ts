@@ -42,7 +42,7 @@ describe('#getStopGroupByGpuid', () => {
       thrownError = error;
     }
 
-    expect(thrownError).toEqual(new Error('The StopGroup with the Gpuid g|FRststbi__@ is not found.'));
+    expect(thrownError).toEqual(new Error('The StopGroup with the Gpuid "g|FRststbi__@" is not found.'));
   });
 
   it('should throw an error if the StopGroup based on its Gpuid is found but not of type group', () => {
@@ -54,6 +54,6 @@ describe('#getStopGroupByGpuid', () => {
       thrownError = error;
     }
 
-    expect(thrownError).toEqual(new Error('The StopGroup with the Gpuid c|FRstrasbou@u0ts2 is not found.'));
+    expect(thrownError).toEqual(new Error('The StopGroup with the Gpuid "c|FRstrasbou@u0ts2" is not found.'));
   });
 });
