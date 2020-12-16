@@ -149,16 +149,16 @@ export class GroundPlacesController {
    * @returns {void}
    */
   public updateStopGroup(stopGroupGpuid: StopGroupGpuid, propertiesToUpdate: UpdateStopProperties): void {
-    // const copyGroundPlaces: GroundPlaces = this.storageService.cloneGroundPlaces();
+    const cloneGroundPlaces: GroundPlace[] = cloneDeep(this.storageService.getGroundPlaces());
 
-    this.storageService.updatePlace(stopGroupGpuid, propertiesToUpdate);
+    try {
+      this.storageService.updatePlace(stopGroupGpuid, propertiesToUpdate, GroundPlaceType.GROUP);
+    } catch (error) {
+      // If there is error in the process, rollback to the previous version of the ground places stored
+      this.storageService.setGroundPlaces(cloneGroundPlaces);
 
-    // const isUpdateValid: boolean = this.checkValidity();
-
-    /* If the file is not valid after update, rollback to the previous version of the ground places stored
-    if (!isUpdateValid) {
-      this.storageService.setGroundPlaces(copyGroundPlaces);
-    } */
+      throw new Error(error.message);
+    }
   }
 
   /**
@@ -168,16 +168,16 @@ export class GroundPlacesController {
    * @returns {void}
    */
   public updateStopCluster(stopClusterGpuid: StopClusterGpuid, propertiesToUpdate: UpdateStopProperties): void {
-    // const copyGroundPlaces: GroundPlaces = this.storageService.cloneGroundPlaces();
+    const cloneGroundPlaces: GroundPlace[] = cloneDeep(this.storageService.getGroundPlaces());
 
-    this.storageService.updatePlace(stopClusterGpuid, propertiesToUpdate);
+    try {
+      this.storageService.updatePlace(stopClusterGpuid, propertiesToUpdate, GroundPlaceType.CLUSTER);
+    } catch (error) {
+      // If there is error in the process, rollback to the previous version of the ground places stored
+      this.storageService.setGroundPlaces(cloneGroundPlaces);
 
-    // const isUpdateValid: boolean = this.checkValidity();
-
-    // If the file is not valid after update, rollback to the previous version of the ground places stored
-    /* if (!isUpdateValid) {
-      this.storageService.setGroundPlaces(copyGroundPlaces);
-    } */
+      throw new Error(error.message);
+    }
   }
 
   /**
