@@ -111,9 +111,7 @@ describe('#deleteStopCluster', () => {
       thrownError = error;
     }
 
-    expect(thrownError).toEqual(
-      new Error('The "cluster" with the Gpuid "c|FRstrasbou@u0ts22" cannot be deleted because it cannot be found.'),
-    );
+    expect(thrownError).toEqual(new Error('The StopCluster with the Gpuid "c|FRstrasbou@u0ts22" is not found.'));
   });
 
   it('should throw an error if the StopCluster to delete is not a StopCluster', () => {
@@ -125,8 +123,6 @@ describe('#deleteStopCluster', () => {
       thrownError = error;
     }
 
-    expect(thrownError).toEqual(
-      new Error('The "cluster" with the Gpuid "g|FRststbi__@u0tkxd" cannot be deleted because it cannot be found.'),
-    );
+    expect(thrownError).toEqual(new Error('The StopCluster with the Gpuid "g|FRststbi__@u0tkxd" is not found.'));
   });
 });

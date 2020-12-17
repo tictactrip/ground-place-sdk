@@ -143,21 +143,15 @@ export class Storage {
    * @returns {void}
    */
   public deletePlace(placeToRemoveGpuid: Gpuid, placeType: GroundPlaceType): void {
-    const placeIndex: number = this.groundPlaces.findIndex(({ gpuid }: GroundPlace) => gpuid === placeToRemoveGpuid);
-
-    const groundPlace: GroundPlace | undefined = this.groundPlaces[placeIndex];
-
-    if (!groundPlace || groundPlace.type !== placeType) {
-      throw new Error(
-        `The "${placeType}" with the Gpuid "${placeToRemoveGpuid}" cannot be deleted because it cannot be found.`,
-      );
-    }
+    const groundPlace: GroundPlace = this.getPlaceByGpuid(placeToRemoveGpuid, placeType);
 
     if (groundPlace.childs.length) {
       throw new Error(
         `The "${placeType}" with the Gpuid "${placeToRemoveGpuid}" cannot be deleted because it has children.`,
       );
     }
+
+    const placeIndex: number = this.groundPlaces.findIndex(({ gpuid }: GroundPlace) => gpuid === placeToRemoveGpuid);
 
     // Delete the place from the GroundPlaces list.
     this.groundPlaces.splice(placeIndex, 1);

@@ -112,9 +112,7 @@ describe('#deleteStopGroup', () => {
       thrownError = error;
     }
 
-    expect(thrownError).toEqual(
-      new Error('The "group" with the Gpuid "g|FRstrasbou@u0tkruu" cannot be deleted because it cannot be found.'),
-    );
+    expect(thrownError).toEqual(new Error('The StopGroup with the Gpuid "g|FRstrasbou@u0tkruu" is not found.'));
   });
 
   it('should throw an error if the StopGroup to delete is not a StopGroup', () => {
@@ -126,8 +124,6 @@ describe('#deleteStopGroup', () => {
       thrownError = error;
     }
 
-    expect(thrownError).toEqual(
-      new Error('The "group" with the Gpuid "c|FRnaarto__@u0skg" cannot be deleted because it cannot be found.'),
-    );
+    expect(thrownError).toEqual(new Error('The StopGroup with the Gpuid "c|FRnaarto__@u0skg" is not found.'));
   });
 });
