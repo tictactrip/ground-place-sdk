@@ -14,6 +14,8 @@ import {
   GroundPlace,
   GroundPlaceServiced,
   StopCluster,
+  SegmentProviderStop,
+  StopGroup,
 } from '../types';
 
 /**
@@ -181,21 +183,6 @@ export class GroundPlacesController {
   }
 
   /**
-   * @description Move a segmentProviderStop from a stopGroup to another stopGroup.
-   *
-   * Warning: The segmentProviderStop cannot be without a parent.
-   * @param {string} segmentProviderId - The identifier of the segmentProvider to move.
-   * @param {StopGroupGpuid} fromStopGroupGpuid - Ground place unique identifier of the old stopGroup.
-   * @param {StopGroupGpuid} intoStopGroupGpuid - Ground place unique identifier of the new stopGroup.
-   * @returns {void}
-   */
-  public moveSegmentProviderStop(
-    segmentProviderId: string,
-    fromStopGroupGpuid: StopGroupGpuid,
-    intoStopGroupGpuid: StopGroupGpuid,
-  ): void {}
-
-  /**
    * @description Add a stopGroup to a stopCluster.
    * @param {StopGroupGpuid} stopGroupGpuidToAdd - Ground place unique identifier of the StopGroup to add.
    * @param {StopClusterGpuid} intoStopClusterGpuid - Ground Place unique identifier of the new StopCluster parent.
@@ -208,8 +195,8 @@ export class GroundPlacesController {
     const stopClusterParent: StopCluster = this.storageService.getStopClusterByGpuid(intoStopClusterGpuid);
 
     // Check if the StopGroup does not already exist in the new StopCluster parent
-    const isStopGroupAlreadyExists = Boolean(
-      stopClusterParent.childs.find((stopGroupGpuid: StopGroupGpuid) => stopGroupGpuid === stopGroupGpuidToAdd),
+    const isStopGroupAlreadyExists: boolean = stopClusterParent.childs.some(
+      (stopGroupGpuid: StopGroupGpuid) => stopGroupGpuid === stopGroupGpuidToAdd,
     );
 
     if (isStopGroupAlreadyExists) {
@@ -285,9 +272,10 @@ export class GroundPlacesController {
     fromStopClusterGpuid: StopClusterGpuid,
     intoStopClusterGpuid: StopClusterGpuid,
   ): void {
+    // Check if the new StopCluster parent is different from the current one
     if (fromStopClusterGpuid === intoStopClusterGpuid) {
       throw new Error(
-        `You can't move the StopGroup with the Gpuid "${stopGroupToMoveGpuid}" because it already exists inside the new StopCluster parent specified.`,
+        `You can't move the StopGroup with the Gpuid "${stopGroupToMoveGpuid}" because the new StopCluster parent is the same as before.`,
       );
     }
 
@@ -296,6 +284,63 @@ export class GroundPlacesController {
     try {
       this.addStopGroupToStopCluster(stopGroupToMoveGpuid, intoStopClusterGpuid);
       this.removeStopGroupFromStopCluster(stopGroupToMoveGpuid, fromStopClusterGpuid);
+    } catch (error) {
+      // If there is error in the process, rollback to the previous version of the ground places stored
+      this.storageService.setGroundPlaces(cloneGroundPlaces);
+
+      throw new Error(error.message);
+    }
+  }
+
+  /**
+   * @description Move a segmentProviderStop from a stopGroup to another stopGroup.
+   *
+   * Warning: The segmentProviderStop cannot be without a parent.
+   * @param {string} segmentProviderStopId - The identifier of the segmentProvider to move.
+   * @param {StopGroupGpuid} fromStopGroupGpuid - Ground place unique identifier of the old stopGroup.
+   * @param {StopGroupGpuid} intoStopGroupGpuid - Ground place unique identifier of the new stopGroup.
+   * @returns {void}
+   */
+  public moveSegmentProviderStop(
+    segmentProviderStopId: string,
+    fromStopGroupGpuid: StopGroupGpuid,
+    intoStopGroupGpuid: StopGroupGpuid,
+  ): void {
+    // Check if the new StopGroup parent is different from the current one
+    if (fromStopGroupGpuid === intoStopGroupGpuid) {
+      throw new Error(
+        `You can't move the SegmentProviderStop with the ID "${segmentProviderStopId}" because the new StopGroup parent is the same as before.`,
+      );
+    }
+
+    const cloneGroundPlaces: GroundPlace[] = cloneDeep(this.storageService.getGroundPlaces());
+
+    try {
+      const currentStopGroupParent: StopGroup = this.storageService.getStopGroupByGpuid(fromStopGroupGpuid);
+      const newStopGroupParent: StopGroup = this.storageService.getStopGroupByGpuid(intoStopGroupGpuid);
+
+      const segmentProviderStopIndex: number = currentStopGroupParent.childs.findIndex(
+        ({ id }: SegmentProviderStop) => id === fromStopGroupGpuid,
+      );
+
+      // Check if the SegmentProviderStop selected currently exist inside the StopGroup specified
+      if (segmentProviderStopIndex === -1) {
+        throw new Error(
+          `The SegmentProviderStop with the ID "${segmentProviderStopId}" doesn't exists inside the StopGroup with the Gpuid "${fromStopGroupGpuid}"`,
+        );
+      }
+
+      const segmentProviderStop: SegmentProviderStop = currentStopGroupParent.childs[segmentProviderStopIndex];
+
+      // Remove segmentProviderStop from the current StopCluster parent
+      currentStopGroupParent.childs.splice(segmentProviderStopIndex, 1);
+
+      // Add segmentProviderStop into the new one
+      newStopGroupParent.childs.push(segmentProviderStop);
+
+      // Update the two StopGroup related
+      this.storageService.replacePlace(currentStopGroupParent);
+      this.storageService.replacePlace(newStopGroupParent);
     } catch (error) {
       // If there is error in the process, rollback to the previous version of the ground places stored
       this.storageService.setGroundPlaces(cloneGroundPlaces);
