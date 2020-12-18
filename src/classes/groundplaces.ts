@@ -151,7 +151,7 @@ export class GroundPlacesController {
    * @returns {void}
    */
   public updateStopGroup(stopGroupGpuid: StopGroupGpuid, propertiesToUpdate: UpdateStopProperties): void {
-    const cloneGroundPlaces: GroundPlace[] = cloneDeep(this.storageService.getGroundPlaces());
+    const cloneGroundPlaces: GroundPlace[] = cloneDeep(this.getGroundPlaces());
 
     try {
       this.storageService.updatePlace(stopGroupGpuid, propertiesToUpdate, GroundPlaceType.GROUP);
@@ -170,7 +170,7 @@ export class GroundPlacesController {
    * @returns {void}
    */
   public updateStopCluster(stopClusterGpuid: StopClusterGpuid, propertiesToUpdate: UpdateStopProperties): void {
-    const cloneGroundPlaces: GroundPlace[] = cloneDeep(this.storageService.getGroundPlaces());
+    const cloneGroundPlaces: GroundPlace[] = cloneDeep(this.getGroundPlaces());
 
     try {
       this.storageService.updatePlace(stopClusterGpuid, propertiesToUpdate, GroundPlaceType.CLUSTER);
@@ -224,8 +224,8 @@ export class GroundPlacesController {
     stopClusterGpuidParent: StopClusterGpuid,
   ): void {
     const stopClusterParent: StopCluster = this.storageService.getStopClusterByGpuid(stopClusterGpuidParent);
-    const groundPlaces: GroundPlace[] = this.storageService.getGroundPlaces();
-    const cloneGroundPlaces: GroundPlace[] = cloneDeep(this.storageService.getGroundPlaces());
+    const groundPlaces: GroundPlace[] = this.getGroundPlaces();
+    const cloneGroundPlaces: GroundPlace[] = cloneDeep(this.getGroundPlaces());
 
     const stopGroupIndex: number = stopClusterParent.childs.findIndex(
       (stopGroupGpuid: StopGroupGpuid) => stopGroupGpuid === stopGroupGpuidToRemove,
@@ -279,7 +279,7 @@ export class GroundPlacesController {
       );
     }
 
-    const cloneGroundPlaces: GroundPlace[] = cloneDeep(this.storageService.getGroundPlaces());
+    const cloneGroundPlaces: GroundPlace[] = cloneDeep(this.getGroundPlaces());
 
     try {
       this.addStopGroupToStopCluster(stopGroupToMoveGpuid, intoStopClusterGpuid);
@@ -313,7 +313,7 @@ export class GroundPlacesController {
       );
     }
 
-    const cloneGroundPlaces: GroundPlace[] = cloneDeep(this.storageService.getGroundPlaces());
+    const cloneGroundPlaces: GroundPlace[] = cloneDeep(this.getGroundPlaces());
 
     try {
       const currentStopGroupParent: StopGroup = this.storageService.getStopGroupByGpuid(fromStopGroupGpuid);
