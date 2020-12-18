@@ -320,13 +320,13 @@ export class GroundPlacesController {
       const newStopGroupParent: StopGroup = this.storageService.getStopGroupByGpuid(intoStopGroupGpuid);
 
       const segmentProviderStopIndex: number = currentStopGroupParent.childs.findIndex(
-        ({ id }: SegmentProviderStop) => id === fromStopGroupGpuid,
+        ({ id }: SegmentProviderStop) => id === segmentProviderStopId,
       );
 
       // Check if the SegmentProviderStop selected currently exist inside the StopGroup specified
       if (segmentProviderStopIndex === -1) {
         throw new Error(
-          `The SegmentProviderStop with the ID "${segmentProviderStopId}" doesn't exists inside the StopGroup with the Gpuid "${fromStopGroupGpuid}"`,
+          `The SegmentProviderStop with the ID "${segmentProviderStopId}" doesn't exists inside the StopGroup with the Gpuid "${fromStopGroupGpuid}".`,
         );
       }
 
