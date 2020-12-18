@@ -323,7 +323,7 @@ export class GroundPlacesController {
         ({ id }: SegmentProviderStop) => id === segmentProviderStopId,
       );
 
-      // Check if the SegmentProviderStop selected currently exist inside the StopGroup specified
+      // Check if the SegmentProviderStop to move  currently exist inside the current StopGroup parent specified
       if (segmentProviderStopIndex === -1) {
         throw new Error(
           `The SegmentProviderStop with the ID "${segmentProviderStopId}" doesn't exists inside the StopGroup with the Gpuid "${fromStopGroupGpuid}".`,
@@ -332,7 +332,18 @@ export class GroundPlacesController {
 
       const segmentProviderStop: SegmentProviderStop = currentStopGroupParent.childs[segmentProviderStopIndex];
 
-      // Remove segmentProviderStop from the current StopCluster parent
+      const isAlreadyBelongToNewStopGroup: boolean = newStopGroupParent.childs.some(
+        ({ company_name }: SegmentProviderStop) => company_name === segmentProviderStop.company_name,
+      );
+
+      // Check if the SegmentProviderStop to move don't already exist inside the new StopGroup parent specified
+      if (isAlreadyBelongToNewStopGroup) {
+        throw new Error(
+          `The SegmentProviderStop with the segmentProvider "${segmentProviderStop.company_name}" can't be move because it already exists inside the new StopGroup parent with the Gpuid "${intoStopGroupGpuid}".`,
+        );
+      }
+
+      // Remove segmentProviderStop from the current StopGroup parent
       currentStopGroupParent.childs.splice(segmentProviderStopIndex, 1);
 
       // Add segmentProviderStop into the new one
