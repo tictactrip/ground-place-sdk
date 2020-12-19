@@ -125,7 +125,7 @@ describe('#moveSegmentProviderStop', () => {
 
     expect(thrownError).toEqual(
       new Error(
-        `You can't move the SegmentProviderStop with the ID "FRBUK" because the new StopGroup parent is the same as before.`,
+        'You can\'t move the SegmentProviderStop with the ID "FRBUK" because the new StopGroup parent is the same as before.',
       ),
     );
   });
@@ -170,7 +170,7 @@ describe('#moveSegmentProviderStop', () => {
     expect(thrownError).toEqual(new Error('The StopGroup with the Gpuid "g|FRstraroet@u0tkr3333" is not found.'));
   });
 
-  it(`should throw an error if the SegmentProviderStop specified doesn't belong to the current StopCluster parent specified`, () => {
+  it("should throw an error if the SegmentProviderStop specified doesn't belong to the current StopCluster parent specified", () => {
     const groundPlacesService: GroundPlacesController = new GroundPlacesController();
 
     groundPlacesService.init(largeGroundPlacesFile as GroundPlacesFile);
@@ -189,7 +189,7 @@ describe('#moveSegmentProviderStop', () => {
 
     expect(thrownError).toEqual(
       new Error(
-        `The SegmentProviderStop with the ID "FRBUK" doesn't exists inside the StopGroup with the Gpuid "g|FRstrasbou@u0tkru".`,
+        'The SegmentProviderStop with the ID "FRBUK" doesn\'t exists inside the StopGroup with the Gpuid "g|FRstrasbou@u0tkru".',
       ),
     );
   });

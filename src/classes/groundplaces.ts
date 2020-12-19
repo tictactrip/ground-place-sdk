@@ -353,7 +353,7 @@ export class GroundPlacesController {
       this.storageService.replacePlace(currentStopGroupParent);
       this.storageService.replacePlace(newStopGroupParent);
     } catch (error) {
-      // If there is error in the process, rollback to the previous version of the ground places stored
+      // If there is an error, previous update is reverted
       this.storageService.setGroundPlaces(cloneGroundPlaces);
 
       throw new Error(error.message);
