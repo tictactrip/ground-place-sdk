@@ -86,20 +86,36 @@ export class Storage {
   }
 
   /**
+   * @description Find the correct place based on the Ground place unique identifier provided and the type of the place.
+   * @param {Gpuid} placeGpuid - Ground place unique identifier of the place to search.
+   * @param {GroundPlaceType} placeType - The type of the place to search, can be StopGroup or StopCluster
+   */
+  public getPlaceByGpuid(placeGpuid: Gpuid, placeType: GroundPlaceType): GroundPlace {
+    switch (placeType) {
+      case GroundPlaceType.GROUP:
+        return this.getStopGroupByGpuid(placeGpuid);
+
+      case GroundPlaceType.CLUSTER:
+        return this.getStopClusterByGpuid(placeGpuid);
+    }
+  }
+
+  /**
    * @description Update StopGroup or StopCluster with new informations like name, latitude, longitude, etc.
    * @param {Gpuid} placeGpuid - Ground place unique identifier of the place to update.
-   * @param {UpdateStopProperties} propertiesToUpdate - Properties to update.
+   * @param {UpdateStopProperties} propertiesToUpdate - Properties to update {name, lattitude, longitude}.
+   * @param {GroundPlaceType} placeType - The type of the place to update, can be StopGroup or StopCluster.
    * @returns {void}
    */
-  public updatePlace(placeGpuid: Gpuid, propertiesToUpdate: UpdateStopProperties): void {
-    const placeIndex: number = this.groundPlaces.findIndex(({ gpuid }: GroundPlace) => gpuid === placeGpuid);
+  public updatePlace(placeGpuid: Gpuid, propertiesToUpdate: UpdateStopProperties, placeType: GroundPlaceType): void {
+    const groundPlace: GroundPlace = this.getPlaceByGpuid(placeGpuid, placeType);
 
     const newGroundPlace: GroundPlace = {
-      ...this.groundPlaces[placeIndex],
+      ...groundPlace,
       ...propertiesToUpdate,
     };
 
-    this.groundPlaces[placeIndex] = newGroundPlace;
+    this.replacePlace(newGroundPlace);
   }
 
   /**
@@ -127,21 +143,15 @@ export class Storage {
    * @returns {void}
    */
   public deletePlace(placeToRemoveGpuid: Gpuid, placeType: GroundPlaceType): void {
-    const placeIndex: number = this.groundPlaces.findIndex(({ gpuid }: GroundPlace) => gpuid === placeToRemoveGpuid);
-
-    const groundPlace: GroundPlace | undefined = this.groundPlaces[placeIndex];
-
-    if (!groundPlace || groundPlace.type !== placeType) {
-      throw new Error(
-        `The "${placeType}" with the Gpuid "${placeToRemoveGpuid}" cannot be deleted because it cannot be found.`,
-      );
-    }
+    const groundPlace: GroundPlace = this.getPlaceByGpuid(placeToRemoveGpuid, placeType);
 
     if (groundPlace.childs.length) {
       throw new Error(
         `The "${placeType}" with the Gpuid "${placeToRemoveGpuid}" cannot be deleted because it has children.`,
       );
     }
+
+    const placeIndex: number = this.groundPlaces.findIndex(({ gpuid }: GroundPlace) => gpuid === placeToRemoveGpuid);
 
     // Delete the place from the GroundPlaces list.
     this.groundPlaces.splice(placeIndex, 1);

@@ -228,7 +228,7 @@ describe('#moveStopGroup', () => {
 
     expect(thrownError).toEqual(
       new Error(
-        `You can't move the StopGroup with the Gpuid "g|FRststbi__@u0tkxd" because it already exists inside the new StopCluster parent specified.`,
+        `You can't move the StopGroup with the Gpuid "g|FRststbi__@u0tkxd" because the new StopCluster parent is the same as before.`,
       ),
     );
   });

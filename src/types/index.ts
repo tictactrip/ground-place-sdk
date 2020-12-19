@@ -46,6 +46,7 @@ interface StopCluster extends StopClusterFromFile {
 }
 
 interface SegmentProviderStop {
+  id: string;
   unique_name: null;
   company_name: string;
   name: string;
@@ -53,7 +54,6 @@ interface SegmentProviderStop {
   serviced: GroundPlaceServiced;
   company_id: number;
   longitude: number;
-  id: string;
 }
 
 interface CreateStopGroupProperties {
