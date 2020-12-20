@@ -459,18 +459,6 @@ export class GroundPlacesController {
   }
 
   /**
-   * @description Check if all the business rules are respected.
-   *
-   * Returns true if everything ok, throw an error with all issues if not.
-   * @returns {boolean}
-   */
-  // @ts-ignore
-  private checkValidity(): boolean {
-    // TODO: Implement this
-    return true;
-  }
-
-  /**
    * @description Check the validity of the GroundPlacesDiff structure.
    *
    * Returns true if everything ok, throw an error with all issues if not.
