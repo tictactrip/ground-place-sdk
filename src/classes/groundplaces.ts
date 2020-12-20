@@ -156,7 +156,7 @@ export class GroundPlacesController {
     try {
       this.storageService.updatePlace(stopGroupGpuid, propertiesToUpdate, GroundPlaceType.GROUP);
     } catch (error) {
-      // If there is error in the process, rollback to the previous version of the ground places stored
+      // If there is an error, previous update is reverted
       this.storageService.setGroundPlaces(cloneGroundPlaces);
 
       throw new Error(error.message);
@@ -175,7 +175,7 @@ export class GroundPlacesController {
     try {
       this.storageService.updatePlace(stopClusterGpuid, propertiesToUpdate, GroundPlaceType.CLUSTER);
     } catch (error) {
-      // If there is error in the process, rollback to the previous version of the ground places stored
+      // If there is an error, previous update is reverted
       this.storageService.setGroundPlaces(cloneGroundPlaces);
 
       throw new Error(error.message);
@@ -250,7 +250,7 @@ export class GroundPlacesController {
         groundPlace.childs.find((stopGroupGpuid) => stopGroupGpuid === stopGroupGpuidToRemove),
     );
 
-    // If the StopGroup is orphan, rollback to the previous version of the ground places stored
+    // If there is an error, previous update is reverted
     if (!stopGroupExist) {
       this.storageService.setGroundPlaces(cloneGroundPlaces);
 
@@ -285,7 +285,7 @@ export class GroundPlacesController {
       this.addStopGroupToStopCluster(stopGroupToMoveGpuid, intoStopClusterGpuid);
       this.removeStopGroupFromStopCluster(stopGroupToMoveGpuid, fromStopClusterGpuid);
     } catch (error) {
-      // If there is error in the process, rollback to the previous version of the ground places stored
+      // If there is an error, previous update is reverted
       this.storageService.setGroundPlaces(cloneGroundPlaces);
 
       throw new Error(error.message);
@@ -309,7 +309,7 @@ export class GroundPlacesController {
     // Check if the new StopGroup parent is different from the current one
     if (fromStopGroupGpuid === intoStopGroupGpuid) {
       throw new Error(
-        `You can't move the SegmentProviderStop with the ID "${segmentProviderStopId}" because the new StopGroup parent is the same as before.`,
+        'You can\'t do any "move" type manipulation because the new StopGroup parent is the same as before.',
       );
     }
 
@@ -368,7 +368,24 @@ export class GroundPlacesController {
    * @param {StopGroupGpuid} intoStopGroupGpuid - Ground Place unique identifier of the stopGroup to be merged.
    * @returns {void}
    */
-  public mergeStopGroup(stopGroupToMergeGpuid: StopGroupGpuid, intoStopGroupGpuid: StopGroupGpuid): void {}
+  public mergeStopGroup(stopGroupToMergeGpuid: StopGroupGpuid, intoStopGroupGpuid: StopGroupGpuid): void {
+    const cloneGroundPlaces: GroundPlace[] = cloneDeep(this.getGroundPlaces());
+
+    try {
+      const stopGroupToMerge: StopGroup = this.storageService.getStopGroupByGpuid(stopGroupToMergeGpuid);
+
+      stopGroupToMerge.childs.map(({ id: segmentProviderStopId }: SegmentProviderStop) =>
+        this.moveSegmentProviderStop(segmentProviderStopId, stopGroupToMergeGpuid, intoStopGroupGpuid),
+      );
+
+      this.deleteStopGroup(stopGroupToMergeGpuid);
+    } catch (error) {
+      // If there is an error, previous update is reverted
+      this.storageService.setGroundPlaces(cloneGroundPlaces);
+
+      throw new Error(error.message);
+    }
+  }
 
   /**
    * @description Merge two stopClusters. It Means moving all stopGroup of a stopCluster into another.
