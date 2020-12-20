@@ -276,7 +276,7 @@ describe('#mergeStopGroup', () => {
     }
 
     expect(thrownError).toEqual(
-      new Error('You can\'t do any "move" type manipulation because the new StopGroup parent is the same as before.'),
+      new Error('You can\'t do any "move" operation because the new StopGroup parent is the same as before.'),
     );
   });
 
