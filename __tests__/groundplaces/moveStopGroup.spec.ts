@@ -1,12 +1,12 @@
 import { GroundPlacesController } from '../../src/classes/groundplaces';
-import * as verylargeGroundPlacesFile from '../../mocks/verylargeGroundPlacesFile.json';
+import * as mockVerylargeGroundPlacesFile from '../../mocks/verylargeGroundPlacesFile.json';
 import { GroundPlacesFile } from '../../src/types';
 
 describe('#moveStopGroup', () => {
   it('should move the desired StopGroup to the StopCluster specified', () => {
     const groundPlacesService: GroundPlacesController = new GroundPlacesController();
 
-    groundPlacesService.init(verylargeGroundPlacesFile as GroundPlacesFile);
+    groundPlacesService.init(mockVerylargeGroundPlacesFile as GroundPlacesFile);
 
     const stopGroupToMoveGpuid = 'g|FRnanvanna@u0skgb';
     const fromStopClusterGpuid = 'c|FRnaarto__@u0skg';
@@ -161,7 +161,7 @@ describe('#moveStopGroup', () => {
   it('should throw an error if the StopGroup to move is far away from the new StopCluster parent', () => {
     const groundPlacesService: GroundPlacesController = new GroundPlacesController();
 
-    groundPlacesService.init(verylargeGroundPlacesFile as GroundPlacesFile);
+    groundPlacesService.init(mockVerylargeGroundPlacesFile as GroundPlacesFile);
 
     const stopGroupToMoveGpuid = 'g|FRststbi__@u0tkxd';
     const fromStopClusterGpuid = 'c|FRstrasbou@u0ts2';
@@ -185,7 +185,7 @@ describe('#moveStopGroup', () => {
   it('should throw an error if the StopGroup to move does not belong to the StopCluster parent specified', () => {
     const groundPlacesService: GroundPlacesController = new GroundPlacesController();
 
-    groundPlacesService.init(verylargeGroundPlacesFile as GroundPlacesFile);
+    groundPlacesService.init(mockVerylargeGroundPlacesFile as GroundPlacesFile);
 
     const stopGroupToMoveGpuid = 'g|FRnanvanna@u0skgb';
     const fromStopClusterGpuid = 'c|FRstrasbou@u0ts2';
@@ -209,7 +209,7 @@ describe('#moveStopGroup', () => {
   it('should throw an error if the current StopCluster parent is not found', () => {
     const groundPlacesService: GroundPlacesController = new GroundPlacesController();
 
-    groundPlacesService.init(verylargeGroundPlacesFile as GroundPlacesFile);
+    groundPlacesService.init(mockVerylargeGroundPlacesFile as GroundPlacesFile);
 
     const stopGroupToMoveGpuid = 'g|FRnanvanna@u0skgb';
     const fromStopClusterGpuid = 'c|FRnaarto__@u0skgg';
@@ -229,7 +229,7 @@ describe('#moveStopGroup', () => {
   it('should throw an error if the new StopCluster parent is not found', () => {
     const groundPlacesService: GroundPlacesController = new GroundPlacesController();
 
-    groundPlacesService.init(verylargeGroundPlacesFile as GroundPlacesFile);
+    groundPlacesService.init(mockVerylargeGroundPlacesFile as GroundPlacesFile);
 
     const stopGroupToMoveGpuid = 'g|FRststbi__@u0tkxd';
     const fromStopClusterGpuid = 'c|FRnaarto__@u0skg';
@@ -249,7 +249,7 @@ describe('#moveStopGroup', () => {
   it('should throw an error if the new StopCluster is the same as the StopCluster parent used', () => {
     const groundPlacesService: GroundPlacesController = new GroundPlacesController();
 
-    groundPlacesService.init(verylargeGroundPlacesFile as GroundPlacesFile);
+    groundPlacesService.init(mockVerylargeGroundPlacesFile as GroundPlacesFile);
 
     const stopGroupToMoveGpuid = 'g|FRststbi__@u0tkxd';
     const fromStopClusterGpuid = 'c|FRnaarto__@u0skg';

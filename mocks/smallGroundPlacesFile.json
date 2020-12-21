@@ -17,14 +17,14 @@
   "g|FRststbi__@u0tkxd": {
      "childs": [
         {
-           "unique_name":null,
-           "company_name":"flixbus",
-           "name":"Strasbourg, Strasbourg - Bischheim",
-           "latitude":48.616228,
-           "serviced":"True",
-           "company_id":5,
-           "longitude":7.719863,
-           "id":"19528"
+           "unique_name": null,
+           "company_name": "flixbus",
+           "name": "Strasbourg, Strasbourg - Bischheim",
+           "latitude": 48.616228,
+           "serviced": "True",
+           "company_id": 5,
+           "longitude": 7.719863,
+           "id": "19528"
         }
      ],
      "name": "Strasbourg, Strasbourg - Bischheim",

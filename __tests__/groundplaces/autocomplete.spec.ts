@@ -1,10 +1,10 @@
 import { GroundPlacesController } from '../../src/classes/groundplaces';
-import * as largeGroundPlacesFile from '../../mocks/largeGroundPlacesFile.json';
+import * as mockLargeGroundPlacesFile from '../../mocks/largeGroundPlacesFile.json';
 import { GroundPlacesFile, GroundPlace, AutocompleteFilter } from '../../src/types';
 
 describe('#autocomplete', () => {
   const groundPlacesService: GroundPlacesController = new GroundPlacesController();
-  groundPlacesService.init(largeGroundPlacesFile as GroundPlacesFile);
+  groundPlacesService.init(mockLargeGroundPlacesFile as GroundPlacesFile);
 
   it('should returns all places when autocomplete have no query and no filters', () => {
     const groundPlacesFiltered: GroundPlace[] = groundPlacesService.autocomplete('');

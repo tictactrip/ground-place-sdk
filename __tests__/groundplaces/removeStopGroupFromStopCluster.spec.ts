@@ -1,12 +1,12 @@
 import { GroundPlacesController } from '../../src/classes/groundplaces';
-import * as verylargeGroundPlacesFile from '../../mocks/verylargeGroundPlacesFile.json';
+import * as mockVerylargeGroundPlacesFile from '../../mocks/verylargeGroundPlacesFile.json';
 import { GroundPlacesFile } from '../../src/types';
 
 describe('#removeStopGroupFromStopCluster', () => {
   it('should remove StopGroup from StopCluster', () => {
     const groundPlacesService: GroundPlacesController = new GroundPlacesController();
 
-    groundPlacesService.init(verylargeGroundPlacesFile as GroundPlacesFile);
+    groundPlacesService.init(mockVerylargeGroundPlacesFile as GroundPlacesFile);
     groundPlacesService.removeStopGroupFromStopCluster('g|FRnancy___@u0skux', 'c|FRnaarto__@u0skg');
 
     expect(groundPlacesService.getGroundPlaces()).toStrictEqual([
@@ -156,7 +156,7 @@ describe('#removeStopGroupFromStopCluster', () => {
   it('should throw an error if the StopGroup to remove does not belong to the StopCluster specified', () => {
     const groundPlacesService: GroundPlacesController = new GroundPlacesController();
 
-    groundPlacesService.init(verylargeGroundPlacesFile as GroundPlacesFile);
+    groundPlacesService.init(mockVerylargeGroundPlacesFile as GroundPlacesFile);
 
     let thrownError: Error;
 
@@ -175,7 +175,7 @@ describe('#removeStopGroupFromStopCluster', () => {
   it('should throw an error if the StopGroup to remove is lonely after the operation', () => {
     const groundPlacesService: GroundPlacesController = new GroundPlacesController();
 
-    groundPlacesService.init(verylargeGroundPlacesFile as GroundPlacesFile);
+    groundPlacesService.init(mockVerylargeGroundPlacesFile as GroundPlacesFile);
 
     let thrownError: Error;
 

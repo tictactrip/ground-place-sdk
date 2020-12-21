@@ -1,12 +1,12 @@
 import { GroundPlacesController } from '../../src/classes/groundplaces';
-import * as verylargeGroundPlacesFile from '../../mocks/verylargeGroundPlacesFile.json';
+import * as mockVerylargeGroundPlacesFile from '../../mocks/verylargeGroundPlacesFile.json';
 import { GroundPlacesFile } from '../../src/types';
 
 describe('#addStopGroupToStopCluster', () => {
   it('should add StopGroup to a StopCluster', () => {
     const groundPlacesService: GroundPlacesController = new GroundPlacesController();
 
-    groundPlacesService.init(verylargeGroundPlacesFile as GroundPlacesFile);
+    groundPlacesService.init(mockVerylargeGroundPlacesFile as GroundPlacesFile);
     groundPlacesService.addStopGroupToStopCluster('g|FRnanvanna@u0skgb', 'c|FRnancy___@u0sku');
 
     expect(groundPlacesService.getGroundPlaces()).toStrictEqual([
@@ -156,7 +156,7 @@ describe('#addStopGroupToStopCluster', () => {
   it('should throw an error if the StopGroup to add is far away from the new StopCluster parent', () => {
     const groundPlacesService: GroundPlacesController = new GroundPlacesController();
 
-    groundPlacesService.init(verylargeGroundPlacesFile as GroundPlacesFile);
+    groundPlacesService.init(mockVerylargeGroundPlacesFile as GroundPlacesFile);
 
     let thrownError: Error;
 
@@ -176,7 +176,7 @@ describe('#addStopGroupToStopCluster', () => {
   it('should throw an error if the StopGroup to add does not exist', () => {
     const groundPlacesService: GroundPlacesController = new GroundPlacesController();
 
-    groundPlacesService.init(verylargeGroundPlacesFile as GroundPlacesFile);
+    groundPlacesService.init(mockVerylargeGroundPlacesFile as GroundPlacesFile);
 
     let thrownError: Error;
 
@@ -191,7 +191,7 @@ describe('#addStopGroupToStopCluster', () => {
 
   it('should throw an error if the new StopCluster parent does not exist', () => {
     const groundPlacesService: GroundPlacesController = new GroundPlacesController();
-    groundPlacesService.init(verylargeGroundPlacesFile as GroundPlacesFile);
+    groundPlacesService.init(mockVerylargeGroundPlacesFile as GroundPlacesFile);
 
     let thrownError: Error;
 
@@ -207,7 +207,7 @@ describe('#addStopGroupToStopCluster', () => {
   it('should throw an error if the StopGroup to add already belong to the new StopCluster', () => {
     const groundPlacesService: GroundPlacesController = new GroundPlacesController();
 
-    groundPlacesService.init(verylargeGroundPlacesFile as GroundPlacesFile);
+    groundPlacesService.init(mockVerylargeGroundPlacesFile as GroundPlacesFile);
 
     let thrownError: Error;
 

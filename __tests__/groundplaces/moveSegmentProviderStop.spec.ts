@@ -1,12 +1,12 @@
 import { GroundPlacesController } from '../../src/classes/groundplaces';
-import * as largeGroundPlacesFile from '../../mocks/largeGroundPlacesFile.json';
+import * as mockLargeGroundPlacesFile from '../../mocks/largeGroundPlacesFile.json';
 import { GroundPlacesFile } from '../../src/types';
 
 describe('#moveSegmentProviderStop', () => {
   it('should move the SegmentProviderStop specified to a new StopGroup', () => {
     const groundPlacesService: GroundPlacesController = new GroundPlacesController();
 
-    groundPlacesService.init(largeGroundPlacesFile as GroundPlacesFile);
+    groundPlacesService.init(mockLargeGroundPlacesFile as GroundPlacesFile);
 
     const segmentProviderStopId = 'FRBUK';
     const fromStopGroupGpuid = 'g|FRstraroet@u0tkr3';
@@ -109,7 +109,7 @@ describe('#moveSegmentProviderStop', () => {
   it('should throw an error if the current StopGroup parent and the new one are the same', () => {
     const groundPlacesService: GroundPlacesController = new GroundPlacesController();
 
-    groundPlacesService.init(largeGroundPlacesFile as GroundPlacesFile);
+    groundPlacesService.init(mockLargeGroundPlacesFile as GroundPlacesFile);
 
     const segmentProviderStopId = 'FRBUK';
     const fromStopGroupGpuid = 'g|FRstraroet@u0tkr3';
@@ -133,7 +133,7 @@ describe('#moveSegmentProviderStop', () => {
   it('should throw an error if the current StopGroup parent is not found', () => {
     const groundPlacesService: GroundPlacesController = new GroundPlacesController();
 
-    groundPlacesService.init(largeGroundPlacesFile as GroundPlacesFile);
+    groundPlacesService.init(mockLargeGroundPlacesFile as GroundPlacesFile);
 
     const segmentProviderStopId = 'FRBUK';
     const fromStopGroupGpuid = 'g|FRstraroet@u0tkr3333';
@@ -153,7 +153,7 @@ describe('#moveSegmentProviderStop', () => {
   it('should throw an error if the new StopGroup parent is not found', () => {
     const groundPlacesService: GroundPlacesController = new GroundPlacesController();
 
-    groundPlacesService.init(largeGroundPlacesFile as GroundPlacesFile);
+    groundPlacesService.init(mockLargeGroundPlacesFile as GroundPlacesFile);
 
     const segmentProviderStopId = 'FRBUK';
     const fromStopGroupGpuid = 'g|FRstraroet@u0tkr3';
@@ -173,7 +173,7 @@ describe('#moveSegmentProviderStop', () => {
   it("should throw an error if the SegmentProviderStop specified doesn't belong to the current StopCluster parent specified", () => {
     const groundPlacesService: GroundPlacesController = new GroundPlacesController();
 
-    groundPlacesService.init(largeGroundPlacesFile as GroundPlacesFile);
+    groundPlacesService.init(mockLargeGroundPlacesFile as GroundPlacesFile);
 
     const segmentProviderStopId = 'FRBUK';
     const fromStopGroupGpuid = 'g|FRstrasbou@u0tkru';

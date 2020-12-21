@@ -1,12 +1,12 @@
 import { GroundPlacesController } from '../../src/classes/groundplaces';
-import * as verylargeGroundPlacesFile from '../../mocks/verylargeGroundPlacesFile.json';
+import * as mockVerylargeGroundPlacesFile from '../../mocks/verylargeGroundPlacesFile.json';
 import { GroundPlacesFile } from '../../src/types';
 
 describe('#mergeStopCluster', () => {
   it('should merge two StopCluster', () => {
     const groundPlacesService: GroundPlacesController = new GroundPlacesController();
 
-    groundPlacesService.init(verylargeGroundPlacesFile as GroundPlacesFile);
+    groundPlacesService.init(mockVerylargeGroundPlacesFile as GroundPlacesFile);
 
     const stopClusterToMergeGpuid = 'c|FRnancy___@u0sku';
     const intoStopClusterGpuid = 'c|FRnaarto__@u0skg';
@@ -146,7 +146,7 @@ describe('#mergeStopCluster', () => {
   it('should throw an error if the two StopCluster to merge are too far apart', () => {
     const groundPlacesService: GroundPlacesController = new GroundPlacesController();
 
-    groundPlacesService.init(verylargeGroundPlacesFile as GroundPlacesFile);
+    groundPlacesService.init(mockVerylargeGroundPlacesFile as GroundPlacesFile);
 
     const stopClusterToMergeGpuid = 'c|FRnancy___@u0sku';
     const intoStopClusterGpuid = 'c|FRstrasbou@u0ts2';
@@ -169,7 +169,7 @@ describe('#mergeStopCluster', () => {
   it('should throw an error if the two StopCluster to merge are the same', () => {
     const groundPlacesService: GroundPlacesController = new GroundPlacesController();
 
-    groundPlacesService.init(verylargeGroundPlacesFile as GroundPlacesFile);
+    groundPlacesService.init(mockVerylargeGroundPlacesFile as GroundPlacesFile);
 
     const stopClusterToMergeGpuid = 'c|FRnancy___@u0sku';
     const intoClusterGroupGpuid = 'c|FRnancy___@u0sku';
@@ -192,7 +192,7 @@ describe('#mergeStopCluster', () => {
   it('should throw an error if the StopCluster to merge is not found', () => {
     const groundPlacesService: GroundPlacesController = new GroundPlacesController();
 
-    groundPlacesService.init(verylargeGroundPlacesFile as GroundPlacesFile);
+    groundPlacesService.init(mockVerylargeGroundPlacesFile as GroundPlacesFile);
 
     const stopClusterToMergeGpuid = 'c|FRstrasbou@u0ts22';
     const intoClusterGroupGpuid = 'c|FRnancy___@u0sku';
@@ -211,7 +211,7 @@ describe('#mergeStopCluster', () => {
   it('should throw an error if the StopCluster to be merged is not found', () => {
     const groundPlacesService: GroundPlacesController = new GroundPlacesController();
 
-    groundPlacesService.init(verylargeGroundPlacesFile as GroundPlacesFile);
+    groundPlacesService.init(mockVerylargeGroundPlacesFile as GroundPlacesFile);
 
     const stopClusterToMergeGpuid = 'c|FRnancy___@u0sku';
     const intoClusterGroupGpuid = 'c|FRstrasbou@u0ts22';

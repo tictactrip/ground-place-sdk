@@ -1,12 +1,12 @@
 import { GroundPlacesController } from '../../src/classes/groundplaces';
-import * as verylargeGroundPlacesFile from '../../mocks/verylargeGroundPlacesFile.json';
+import * as mockVerylargeGroundPlacesFile from '../../mocks/verylargeGroundPlacesFile.json';
 import { GroundPlacesFile } from '../../src/types';
 
 describe('#mergeStopGroup', () => {
   it('should merge two StopGroup', () => {
     const groundPlacesService: GroundPlacesController = new GroundPlacesController();
 
-    groundPlacesService.init(verylargeGroundPlacesFile as GroundPlacesFile);
+    groundPlacesService.init(mockVerylargeGroundPlacesFile as GroundPlacesFile);
 
     const stopGroupToMergeGpuid = 'g|FRstrasbou@u0tkru';
     const intoStopGroupGpuid = 'g|FRststbi__@u0tkxd';
@@ -147,7 +147,7 @@ describe('#mergeStopGroup', () => {
   it('should delete the StopGroup to merge', () => {
     const groundPlacesService: GroundPlacesController = new GroundPlacesController();
 
-    groundPlacesService.init(verylargeGroundPlacesFile as GroundPlacesFile);
+    groundPlacesService.init(mockVerylargeGroundPlacesFile as GroundPlacesFile);
 
     const stopGroupToMergeGpuid = 'g|FRststbi__@u0tkxd';
     const intoStopGroupGpuid = 'g|FRnanvanna@u0skgb';
@@ -288,7 +288,7 @@ describe('#mergeStopGroup', () => {
   it('should throw an error if the two StopGroup to merge are the same', () => {
     const groundPlacesService: GroundPlacesController = new GroundPlacesController();
 
-    groundPlacesService.init(verylargeGroundPlacesFile as GroundPlacesFile);
+    groundPlacesService.init(mockVerylargeGroundPlacesFile as GroundPlacesFile);
 
     const stopGroupToMergeGpuid = 'g|FRstrasbou@u0tkru';
     const intoStopGroupGpuid = 'g|FRstrasbou@u0tkru';
@@ -311,7 +311,7 @@ describe('#mergeStopGroup', () => {
   it('should throw an error if the StopGroup to merge is not found', () => {
     const groundPlacesService: GroundPlacesController = new GroundPlacesController();
 
-    groundPlacesService.init(verylargeGroundPlacesFile as GroundPlacesFile);
+    groundPlacesService.init(mockVerylargeGroundPlacesFile as GroundPlacesFile);
 
     const stopGroupToMergeGpuid = 'g|FRstrasbou@u0tkruu';
     const intoStopGroupGpuid = 'g|FRstrasbou@u0tkru';
@@ -330,7 +330,7 @@ describe('#mergeStopGroup', () => {
   it('should throw an error if the StopGroup to be merged is not found', () => {
     const groundPlacesService: GroundPlacesController = new GroundPlacesController();
 
-    groundPlacesService.init(verylargeGroundPlacesFile as GroundPlacesFile);
+    groundPlacesService.init(mockVerylargeGroundPlacesFile as GroundPlacesFile);
 
     const stopGroupToMergeGpuid = 'g|FRstrasbou@u0tkru';
     const intoStopGroupGpuid = 'g|FRstrasbou@u0tkruu';

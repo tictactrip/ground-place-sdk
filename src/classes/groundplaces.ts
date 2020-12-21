@@ -153,6 +153,28 @@ export class GroundPlacesController {
 
     try {
       this.storageService.updatePlace(stopGroupGpuid, propertiesToUpdate, GroundPlaceType.GROUP);
+
+      // If latitude and/or longitude have updates wanted, first check that the new distance is correct with the StopCluster parent
+      if (propertiesToUpdate.latitude || propertiesToUpdate.longitude) {
+        const stopClusterParent: GroundPlace | undefined = cloneGroundPlaces.find(
+          (groundPlace: GroundPlace) =>
+            groundPlace.type === GroundPlaceType.CLUSTER &&
+            groundPlace.childs.some((stopGroupGpuidChild) => stopGroupGpuidChild === stopGroupGpuid),
+        );
+
+        // If the StopGroup have a parent, check that the distance is correct
+        if (stopClusterParent) {
+          const stopGroupUpdated: StopGroup = this.storageService.getStopGroupByGpuid(stopGroupGpuid);
+
+          const distanceInKms: number = distanceBetweenTwoPlaceInKms(stopGroupUpdated, stopClusterParent);
+
+          if (distanceInKms > 70) {
+            throw new Error(
+              `You can't update the StopGroup with the Gpuid "${stopGroupGpuid}" because it's "${distanceInKms}km" away from the new StopCluster parent (the limit is 70km).`,
+            );
+          }
+        }
+      }
     } catch (error) {
       // If there is an error, previous update is reverted
       this.storageService.setGroundPlaces(cloneGroundPlaces);
@@ -216,7 +238,7 @@ export class GroundPlacesController {
   }
 
   /**
-   * @description Remove a StopGroup from a StopCluster.
+   * @description Remove the reference of a StopGroup from a StopCluster.
    * @param {StopGroupGpuid} stopGroupGpuidToRemove - Ground place unique identifier of the StopGroup to remove.
    * @param {StopClusterGpuid} stopClusterGpuidParent - Ground place unique identifier of the StopCluster parent.
    * @returns {void}

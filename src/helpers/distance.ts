@@ -6,8 +6,8 @@ import { GroundPlace } from 'src/types';
  * That is the shortest distance over the earth’s surface.
  *
  * Original calculations from 'https://www.movable-type.co.uk/scripts/latlong.html'.
- * @param {GroundPlace} firstPlace
- * @param {GroundPlace} secondPlace
+ * @param {GroundPlace} firstPlace - The first place to check, it could be a StopGroup or a StopCluster.
+ * @param {GroundPlace} secondPlace - The second place to check, it also could be a StopGroup or a StopCluster.
  */
 const distanceBetweenTwoPlaceInKms = (firstPlace: GroundPlace, secondPlace: GroundPlace): number => {
   const { latitude: firstPlaceLat, longitude: firstPlaceLong } = firstPlace;
