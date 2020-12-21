@@ -17,6 +17,7 @@ import {
   SegmentProviderStop,
   StopGroup,
 } from '../types';
+import { distanceBetweenTwoPlaceInKms } from '../helpers/distance';
 
 /**
  * @description GroundPlaces business logic.
@@ -187,12 +188,11 @@ export class GroundPlacesController {
    */
   public addStopGroupToStopCluster(stopGroupGpuidToAdd: StopGroupGpuid, intoStopClusterGpuid: StopClusterGpuid): void {
     // Check if the StopGroup specified exists in the Ground places
-    this.storageService.getStopGroupByGpuid(stopGroupGpuidToAdd);
-
-    const stopClusterParent: StopCluster = this.storageService.getStopClusterByGpuid(intoStopClusterGpuid);
+    const stopGroupToMove: StopGroup = this.storageService.getStopGroupByGpuid(stopGroupGpuidToAdd);
+    const newStopClusterParent: StopCluster = this.storageService.getStopClusterByGpuid(intoStopClusterGpuid);
 
     // Check if the StopGroup does not already exist in the new StopCluster parent
-    const isStopGroupAlreadyExists: boolean = stopClusterParent.childs.some(
+    const isStopGroupAlreadyExists: boolean = newStopClusterParent.childs.some(
       (stopGroupGpuid: StopGroupGpuid) => stopGroupGpuid === stopGroupGpuidToAdd,
     );
 
@@ -202,10 +202,18 @@ export class GroundPlacesController {
       );
     }
 
-    stopClusterParent.childs.push(stopGroupGpuidToAdd);
+    const distanceInKms: number = distanceBetweenTwoPlaceInKms(stopGroupToMove, newStopClusterParent);
+
+    if (distanceInKms > 70) {
+      throw new Error(
+        `You can't move the StopGroup with the Gpuid "${stopGroupGpuidToAdd}" because it is too far from the new StopCluster parent with the Gpuid ${intoStopClusterGpuid} ("${distanceInKms}km" between them).`,
+      );
+    }
+
+    newStopClusterParent.childs.push(stopGroupGpuidToAdd);
 
     // Update the place with the new StopCluster parent
-    this.storageService.replacePlace(stopClusterParent);
+    this.storageService.replacePlace(newStopClusterParent);
   }
 
   /**
