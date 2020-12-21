@@ -2,34 +2,33 @@ import { GroundPlacesController } from '../../src/classes/groundplaces';
 import * as verylargeGroundPlacesFile from '../../mocks/verylargeGroundPlacesFile.json';
 import { GroundPlacesFile } from '../../src/types';
 
-describe('#mergeStopGroup', () => {
-  it('should merge two StopGroup', () => {
+describe('#mergeStopCluster', () => {
+  xit('should merge two StopCluster', () => {
     const groundPlacesService: GroundPlacesController = new GroundPlacesController();
 
     groundPlacesService.init(verylargeGroundPlacesFile as GroundPlacesFile);
 
-    const stopGroupToMergeGpuid = 'g|FRstrasbou@u0tkru';
-    const intoStopGroupGpuid = 'g|FRststbi__@u0tkxd';
+    const stopClusterToMergeGpuid = 'c|FRstrasbou@u0ts2';
+    const intoStopClusterGpuid = 'c|FRnaarto__@u0skg';
 
-    groundPlacesService.mergeStopGroup(stopGroupToMergeGpuid, intoStopGroupGpuid);
+    groundPlacesService.mergeStopCluster(stopClusterToMergeGpuid, intoStopClusterGpuid);
 
     expect(groundPlacesService.getGroundPlaces()).toStrictEqual([
       {
-        gpuid: 'c|FRstrasbou@u0ts2',
-        unique_name: 'strasbourg',
-        childs: ['g|FRststbi__@u0tkxd', 'g|FRstraroet@u0tkr3'],
+        gpuid: 'g|FRststbi__@u0tkxd',
+        childs: [],
+        name: 'Strasbourg, Strasbourg - Bischheim',
+        longitude: 7.719863,
         serviced: 'False',
         has_been_modified: false,
         warning: false,
         country_code: 'fr',
+        latitude: 48.616228,
         is_latest: true,
-        name: 'Strasbourg, Grand-Est, France',
-        longitude: 7.74815,
-        latitude: 48.583,
-        type: 'cluster',
+        type: 'group',
       },
       {
-        gpuid: 'g|FRststbi__@u0tkxd',
+        gpuid: 'g|FRstrasbou@u0tkru',
         childs: [
           {
             unique_name: null,
@@ -42,13 +41,13 @@ describe('#mergeStopGroup', () => {
             id: '23',
           },
         ],
-        name: 'Strasbourg, Strasbourg - Bischheim',
-        longitude: 7.719863,
+        name: 'Strasbourg',
+        longitude: 7.73417,
         serviced: 'False',
         has_been_modified: false,
         warning: false,
         country_code: 'fr',
-        latitude: 48.616228,
+        latitude: 48.58392,
         is_latest: true,
         type: 'group',
       },
@@ -79,7 +78,7 @@ describe('#mergeStopGroup', () => {
       {
         gpuid: 'c|FRnaarto__@u0skg',
         unique_name: 'nancy---tous-les-arrets',
-        childs: ['g|FRnanvanna@u0skgb'],
+        childs: ['g|FRnanvanna@u0skgb', 'g|FRststbi__@u0tkxd', 'g|FRstrasbou@u0tkru', 'g|FRstraroet@u0tkr3'],
         serviced: 'True',
         has_been_modified: false,
         warning: false,
@@ -131,21 +130,21 @@ describe('#mergeStopGroup', () => {
     ]);
   });
 
-  it('should delete the StopGroup to merge', () => {
+  xit('should merge two StopCluster and only remove the StopGroup that belong to both StopCluster', () => {
     const groundPlacesService: GroundPlacesController = new GroundPlacesController();
 
     groundPlacesService.init(verylargeGroundPlacesFile as GroundPlacesFile);
 
-    const stopGroupToMergeGpuid = 'g|FRststbi__@u0tkxd';
-    const intoStopGroupGpuid = 'g|FRnanvanna@u0skgb';
+    const stopClusterToMergeGpuid = 'c|FRnancy___@u0sku';
+    const intoStopClusterGpuid = 'c|FRstrasbou@u0ts2';
 
-    groundPlacesService.mergeStopGroup(stopGroupToMergeGpuid, intoStopGroupGpuid);
+    groundPlacesService.mergeStopCluster(stopClusterToMergeGpuid, intoStopClusterGpuid);
 
     expect(groundPlacesService.getGroundPlaces()).toStrictEqual([
       {
         gpuid: 'c|FRstrasbou@u0ts2',
         unique_name: 'strasbourg',
-        childs: ['g|FRstraroet@u0tkr3'],
+        childs: ['g|FRststbi__@u0tkxd', 'g|FRstrasbou@u0tkru', 'g|FRstraroet@u0tkr3'],
         serviced: 'False',
         has_been_modified: false,
         warning: false,
@@ -155,6 +154,19 @@ describe('#mergeStopGroup', () => {
         longitude: 7.74815,
         latitude: 48.583,
         type: 'cluster',
+      },
+      {
+        gpuid: 'g|FRststbi__@u0tkxd',
+        childs: [],
+        name: 'Strasbourg, Strasbourg - Bischheim',
+        longitude: 7.719863,
+        serviced: 'False',
+        has_been_modified: false,
+        warning: false,
+        country_code: 'fr',
+        latitude: 48.616228,
+        is_latest: true,
+        type: 'group',
       },
       {
         gpuid: 'g|FRstrasbou@u0tkru',
@@ -242,81 +254,67 @@ describe('#mergeStopGroup', () => {
         is_latest: true,
         type: 'group',
       },
-      {
-        gpuid: 'c|FRnancy___@u0sku',
-        unique_name: 'nancy',
-        childs: [],
-        serviced: 'True',
-        has_been_modified: false,
-        warning: false,
-        country_code: 'fr',
-        is_latest: true,
-        name: 'Nancy, Grand-Est, France',
-        longitude: 6.184417,
-        latitude: 48.692054,
-        type: 'cluster',
-      },
     ]);
   });
 
-  it('should throw an error if the two StopGroup to merge are the same', () => {
+  it('should throw an error if the two StopCluster to merge are the same', () => {
     const groundPlacesService: GroundPlacesController = new GroundPlacesController();
 
     groundPlacesService.init(verylargeGroundPlacesFile as GroundPlacesFile);
 
-    const stopGroupToMergeGpuid = 'g|FRstrasbou@u0tkru';
-    const intoStopGroupGpuid = 'g|FRstrasbou@u0tkru';
+    const stopClusterToMergeGpuid = 'c|FRnancy___@u0sku';
+    const intoClusterGroupGpuid = 'c|FRnancy___@u0sku';
 
     let thrownError: Error;
 
     try {
-      groundPlacesService.mergeStopGroup(stopGroupToMergeGpuid, intoStopGroupGpuid);
+      groundPlacesService.mergeStopCluster(stopClusterToMergeGpuid, intoClusterGroupGpuid);
     } catch (error) {
       thrownError = error;
     }
 
     expect(thrownError).toEqual(
       new Error(
-        'You can\'t "merge" these two StopGroup with the Gpuid "g|FRstrasbou@u0tkru" because they are the same.',
+        'You can\'t "merge" these two StopCluster with the Gpuid "c|FRnancy___@u0sku" because they are the same.',
       ),
     );
   });
 
-  it('should throw an error if the StopGroup to merge is not found', () => {
+  it('should throw an error if the StopCluster to merge is not found', () => {
     const groundPlacesService: GroundPlacesController = new GroundPlacesController();
 
     groundPlacesService.init(verylargeGroundPlacesFile as GroundPlacesFile);
 
-    const stopGroupToMergeGpuid = 'g|FRstrasbou@u0tkruu';
-    const intoStopGroupGpuid = 'g|FRstrasbou@u0tkru';
+    const stopClusterToMergeGpuid = 'c|FRstrasbou@u0ts22';
+    const intoClusterGroupGpuid = 'c|FRnancy___@u0sku';
 
     let thrownError: Error;
 
     try {
-      groundPlacesService.mergeStopGroup(stopGroupToMergeGpuid, intoStopGroupGpuid);
+      groundPlacesService.mergeStopCluster(stopClusterToMergeGpuid, intoClusterGroupGpuid);
     } catch (error) {
       thrownError = error;
     }
 
-    expect(thrownError).toEqual(new Error('The StopGroup with the Gpuid "g|FRstrasbou@u0tkruu" is not found.'));
+    expect(thrownError).toEqual(new Error('The StopCluster with the Gpuid "c|FRstrasbou@u0ts22" is not found.'));
   });
 
-  it('should throw an error if the StopGroup to be merged is not found', () => {
+  it('should throw an error if the StopCluster to be merged is not found', () => {
     const groundPlacesService: GroundPlacesController = new GroundPlacesController();
 
     groundPlacesService.init(verylargeGroundPlacesFile as GroundPlacesFile);
 
-    const stopGroupToMergeGpuid = 'g|FRstrasbou@u0tkru';
-    const intoStopGroupGpuid = 'g|FRstrasbou@u0tkruu';
+    const stopClusterToMergeGpuid = 'c|FRnancy___@u0sku';
+    const intoClusterGroupGpuid = 'c|FRstrasbou@u0ts22';
 
     let thrownError: Error;
 
     try {
-      groundPlacesService.mergeStopGroup(stopGroupToMergeGpuid, intoStopGroupGpuid);
+      groundPlacesService.mergeStopCluster(stopClusterToMergeGpuid, intoClusterGroupGpuid);
     } catch (error) {
       thrownError = error;
     }
 
-    expect(thrownError).toEqual(new Error('The StopGroup with the Gpuid "g|FRstrasbou@u0tkruu" is not found.'));
+    expect(thrownError).toEqual(new Error('The StopCluster with the Gpuid "c|FRstrasbou@u0ts22" is not found.'));
   });
 });

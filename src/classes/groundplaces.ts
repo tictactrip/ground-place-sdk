@@ -210,8 +210,6 @@ export class GroundPlacesController {
 
   /**
    * @description Remove a StopGroup from a StopCluster.
-   *
-   * Warning: The StopGroup to remove cannot be without StopCluster parent after this operation.
    * @param {StopGroupGpuid} stopGroupGpuidToRemove - Ground place unique identifier of the StopGroup to remove.
    * @param {StopClusterGpuid} stopClusterGpuidParent - Ground place unique identifier of the StopCluster parent.
    * @returns {void}
@@ -269,7 +267,6 @@ export class GroundPlacesController {
     fromStopClusterGpuid: StopClusterGpuid,
     intoStopClusterGpuid: StopClusterGpuid,
   ): void {
-    // Check if the new StopCluster parent is different from the current one
     if (fromStopClusterGpuid === intoStopClusterGpuid) {
       throw new Error(
         `You can't move the StopGroup with the Gpuid "${stopGroupToMoveGpuid}" because the new StopCluster parent is the same as before.`,
@@ -301,9 +298,10 @@ export class GroundPlacesController {
     fromStopGroupGpuid: StopGroupGpuid,
     intoStopGroupGpuid: StopGroupGpuid,
   ): void {
-    // Check if the new StopGroup parent is different from the current one
     if (fromStopGroupGpuid === intoStopGroupGpuid) {
-      throw new Error('You can\'t do any "move" operation because the new StopGroup parent is the same as before.');
+      throw new Error(
+        `You can't move the SegmentProviderStop with the ID "${segmentProviderStopId}" because the new StopGroup parent is the same as the current one.`,
+      );
     }
 
     const cloneGroundPlaces: GroundPlace[] = cloneDeep(this.getGroundPlaces());
@@ -360,6 +358,12 @@ export class GroundPlacesController {
    * @returns {void}
    */
   public mergeStopGroup(stopGroupToMergeGpuid: StopGroupGpuid, intoStopGroupGpuid: StopGroupGpuid): void {
+    if (stopGroupToMergeGpuid === intoStopGroupGpuid) {
+      throw new Error(
+        `You can't "merge" these two StopGroup with the Gpuid "${stopGroupToMergeGpuid}" because they are the same.`,
+      );
+    }
+
     const cloneGroundPlaces: GroundPlace[] = cloneDeep(this.getGroundPlaces());
 
     try {
@@ -380,18 +384,22 @@ export class GroundPlacesController {
 
   /**
    * @description Merge two stopClusters. It Means moving all stopGroup of a stopCluster into another.
-   *
-   * Warning: A StopGroup can belong to both StopCluster, in this case, just remove it from the first StopCluster.
    * @param {StopClusterGpuid} stopClusterToMergeGpuid - Ground place unique identifier of the stopCluster to merge.
    * @param {StopClusterGpuid} intoStopClusterGpuid - Ground place unique identifier of the stopCluster to be merged.
    * @returns {void}
    */
   public mergeStopCluster(stopClusterToMergeGpuid: StopClusterGpuid, intoStopClusterGpuid: StopClusterGpuid): void {
+    if (stopClusterToMergeGpuid === intoStopClusterGpuid) {
+      throw new Error(
+        `You can't "merge" these two StopCluster with the Gpuid "${stopClusterToMergeGpuid}" because they are the same.`,
+      );
+    }
+
     const cloneGroundPlaces: GroundPlace[] = cloneDeep(this.getGroundPlaces());
 
     try {
       const stopClusterToMerge: StopCluster = this.storageService.getStopClusterByGpuid(stopClusterToMergeGpuid);
-      const intoStopCluster: StopCluster = this.storageService.getStopClusterByGpuid(stopClusterToMergeGpuid);
+      const intoStopCluster: StopCluster = this.storageService.getStopClusterByGpuid(intoStopClusterGpuid);
 
       stopClusterToMerge.childs.map((stopGroupGpuid: StopGroupGpuid) => {
         // Since a StopGroup can belong to both StopCluster
