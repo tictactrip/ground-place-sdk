@@ -8,9 +8,9 @@ describe('#moveStopGroup', () => {
 
     groundPlacesService.init(verylargeGroundPlacesFile as GroundPlacesFile);
 
-    const stopGroupToMoveGpuid = 'g|FRststbi__@u0tkxd';
-    const fromStopClusterGpuid = 'c|FRstrasbou@u0ts2';
-    const intoStopClusterGpuid = 'c|FRnaarto__@u0skg';
+    const stopGroupToMoveGpuid = 'g|FRnanvanna@u0skgb';
+    const fromStopClusterGpuid = 'c|FRnaarto__@u0skg';
+    const intoStopClusterGpuid = 'c|FRnancy___@u0sku';
 
     groundPlacesService.moveStopGroup(stopGroupToMoveGpuid, fromStopClusterGpuid, intoStopClusterGpuid);
 
@@ -18,7 +18,7 @@ describe('#moveStopGroup', () => {
       {
         gpuid: 'c|FRstrasbou@u0ts2',
         unique_name: 'strasbourg',
-        childs: ['g|FRstrasbou@u0tkru', 'g|FRstraroet@u0tkr3'],
+        childs: ['g|FRststbi__@u0tkxd', 'g|FRstrasbou@u0tkru', 'g|FRstraroet@u0tkr3'],
         serviced: 'False',
         has_been_modified: false,
         warning: false,
@@ -93,7 +93,7 @@ describe('#moveStopGroup', () => {
       {
         gpuid: 'c|FRnaarto__@u0skg',
         unique_name: 'nancy---tous-les-arrets',
-        childs: ['g|FRnanvanna@u0skgb', 'g|FRststbi__@u0tkxd'],
+        childs: ['g|FRnancy___@u0skux'],
         serviced: 'True',
         has_been_modified: false,
         warning: false,
@@ -131,7 +131,7 @@ describe('#moveStopGroup', () => {
       {
         gpuid: 'c|FRnancy___@u0sku',
         unique_name: 'nancy',
-        childs: ['g|FRststbi__@u0tkxd'],
+        childs: ['g|FRnancy___@u0skux', 'g|FRnanvanna@u0skgb'],
         serviced: 'True',
         has_been_modified: false,
         warning: false,
@@ -142,7 +142,44 @@ describe('#moveStopGroup', () => {
         latitude: 48.692054,
         type: 'cluster',
       },
+      {
+        gpuid: 'g|FRnancy___@u0skux',
+        childs: [],
+        name: 'Nancy',
+        longitude: 6.1744,
+        serviced: 'True',
+        has_been_modified: false,
+        warning: false,
+        country_code: 'fr',
+        latitude: 48.6899,
+        is_latest: true,
+        type: 'group',
+      },
     ]);
+  });
+
+  it('should throw an error if the StopGroup to move is far away from the new StopCluster parent', () => {
+    const groundPlacesService: GroundPlacesController = new GroundPlacesController();
+
+    groundPlacesService.init(verylargeGroundPlacesFile as GroundPlacesFile);
+
+    const stopGroupToMoveGpuid = 'g|FRststbi__@u0tkxd';
+    const fromStopClusterGpuid = 'c|FRstrasbou@u0ts2';
+    const intoStopClusterGpuid = 'c|FRnaarto__@u0skg';
+
+    let thrownError: Error;
+
+    try {
+      groundPlacesService.moveStopGroup(stopGroupToMoveGpuid, fromStopClusterGpuid, intoStopClusterGpuid);
+    } catch (error) {
+      thrownError = error;
+    }
+
+    expect(thrownError).toEqual(
+      new Error(
+        'You can\'t move the StopGroup with the Gpuid "g|FRststbi__@u0tkxd" because it\'s "116km" away from the new StopCluster parent (the limit is 70km).',
+      ),
+    );
   });
 
   it('should throw an error if the StopGroup to move does not belong to the StopCluster parent specified', () => {
@@ -150,8 +187,8 @@ describe('#moveStopGroup', () => {
 
     groundPlacesService.init(verylargeGroundPlacesFile as GroundPlacesFile);
 
-    const stopGroupToMoveGpuid = 'g|FRstrasbou@u0tkru';
-    const fromStopClusterGpuid = 'c|FRnaarto__@u0skg';
+    const stopGroupToMoveGpuid = 'g|FRnanvanna@u0skgb';
+    const fromStopClusterGpuid = 'c|FRstrasbou@u0ts2';
     const intoStopClusterGpuid = 'c|FRnancy___@u0sku';
 
     let thrownError: Error;
@@ -164,7 +201,7 @@ describe('#moveStopGroup', () => {
 
     expect(thrownError).toEqual(
       new Error(
-        'The StopGroup with the Gpuid "g|FRstrasbou@u0tkru" cannot be removed from the StopCluster with the Gpuid "c|FRnaarto__@u0skg" because it does not belong to it.',
+        'The StopGroup with the Gpuid "g|FRnanvanna@u0skgb" cannot be removed from the StopCluster with the Gpuid "c|FRstrasbou@u0ts2" because it does not belong to it.',
       ),
     );
   });
@@ -174,9 +211,9 @@ describe('#moveStopGroup', () => {
 
     groundPlacesService.init(verylargeGroundPlacesFile as GroundPlacesFile);
 
-    const stopGroupToMoveGpuid = 'g|FRststbi__@u0tkxd';
+    const stopGroupToMoveGpuid = 'g|FRnanvanna@u0skgb';
     const fromStopClusterGpuid = 'c|FRnaarto__@u0skgg';
-    const intoStopClusterGpuid = 'c|FRnaarto__@u0skg';
+    const intoStopClusterGpuid = 'c|FRnancy___@u0sku';
 
     let thrownError: Error;
 

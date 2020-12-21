@@ -187,7 +187,6 @@ export class GroundPlacesController {
    * @returns {void}
    */
   public addStopGroupToStopCluster(stopGroupGpuidToAdd: StopGroupGpuid, intoStopClusterGpuid: StopClusterGpuid): void {
-    // Check if the StopGroup specified exists in the Ground places
     const stopGroupToMove: StopGroup = this.storageService.getStopGroupByGpuid(stopGroupGpuidToAdd);
     const newStopClusterParent: StopCluster = this.storageService.getStopClusterByGpuid(intoStopClusterGpuid);
 
@@ -206,7 +205,7 @@ export class GroundPlacesController {
 
     if (distanceInKms > 70) {
       throw new Error(
-        `You can't move the StopGroup with the Gpuid "${stopGroupGpuidToAdd}" because it is too far from the new StopCluster parent with the Gpuid ${intoStopClusterGpuid} ("${distanceInKms}km" between them).`,
+        `You can't move the StopGroup with the Gpuid "${stopGroupGpuidToAdd}" because it's "${distanceInKms}km" away from the new StopCluster parent (the limit is 70km).`,
       );
     }
 

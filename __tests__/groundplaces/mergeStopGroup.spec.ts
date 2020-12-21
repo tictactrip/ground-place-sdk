@@ -79,7 +79,7 @@ describe('#mergeStopGroup', () => {
       {
         gpuid: 'c|FRnaarto__@u0skg',
         unique_name: 'nancy---tous-les-arrets',
-        childs: ['g|FRnanvanna@u0skgb'],
+        childs: ['g|FRnanvanna@u0skgb', 'g|FRnancy___@u0skux'],
         serviced: 'True',
         has_been_modified: false,
         warning: false,
@@ -117,7 +117,7 @@ describe('#mergeStopGroup', () => {
       {
         gpuid: 'c|FRnancy___@u0sku',
         unique_name: 'nancy',
-        childs: ['g|FRststbi__@u0tkxd'],
+        childs: ['g|FRnancy___@u0skux'],
         serviced: 'True',
         has_been_modified: false,
         warning: false,
@@ -127,6 +127,19 @@ describe('#mergeStopGroup', () => {
         longitude: 6.184417,
         latitude: 48.692054,
         type: 'cluster',
+      },
+      {
+        gpuid: 'g|FRnancy___@u0skux',
+        childs: [],
+        name: 'Nancy',
+        longitude: 6.1744,
+        serviced: 'True',
+        has_been_modified: false,
+        warning: false,
+        country_code: 'fr',
+        latitude: 48.6899,
+        is_latest: true,
+        type: 'group',
       },
     ]);
   });
@@ -207,7 +220,7 @@ describe('#mergeStopGroup', () => {
       {
         gpuid: 'c|FRnaarto__@u0skg',
         unique_name: 'nancy---tous-les-arrets',
-        childs: ['g|FRnanvanna@u0skgb'],
+        childs: ['g|FRnanvanna@u0skgb', 'g|FRnancy___@u0skux'],
         serviced: 'True',
         has_been_modified: false,
         warning: false,
@@ -245,7 +258,7 @@ describe('#mergeStopGroup', () => {
       {
         gpuid: 'c|FRnancy___@u0sku',
         unique_name: 'nancy',
-        childs: [],
+        childs: ['g|FRnancy___@u0skux'],
         serviced: 'True',
         has_been_modified: false,
         warning: false,
@@ -255,6 +268,19 @@ describe('#mergeStopGroup', () => {
         longitude: 6.184417,
         latitude: 48.692054,
         type: 'cluster',
+      },
+      {
+        gpuid: 'g|FRnancy___@u0skux',
+        childs: [],
+        name: 'Nancy',
+        longitude: 6.1744,
+        serviced: 'True',
+        has_been_modified: false,
+        warning: false,
+        country_code: 'fr',
+        latitude: 48.6899,
+        is_latest: true,
+        type: 'group',
       },
     ]);
   });

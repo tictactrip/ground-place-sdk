@@ -1,13 +1,13 @@
 import { GroundPlacesController } from '../../src/classes/groundplaces';
-import * as largeGroundPlacesFile from '../../mocks/largeGroundPlacesFile.json';
+import * as verylargeGroundPlacesFile from '../../mocks/verylargeGroundPlacesFile.json';
 import { GroundPlacesFile } from '../../src/types';
 
 describe('#addStopGroupToStopCluster', () => {
   it('should add StopGroup to a StopCluster', () => {
     const groundPlacesService: GroundPlacesController = new GroundPlacesController();
 
-    groundPlacesService.init(largeGroundPlacesFile as GroundPlacesFile);
-    groundPlacesService.addStopGroupToStopCluster('g|FRststbi__@u0tkxd', 'c|FRnaarto__@u0skg');
+    groundPlacesService.init(verylargeGroundPlacesFile as GroundPlacesFile);
+    groundPlacesService.addStopGroupToStopCluster('g|FRnanvanna@u0skgb', 'c|FRnancy___@u0sku');
 
     expect(groundPlacesService.getGroundPlaces()).toStrictEqual([
       {
@@ -88,7 +88,7 @@ describe('#addStopGroupToStopCluster', () => {
       {
         gpuid: 'c|FRnaarto__@u0skg',
         unique_name: 'nancy---tous-les-arrets',
-        childs: ['g|FRststbi__@u0tkxd'],
+        childs: ['g|FRnanvanna@u0skgb', 'g|FRnancy___@u0skux'],
         serviced: 'True',
         has_been_modified: false,
         warning: false,
@@ -99,13 +99,84 @@ describe('#addStopGroupToStopCluster', () => {
         latitude: 48.6484863111,
         type: 'cluster',
       },
+      {
+        gpuid: 'g|FRnanvanna@u0skgb',
+        childs: [
+          {
+            unique_name: null,
+            company_name: 'flixbus',
+            name: 'Nancy, Vandoeuvre-les-Nancy',
+            latitude: 48.648395,
+            serviced: 'True',
+            company_id: 5,
+            longitude: 6.144364,
+            id: '19518',
+          },
+        ],
+        name: 'Nancy, Vandoeuvre-les-Nancy',
+        longitude: 6.144364,
+        serviced: 'True',
+        has_been_modified: false,
+        warning: false,
+        country_code: 'fr',
+        latitude: 48.648395,
+        is_latest: true,
+        type: 'group',
+      },
+      {
+        gpuid: 'c|FRnancy___@u0sku',
+        unique_name: 'nancy',
+        childs: ['g|FRnancy___@u0skux', 'g|FRnanvanna@u0skgb'],
+        serviced: 'True',
+        has_been_modified: false,
+        warning: false,
+        country_code: 'fr',
+        is_latest: true,
+        name: 'Nancy, Grand-Est, France',
+        longitude: 6.184417,
+        latitude: 48.692054,
+        type: 'cluster',
+      },
+      {
+        gpuid: 'g|FRnancy___@u0skux',
+        childs: [],
+        name: 'Nancy',
+        longitude: 6.1744,
+        serviced: 'True',
+        has_been_modified: false,
+        warning: false,
+        country_code: 'fr',
+        latitude: 48.6899,
+        is_latest: true,
+        type: 'group',
+      },
     ]);
+  });
+
+  it('should throw an error if the StopGroup to add is far away from the new StopCluster parent', () => {
+    const groundPlacesService: GroundPlacesController = new GroundPlacesController();
+
+    groundPlacesService.init(verylargeGroundPlacesFile as GroundPlacesFile);
+
+    let thrownError: Error;
+
+    try {
+      groundPlacesService.addStopGroupToStopCluster('g|FRststbi__@u0tkxd', 'c|FRnaarto__@u0skg');
+    } catch (error) {
+      thrownError = error;
+    }
+
+    expect(thrownError).toEqual(
+      new Error(
+        'You can\'t move the StopGroup with the Gpuid "g|FRststbi__@u0tkxd" because it\'s "116km" away from the new StopCluster parent (the limit is 70km).',
+      ),
+    );
   });
 
   it('should throw an error if the StopGroup to add does not exist', () => {
     const groundPlacesService: GroundPlacesController = new GroundPlacesController();
 
-    groundPlacesService.init(largeGroundPlacesFile as GroundPlacesFile);
+    groundPlacesService.init(verylargeGroundPlacesFile as GroundPlacesFile);
 
     let thrownError: Error;
 
@@ -120,7 +191,7 @@ describe('#addStopGroupToStopCluster', () => {
 
   it('should throw an error if the new StopCluster parent does not exist', () => {
     const groundPlacesService: GroundPlacesController = new GroundPlacesController();
-    groundPlacesService.init(largeGroundPlacesFile as GroundPlacesFile);
+    groundPlacesService.init(verylargeGroundPlacesFile as GroundPlacesFile);
 
     let thrownError: Error;
 
@@ -136,7 +207,7 @@ describe('#addStopGroupToStopCluster', () => {
   it('should throw an error if the StopGroup to add already belong to the new StopCluster', () => {
     const groundPlacesService: GroundPlacesController = new GroundPlacesController();
 
-    groundPlacesService.init(largeGroundPlacesFile as GroundPlacesFile);
+    groundPlacesService.init(verylargeGroundPlacesFile as GroundPlacesFile);
 
     let thrownError: Error;
 

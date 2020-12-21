@@ -7,13 +7,13 @@ describe('#removeStopGroupFromStopCluster', () => {
     const groundPlacesService: GroundPlacesController = new GroundPlacesController();
 
     groundPlacesService.init(verylargeGroundPlacesFile as GroundPlacesFile);
-    groundPlacesService.removeStopGroupFromStopCluster('g|FRststbi__@u0tkxd', 'c|FRstrasbou@u0ts2');
+    groundPlacesService.removeStopGroupFromStopCluster('g|FRnancy___@u0skux', 'c|FRnaarto__@u0skg');
 
     expect(groundPlacesService.getGroundPlaces()).toStrictEqual([
       {
         gpuid: 'c|FRstrasbou@u0ts2',
         unique_name: 'strasbourg',
-        childs: ['g|FRstrasbou@u0tkru', 'g|FRstraroet@u0tkr3'],
+        childs: ['g|FRststbi__@u0tkxd', 'g|FRstrasbou@u0tkru', 'g|FRstraroet@u0tkr3'],
         serviced: 'False',
         has_been_modified: false,
         warning: false,
@@ -126,7 +126,7 @@ describe('#removeStopGroupFromStopCluster', () => {
       {
         gpuid: 'c|FRnancy___@u0sku',
         unique_name: 'nancy',
-        childs: ['g|FRststbi__@u0tkxd'],
+        childs: ['g|FRnancy___@u0skux'],
         serviced: 'True',
         has_been_modified: false,
         warning: false,
@@ -136,6 +136,19 @@ describe('#removeStopGroupFromStopCluster', () => {
         longitude: 6.184417,
         latitude: 48.692054,
         type: 'cluster',
+      },
+      {
+        gpuid: 'g|FRnancy___@u0skux',
+        childs: [],
+        name: 'Nancy',
+        longitude: 6.1744,
+        serviced: 'True',
+        has_been_modified: false,
+        warning: false,
+        country_code: 'fr',
+        latitude: 48.6899,
+        is_latest: true,
+        type: 'group',
       },
     ]);
   });
