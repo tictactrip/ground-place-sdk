@@ -128,6 +128,20 @@ describe('#mergeStopCluster', () => {
         type: 'group',
       },
       {
+        gpuid: 'c|FRnancy___@u0sku',
+        unique_name: 'nancy',
+        childs: [],
+        serviced: 'True',
+        has_been_modified: false,
+        warning: false,
+        country_code: 'fr',
+        is_latest: true,
+        name: 'Nancy, Grand-Est, France',
+        longitude: 6.184417,
+        latitude: 48.692054,
+        type: 'cluster',
+      },
+      {
         gpuid: 'g|FRnancy___@u0skux',
         childs: [],
         name: 'Nancy',
@@ -143,7 +157,7 @@ describe('#mergeStopCluster', () => {
     ]);
   });
 
-  it('should throw an error if the two StopCluster to merge are too far apart', () => {
+  it('should throw an error if the two StopCluster to merge are too far apart (beyond 70km)', () => {
     const groundPlacesService: GroundPlacesController = new GroundPlacesController();
 
     groundPlacesService.init(mockVerylargeGroundPlacesFile as GroundPlacesFile);

@@ -18,6 +18,7 @@ import {
   StopGroup,
 } from '../types';
 import { distanceBetweenTwoPlaceInKms } from '../helpers/distance';
+import { MAX_DISTANCE_BETWEEN_STOP_GROUP_AND_STOP_CLUSTER_IN_KMS } from '../constants';
 
 /**
  * @description GroundPlaces business logic.
@@ -168,9 +169,9 @@ export class GroundPlacesController {
 
           const distanceInKms: number = distanceBetweenTwoPlaceInKms(stopGroupUpdated, stopClusterParent);
 
-          if (distanceInKms > 70) {
+          if (distanceInKms > MAX_DISTANCE_BETWEEN_STOP_GROUP_AND_STOP_CLUSTER_IN_KMS) {
             throw new Error(
-              `You can't update the StopGroup with the Gpuid "${stopGroupGpuid}" because it's "${distanceInKms}km" away from the new StopCluster parent (the limit is 70km).`,
+              `You can't update the StopGroup with the Gpuid "${stopGroupGpuid}" because it's "${distanceInKms}km" away from the new StopCluster parent (the limit is ${MAX_DISTANCE_BETWEEN_STOP_GROUP_AND_STOP_CLUSTER_IN_KMS}km).`,
             );
           }
         }
@@ -225,9 +226,9 @@ export class GroundPlacesController {
 
     const distanceInKms: number = distanceBetweenTwoPlaceInKms(stopGroupToMove, newStopClusterParent);
 
-    if (distanceInKms > 70) {
+    if (distanceInKms > MAX_DISTANCE_BETWEEN_STOP_GROUP_AND_STOP_CLUSTER_IN_KMS) {
       throw new Error(
-        `You can't move the StopGroup with the Gpuid "${stopGroupGpuidToAdd}" because it's "${distanceInKms}km" away from the new StopCluster parent (the limit is 70km).`,
+        `You can't move the StopGroup with the Gpuid "${stopGroupGpuidToAdd}" because it's "${distanceInKms}km" away from the new StopCluster parent (the limit is ${MAX_DISTANCE_BETWEEN_STOP_GROUP_AND_STOP_CLUSTER_IN_KMS}km).`,
       );
     }
 
@@ -401,8 +402,6 @@ export class GroundPlacesController {
       stopGroupToMerge.childs.map(({ id: segmentProviderStopId }: SegmentProviderStop) =>
         this.moveSegmentProviderStop(segmentProviderStopId, stopGroupToMergeGpuid, intoStopGroupGpuid),
       );
-
-      this.deleteStopGroup(stopGroupToMergeGpuid);
     } catch (error) {
       // If there is an error, previous update is reverted
       this.storageService.setGroundPlaces(cloneGroundPlaces);
@@ -445,8 +444,6 @@ export class GroundPlacesController {
           this.moveStopGroup(stopGroupGpuid, stopClusterToMergeGpuid, intoStopClusterGpuid);
         }
       });
-
-      this.deleteStopCluster(stopClusterToMergeGpuid);
     } catch (error) {
       // If there is an error, previous update is reverted
       this.storageService.setGroundPlaces(cloneGroundPlaces);
