@@ -10,7 +10,7 @@ import { GroundPlace } from 'src/types';
  * @param {GroundPlace} secondPlace - The second place to check, it also could be a StopGroup or a StopCluster.
  * @returns {number}
  */
-const distanceBetweenTwoPlaceInKms = (firstPlace: GroundPlace, secondPlace: GroundPlace): number => {
+const distanceBetweenTwoPlaceInKm = (firstPlace: GroundPlace, secondPlace: GroundPlace): number => {
   const { latitude: firstPlaceLat, longitude: firstPlaceLong } = firstPlace;
   const { latitude: secondPlaceLat, longitude: secondPlaceLong } = secondPlace;
 
@@ -20,7 +20,7 @@ const distanceBetweenTwoPlaceInKms = (firstPlace: GroundPlace, secondPlace: Grou
     );
   }
 
-  // Radius of the earth in metres
+  // Radius of the earth in meters
   const R = 6371e3;
 
   const radLat1 = (firstPlaceLat * Math.PI) / 180;
@@ -33,8 +33,10 @@ const distanceBetweenTwoPlaceInKms = (firstPlace: GroundPlace, secondPlace: Grou
     Math.cos(radLat1) * Math.cos(radLat2) * Math.sin(dLong / 2) * Math.sin(dLong / 2);
   const distance = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
-  // Distance in kms rounded to the nearest integer
-  return Math.round((R * distance) / 1000);
+  // Distance in km
+  const distanceInKm = (R * distance) / 1000;
+
+  return parseFloat(distanceInKm.toFixed(2));
 };
 
-export { distanceBetweenTwoPlaceInKms };
+export { distanceBetweenTwoPlaceInKm };

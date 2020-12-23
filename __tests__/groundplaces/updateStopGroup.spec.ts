@@ -116,7 +116,7 @@ describe('#updateStopGroup', () => {
 
     expect(thrownError).toStrictEqual(
       new Error(
-        'You can\'t update the StopGroup with the Gpuid "g|FRststbi__@u0tkxd" because it\'s "158km" away from the new StopCluster parent (the limit is 70km).',
+        'You can\'t update the StopGroup with the Gpuid "g|FRststbi__@u0tkxd" because it\'s "157.58km" away from the new StopCluster parent (the limit is 70km).',
       ),
     );
   });

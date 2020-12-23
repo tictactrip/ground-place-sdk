@@ -17,8 +17,8 @@ import {
   SegmentProviderStop,
   StopGroup,
 } from '../types';
-import { distanceBetweenTwoPlaceInKms } from '../helpers/distance';
-import { MAX_DISTANCE_BETWEEN_STOP_GROUP_AND_STOP_CLUSTER_IN_KMS } from '../constants';
+import { distanceBetweenTwoPlaceInKm } from '../helpers/distance';
+import { MAX_DISTANCE_BETWEEN_STOP_GROUP_AND_STOP_CLUSTER_IN_KM } from '../constants';
 
 /**
  * @description GroundPlaces business logic.
@@ -167,11 +167,11 @@ export class GroundPlacesController {
         if (stopClusterParent) {
           const stopGroupUpdated: StopGroup = this.storageService.getStopGroupByGpuid(stopGroupGpuid);
 
-          const distanceInKms: number = distanceBetweenTwoPlaceInKms(stopGroupUpdated, stopClusterParent);
+          const distanceInKm: number = distanceBetweenTwoPlaceInKm(stopGroupUpdated, stopClusterParent);
 
-          if (distanceInKms > MAX_DISTANCE_BETWEEN_STOP_GROUP_AND_STOP_CLUSTER_IN_KMS) {
+          if (distanceInKm > MAX_DISTANCE_BETWEEN_STOP_GROUP_AND_STOP_CLUSTER_IN_KM) {
             throw new Error(
-              `You can't update the StopGroup with the Gpuid "${stopGroupGpuid}" because it's "${distanceInKms}km" away from the new StopCluster parent (the limit is ${MAX_DISTANCE_BETWEEN_STOP_GROUP_AND_STOP_CLUSTER_IN_KMS}km).`,
+              `You can't update the StopGroup with the Gpuid "${stopGroupGpuid}" because it's "${distanceInKm}km" away from the new StopCluster parent (the limit is ${MAX_DISTANCE_BETWEEN_STOP_GROUP_AND_STOP_CLUSTER_IN_KM}km).`,
             );
           }
         }
@@ -224,11 +224,11 @@ export class GroundPlacesController {
       );
     }
 
-    const distanceInKms: number = distanceBetweenTwoPlaceInKms(stopGroupToMove, newStopClusterParent);
+    const distanceInKm: number = distanceBetweenTwoPlaceInKm(stopGroupToMove, newStopClusterParent);
 
-    if (distanceInKms > MAX_DISTANCE_BETWEEN_STOP_GROUP_AND_STOP_CLUSTER_IN_KMS) {
+    if (distanceInKm > MAX_DISTANCE_BETWEEN_STOP_GROUP_AND_STOP_CLUSTER_IN_KM) {
       throw new Error(
-        `You can't move the StopGroup with the Gpuid "${stopGroupGpuidToAdd}" because it's "${distanceInKms}km" away from the new StopCluster parent (the limit is ${MAX_DISTANCE_BETWEEN_STOP_GROUP_AND_STOP_CLUSTER_IN_KMS}km).`,
+        `You can't move the StopGroup with the Gpuid "${stopGroupGpuidToAdd}" because it's "${distanceInKm}km" away from the new StopCluster parent (the limit is ${MAX_DISTANCE_BETWEEN_STOP_GROUP_AND_STOP_CLUSTER_IN_KM}km).`,
       );
     }
 
