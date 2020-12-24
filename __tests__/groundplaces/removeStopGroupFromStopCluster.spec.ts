@@ -1,19 +1,19 @@
 import { GroundPlacesController } from '../../src/classes/groundplaces';
-import * as verylargeGroundPlacesFile from '../../mocks/verylargeGroundPlacesFile.json';
+import * as mockVerylargeGroundPlacesFile from '../../mocks/verylargeGroundPlacesFile.json';
 import { GroundPlacesFile } from '../../src/types';
 
 describe('#removeStopGroupFromStopCluster', () => {
   it('should remove StopGroup from StopCluster', () => {
     const groundPlacesService: GroundPlacesController = new GroundPlacesController();
 
-    groundPlacesService.init(verylargeGroundPlacesFile as GroundPlacesFile);
-    groundPlacesService.removeStopGroupFromStopCluster('g|FRststbi__@u0tkxd', 'c|FRstrasbou@u0ts2');
+    groundPlacesService.init(mockVerylargeGroundPlacesFile as GroundPlacesFile);
+    groundPlacesService.removeStopGroupFromStopCluster('g|FRnancy___@u0skux', 'c|FRnaarto__@u0skg');
 
     expect(groundPlacesService.getGroundPlaces()).toStrictEqual([
       {
         gpuid: 'c|FRstrasbou@u0ts2',
         unique_name: 'strasbourg',
-        childs: ['g|FRstrasbou@u0tkru', 'g|FRstraroet@u0tkr3'],
+        childs: ['g|FRststbi__@u0tkxd', 'g|FRstrasbou@u0tkru', 'g|FRstraroet@u0tkr3'],
         serviced: 'False',
         has_been_modified: false,
         warning: false,
@@ -126,7 +126,7 @@ describe('#removeStopGroupFromStopCluster', () => {
       {
         gpuid: 'c|FRnancy___@u0sku',
         unique_name: 'nancy',
-        childs: ['g|FRststbi__@u0tkxd'],
+        childs: ['g|FRnancy___@u0skux'],
         serviced: 'True',
         has_been_modified: false,
         warning: false,
@@ -137,13 +137,26 @@ describe('#removeStopGroupFromStopCluster', () => {
         latitude: 48.692054,
         type: 'cluster',
       },
+      {
+        gpuid: 'g|FRnancy___@u0skux',
+        childs: [],
+        name: 'Nancy',
+        longitude: 6.1744,
+        serviced: 'True',
+        has_been_modified: false,
+        warning: false,
+        country_code: 'fr',
+        latitude: 48.6899,
+        is_latest: true,
+        type: 'group',
+      },
     ]);
   });
 
   it('should throw an error if the StopGroup to remove does not belong to the StopCluster specified', () => {
     const groundPlacesService: GroundPlacesController = new GroundPlacesController();
 
-    groundPlacesService.init(verylargeGroundPlacesFile as GroundPlacesFile);
+    groundPlacesService.init(mockVerylargeGroundPlacesFile as GroundPlacesFile);
 
     let thrownError: Error;
 
@@ -162,7 +175,7 @@ describe('#removeStopGroupFromStopCluster', () => {
   it('should throw an error if the StopGroup to remove is lonely after the operation', () => {
     const groundPlacesService: GroundPlacesController = new GroundPlacesController();
 
-    groundPlacesService.init(verylargeGroundPlacesFile as GroundPlacesFile);
+    groundPlacesService.init(mockVerylargeGroundPlacesFile as GroundPlacesFile);
 
     let thrownError: Error;
 

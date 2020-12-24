@@ -1,10 +1,10 @@
 import { GroundPlacesController } from '../../src/classes/groundplaces';
-import * as largeGroundPlacesFile from '../../mocks/largeGroundPlacesFile.json';
+import * as mockLargeGroundPlacesFile from '../../mocks/largeGroundPlacesFile.json';
 import { GroundPlacesFile } from '../../src/types';
 
 describe('#deleteStopGroup', () => {
   const groundPlacesService: GroundPlacesController = new GroundPlacesController();
-  groundPlacesService.init(largeGroundPlacesFile as GroundPlacesFile);
+  groundPlacesService.init(mockLargeGroundPlacesFile as GroundPlacesFile);
 
   it('should delete the StopGroup if its empty (no childs) and the Gpuid exist and remove reference inside its StopCluster parent', () => {
     groundPlacesService.deleteStopGroup('g|FRststbi__@u0tkxd');
