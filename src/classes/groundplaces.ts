@@ -241,6 +241,23 @@ export class GroundPlacesController {
 
     try {
       this.storageService.updatePlace(stopClusterGpuid, propertiesToUpdate, GroundPlaceType.CLUSTER);
+
+      // If latitude and/or longitude have updates wanted, first check that the new distance is correct with all StopGroup childs
+      if (propertiesToUpdate.latitude || propertiesToUpdate.longitude) {
+        const stopClusterUpdated: StopCluster = this.storageService.getStopClusterByGpuid(stopClusterGpuid);
+
+        stopClusterUpdated.childs.map((stopGroupGpuid: StopGroupGpuid) => {
+          const stopGroup: StopGroup = this.storageService.getStopGroupByGpuid(stopGroupGpuid);
+
+          const distanceInKm: number = distanceBetweenTwoPlaceInKm(stopGroup, stopClusterUpdated);
+
+          if (distanceInKm > MAX_DISTANCE_BETWEEN_STOP_GROUP_AND_STOP_CLUSTER_IN_KM) {
+            throw new Error(
+              `You can't update the StopCluster with the Gpuid "${stopClusterGpuid}" because it's "${distanceInKm}km" away from the StopGroup children with the Gpuid "${stopGroupGpuid}" (the limit is ${MAX_DISTANCE_BETWEEN_STOP_GROUP_AND_STOP_CLUSTER_IN_KM}km).`,
+            );
+          }
+        });
+      }
     } catch (error) {
       // If there is an error, previous update is reverted
       this.storageService.setGroundPlaces(cloneGroundPlaces);
