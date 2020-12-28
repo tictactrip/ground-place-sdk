@@ -4,6 +4,7 @@ import { CountryCode, GroundPlacesFile } from '../../src/types';
 
 describe('#createStopGroup', () => {
   const groundPlacesService: GroundPlacesController = new GroundPlacesController();
+
   it('should create a new StopGroup', () => {
     groundPlacesService.init(mockSmallGroundPlacesFile as GroundPlacesFile);
 
@@ -13,14 +14,14 @@ describe('#createStopGroup', () => {
       latitude: 48.5857122,
       longitude: 7.6275127,
     };
-    const currentStopGroupParent = 'g|FRststbi__@u0tkxd';
-    const currentStopClusterParent = 'c|FRstrasbou@u0ts2';
+    const currentStopGroupParentGpuid = 'g|FRststbi__@u0tkxd';
+    const currentStopClusterParentGpuid = 'c|FRstrasbou@u0ts2';
     const segmentProviderStopId = '19528';
 
     groundPlacesService.createStopGroup(
       createStopGroupProperties,
-      currentStopGroupParent,
-      currentStopClusterParent,
+      currentStopGroupParentGpuid,
+      currentStopClusterParentGpuid,
       segmentProviderStopId,
     );
 
@@ -88,14 +89,14 @@ describe('#createStopGroup', () => {
         latitude: 50,
         longitude: 100,
       };
-      const currentStopGroupParent = 'g|FRststbi__@u0tkxd';
-      const currentStopClusterParent = 'c|FRstrasbou@u0ts2';
+      const currentStopGroupParentGpuid = 'g|FRststbi__@u0tkxd';
+      const currentStopClusterParentGpuid = 'c|FRstrasbou@u0ts2';
       const segmentProviderStopId = '19528';
 
       groundPlacesService.createStopGroup(
         createStopGroupProperties,
-        currentStopGroupParent,
-        currentStopClusterParent,
+        currentStopGroupParentGpuid,
+        currentStopClusterParentGpuid,
         segmentProviderStopId,
       );
     } catch (error) {
@@ -121,14 +122,14 @@ describe('#createStopGroup', () => {
         latitude: 50,
         longitude: 100,
       };
-      const currentStopGroupParent = 'g|FRststbi__@u0tkxdddd';
-      const currentStopClusterParent = 'c|FRstrasbou@u0ts2';
+      const currentStopGroupParentGpuid = 'g|FRststbi__@u0tkxdddd';
+      const currentStopClusterParentGpuid = 'c|FRstrasbou@u0ts2';
       const segmentProviderStopId = '19528';
 
       groundPlacesService.createStopGroup(
         createStopGroupProperties,
-        currentStopGroupParent,
-        currentStopClusterParent,
+        currentStopGroupParentGpuid,
+        currentStopClusterParentGpuid,
         segmentProviderStopId,
       );
     } catch (error) {
@@ -150,14 +151,14 @@ describe('#createStopGroup', () => {
         latitude: 50,
         longitude: 100,
       };
-      const currentStopGroupParent = 'g|FRststbi__@u0tkxd';
-      const currentStopClusterParent = 'c|FRstrasbou@u0ts2222';
+      const currentStopGroupParentGpuid = 'g|FRststbi__@u0tkxd';
+      const currentStopClusterParentGpuid = 'c|FRstrasbou@u0ts2222';
       const segmentProviderStopId = '19528';
 
       groundPlacesService.createStopGroup(
         createStopGroupProperties,
-        currentStopGroupParent,
-        currentStopClusterParent,
+        currentStopGroupParentGpuid,
+        currentStopClusterParentGpuid,
         segmentProviderStopId,
       );
     } catch (error) {
@@ -179,14 +180,14 @@ describe('#createStopGroup', () => {
         latitude: 50,
         longitude: 100,
       };
-      const currentStopGroupParent = 'g|FRststbi__@u0tkxd';
-      const currentStopClusterParent = 'c|FRstrasbou@u0ts2';
+      const currentStopGroupParentGpuid = 'g|FRststbi__@u0tkxd';
+      const currentStopClusterParentGpuid = 'c|FRstrasbou@u0ts2';
       const segmentProviderStopId = '1952888';
 
       groundPlacesService.createStopGroup(
         createStopGroupProperties,
-        currentStopGroupParent,
-        currentStopClusterParent,
+        currentStopGroupParentGpuid,
+        currentStopClusterParentGpuid,
         segmentProviderStopId,
       );
     } catch (error) {
