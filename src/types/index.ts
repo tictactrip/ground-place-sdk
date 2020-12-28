@@ -45,6 +45,24 @@ interface StopCluster extends StopClusterFromFile {
   gpuid: StopClusterGpuid;
 }
 
+interface StopGroupCreated {
+  id: StopGroupGpuid;
+  countryCode: CountryCode;
+  name: string;
+  longitude: number;
+  latitude: number;
+  type: GroundPlaceType.GROUP;
+}
+
+interface StopClusterCreated {
+  id: StopClusterGpuid;
+  countryCode: CountryCode;
+  name: string;
+  longitude: number;
+  latitude: number;
+  type: GroundPlaceType.CLUSTER;
+}
+
 interface SegmentProviderStop {
   id: string;
   unique_name: null;
@@ -56,23 +74,11 @@ interface SegmentProviderStop {
   longitude: number;
 }
 
-interface CreateStopGroupProperties {
+interface CreatePlaceProperties {
   countryCode: CountryCode;
   name: string;
   longitude: number;
   latitude: number;
-  type: GroundPlaceType;
-  serviced: GroundPlaceServiced;
-  segmentProviderStop: SegmentProviderStop;
-}
-
-interface CreateStopClusterProperties {
-  countryCode: CountryCode;
-  name: string;
-  longitude: number;
-  latitude: number;
-  type: GroundPlaceType;
-  serviced: GroundPlaceServiced;
 }
 
 interface UpdateStopProperties {
@@ -378,11 +384,12 @@ export {
   GroundPlaceType,
   GroundPlaceServiced,
   GroundPlaceActionType,
-  CreateStopGroupProperties,
-  CreateStopClusterProperties,
+  CreatePlaceProperties,
   UpdateStopProperties,
   CountryCode,
   StopGroupFromFile,
   StopClusterFromFile,
   GroundPlaceFromFile,
+  StopGroupCreated,
+  StopClusterCreated,
 };

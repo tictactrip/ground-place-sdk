@@ -52,6 +52,15 @@ export class Storage {
   }
 
   /**
+   * @description Add a new place to the Ground places.
+   * @param {GroundPlace} groundPlace - Could be a StopGroup or a StopCluster
+   * @returns {void}
+   */
+  public addPlace(groundPlace: GroundPlace): void {
+    this.groundPlaces.push(groundPlace);
+  }
+
+  /**
    * @description Returns the stopGroup identified by its Gpuid.
    * @param {StopGroupGpuid} stopGroupGpuid - Ground Place unique identifier of the StopGroup to find.
    * @returns {StopGroup}

@@ -1,11 +1,11 @@
 import * as cloneDeep from 'lodash.clonedeep';
+import { Generator } from '@tictactrip/gp-uid';
 import { Storage } from '../classes/storage';
 import { WebServices } from './webservices';
 import {
   StopGroupGpuid,
   StopClusterGpuid,
-  CreateStopGroupProperties,
-  CreateStopClusterProperties,
+  CreatePlaceProperties,
   UpdateStopProperties,
   AutocompleteFilter,
   GroundPlacesDiff,
@@ -16,8 +16,9 @@ import {
   StopCluster,
   SegmentProviderStop,
   StopGroup,
+  StopGroupCreated,
 } from '../types';
-import { distanceBetweenTwoPlaceInKm } from '../helpers/distance';
+import { distanceBetweenTwoPlaceInKm, parseStopGroupCreated } from '../helpers';
 import { MAX_DISTANCE_BETWEEN_STOP_GROUP_AND_STOP_CLUSTER_IN_KM } from '../constants';
 
 /**
@@ -25,8 +26,8 @@ import { MAX_DISTANCE_BETWEEN_STOP_GROUP_AND_STOP_CLUSTER_IN_KM } from '../const
  */
 export class GroundPlacesController {
   private readonly storageService: Storage;
-
   private readonly webService: WebServices;
+  private readonly generatorService: Generator;
 
   /**
    * @description Manipulate GroundPlaces file.
@@ -34,8 +35,8 @@ export class GroundPlacesController {
    */
   constructor() {
     this.storageService = new Storage();
-
     this.webService = new WebServices();
+    this.generatorService = new Generator();
   }
 
   /**
@@ -124,13 +125,40 @@ export class GroundPlacesController {
   /**
    * @description Create a new StopGroup from a SegmentProviderStop.
    * @param {CreateStopGroupProperties} createStopGroupProperties - Properties that are needed to create a new StopGroup.
-   * @param {StopClusterGpuid} stopClusterParentGpuid - Ground place unique identifier of the StopCluster parent.
+   * @param {StopGroupGpuid} stopGroupParentGpuid - Ground place unique identifier of the current StopGroup parent.
+   * @param {StopClusterGpuid} stopClusterParentGpuid - Ground place unique identifier of the current StopCluster parent.
+   * @param {string} segmentProviderStopId - The identifier of the SegmentProvider used to create the new StopGroup.
    * @returns {void}
    */
   public createStopGroup(
-    createStopGroupProperties: CreateStopGroupProperties,
+    createPlaceProperties: CreatePlaceProperties,
+    stopGroupParentGpuid: StopGroupGpuid,
     stopClusterParentGpuid: StopClusterGpuid,
-  ): void {}
+    segmentProviderStopId: string,
+  ): void {
+    const cloneGroundPlaces: GroundPlace[] = cloneDeep(this.getGroundPlaces());
+
+    try {
+      const stopGroupCreated: StopGroupCreated = this.generatorService.gpuid({
+        ...createPlaceProperties,
+        type: GroundPlaceType.GROUP,
+      });
+
+      const newStopGroup: StopGroup = parseStopGroupCreated(stopGroupCreated);
+
+      this.storageService.addPlace(newStopGroup);
+
+      this.moveSegmentProviderStop(segmentProviderStopId, stopGroupParentGpuid, newStopGroup.gpuid);
+
+      // As the new StopGroup is not empty, we have to add it to the StopCluster of the StopGroup to which the SegmentProviderStop had belonged
+      this.addStopGroupToStopCluster(newStopGroup.gpuid, stopClusterParentGpuid);
+    } catch (error) {
+      // If there is an error, previous update is reverted
+      this.storageService.setGroundPlaces(cloneGroundPlaces);
+
+      throw new Error(error.message);
+    }
+  }
 
   /**
    * @description Create a new StopCluster from a StopGroup.
@@ -138,10 +166,7 @@ export class GroundPlacesController {
    * @param {StopGroupGpuid} fromStopGroupGpuid - Ground place unique identifier of the StopGroup on which the StopCluster will be created.
    * @returns {void}
    */
-  public createStopCluster(
-    createStopClusterProperties: CreateStopClusterProperties,
-    fromStopGroupGpuid: StopGroupGpuid,
-  ): void {}
+  public createStopCluster(createPlaceProperties: CreatePlaceProperties, fromStopGroupGpuid: StopGroupGpuid): void {}
 
   /**
    * @description Update the stopGroup with the new values given.
@@ -171,7 +196,7 @@ export class GroundPlacesController {
 
           if (distanceInKm > MAX_DISTANCE_BETWEEN_STOP_GROUP_AND_STOP_CLUSTER_IN_KM) {
             throw new Error(
-              `You can't update the StopGroup with the Gpuid "${stopGroupGpuid}" because it's "${distanceInKm}km" away from the new StopCluster parent (the limit is ${MAX_DISTANCE_BETWEEN_STOP_GROUP_AND_STOP_CLUSTER_IN_KM}km).`,
+              `You can't update the StopGroup with the Gpuid "${stopGroupGpuid}" because it's "${distanceInKm}km" away from the current StopCluster parent (the limit is ${MAX_DISTANCE_BETWEEN_STOP_GROUP_AND_STOP_CLUSTER_IN_KM}km).`,
             );
           }
         }
@@ -228,7 +253,7 @@ export class GroundPlacesController {
 
     if (distanceInKm > MAX_DISTANCE_BETWEEN_STOP_GROUP_AND_STOP_CLUSTER_IN_KM) {
       throw new Error(
-        `You can't move the StopGroup with the Gpuid "${stopGroupGpuidToAdd}" because it's "${distanceInKm}km" away from the new StopCluster parent (the limit is ${MAX_DISTANCE_BETWEEN_STOP_GROUP_AND_STOP_CLUSTER_IN_KM}km).`,
+        `You can't attach the StopGroup with the Gpuid "${stopGroupGpuidToAdd}" to the StopCluster with the Gpuid "${intoStopClusterGpuid}" because they are "${distanceInKm}km" away (the limit is ${MAX_DISTANCE_BETWEEN_STOP_GROUP_AND_STOP_CLUSTER_IN_KM}km).`,
       );
     }
 
