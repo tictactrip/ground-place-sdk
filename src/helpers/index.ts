@@ -1,2 +1,2 @@
 export { distanceBetweenTwoPlaceInKm } from './distance';
-export { parseStopGroupCreated } from './parse';
+export { parseStopGroupCreated, parseStopClusterCreated } from './parse';
