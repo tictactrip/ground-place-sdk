@@ -541,6 +541,18 @@ export class GroundPlacesController {
   }
 
   /**
+   * @description Download the GroundPlacesDiff file in JSON and store it on Desktop.
+   * @returns {void}
+   */
+  public downloadGroundPlacesDiffToDesktop(): void {}
+
+  /**
+   * @description Download the GroundPlaces file in JSON and store it on Desktop.
+   * @returns {void}
+   */
+  public downloadGroundPlacesFileToDesktop(): void {}
+
+  /**
    * @description Apply the diff file to the GroundPlacesDiff object.
    * @param {GroundPlacesDiff} groundPlacesDiff - Object that store the history of changes of the GroundPlaces.
    * @returns {void}
