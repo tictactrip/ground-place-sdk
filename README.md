@@ -3,12 +3,12 @@
 [![Dependencies][prod-dependencies-badge]][prod-dependencies]
 [![Coverage][coverage-badge]][coverage]
 [![Build Status][travis-badge]][travis-ci]
-[![License][license-badge]][LICENSE]
+[![License][license-badge]][license]
 [![PRs Welcome][prs-badge]][prs]
 
 ## Description
 
-...
+This repository offers powerful JSON file manipulation methods for Ground places use.
 
 ## Install
 
@@ -18,10 +18,31 @@ yarn add @tictactrip/ground-place-sdk
 
 ## How to use it?
 
-```js
-// ...
-```
+```ts
+import { GroundPlacesController, GroundPlacesFile } from '@tictactrip/ground-places-sdk';
+import * as GroundPlacesFileJSON from './GroundPlacesFile.json';
 
+// Create new instance of the GroundPlacesController
+const groundPlacesService: GroundPlacesController = new GroundPlacesController();
+
+// Initialize the instance with your JSON file
+groundPlacesService.init(GroundPlacesFileJSON as GroundPlacesFile);
+
+// And now you can make manipulation on this file with all methods provided by the package
+groundPlacesService.updateStopCluster('c|FRstrasbou@u0ts2', { name: 'Strasbourg, Est, France' });
+groundPlacesService.mergeStopGroup('g|FRstrasbou@u0tkru', 'g|FRststbi__@u0tkxd');
+groundPlacesService.deleteStopGroup('g|FRstrasbou@u0tkru');
+...
+
+// Once your changes are complete, you can download a JSON file of your changes
+groundPlacesService.downloadGroundPlacesDiffToDesktop();
+
+// Apply the diff file on your GroundPlacesFile
+groundPlacesService.applyGroundPlacesDiff(GroundPlacesDiffFileJson);
+
+// And download your new GroundPlacesFile with all the changes made before
+groundPlacesService.downloadGroundPlacesFileToDesktop();
+```
 
 ## Scripts
 
