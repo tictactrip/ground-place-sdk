@@ -16,10 +16,9 @@ import {
   StopCluster,
   SegmentProviderStop,
   StopGroup,
-  StopGroupCreated,
-  StopClusterCreated,
+  PlaceCreated,
 } from '../types';
-import { distanceBetweenTwoPlaceInKm, parseStopGroupCreated, parseStopClusterCreated } from '../helpers';
+import { distanceBetweenTwoPlaceInKm, parsePlaceCreated } from '../helpers';
 import { MAX_DISTANCE_BETWEEN_STOP_GROUP_AND_STOP_CLUSTER_IN_KM } from '../constants';
 
 /**
@@ -140,12 +139,12 @@ export class GroundPlacesController {
     const cloneGroundPlaces: GroundPlace[] = cloneDeep(this.getGroundPlaces());
 
     try {
-      const stopGroupCreated: StopGroupCreated = this.generatorService.gpuid({
+      const stopGroupCreated: PlaceCreated = this.generatorService.gpuid({
         ...createPlaceProperties,
         type: GroundPlaceType.GROUP,
       });
 
-      const newStopGroup: StopGroup = parseStopGroupCreated(stopGroupCreated);
+      const newStopGroup: GroundPlace = parsePlaceCreated(stopGroupCreated);
 
       this.storageService.addPlace(newStopGroup);
 
@@ -171,12 +170,12 @@ export class GroundPlacesController {
     const cloneGroundPlaces: GroundPlace[] = cloneDeep(this.getGroundPlaces());
 
     try {
-      const stopClusterCreated: StopClusterCreated = this.generatorService.gpuid({
+      const stopClusterCreated: PlaceCreated = this.generatorService.gpuid({
         ...createPlaceProperties,
         type: GroundPlaceType.CLUSTER,
       });
 
-      const newStopCluster: StopCluster = parseStopClusterCreated(stopClusterCreated);
+      const newStopCluster: GroundPlace = parsePlaceCreated(stopClusterCreated);
 
       this.storageService.addPlace(newStopCluster);
 
