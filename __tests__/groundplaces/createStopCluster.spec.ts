@@ -16,7 +16,7 @@ describe('#createStopCluster', () => {
     };
     const fromStopGroupGpuid = 'g|FRststbi__@u0tkxd';
 
-    groundPlacesService.createStopCluster(createStopClusterProperties, fromStopGroupGpuid);
+    groundPlacesService.createStopCluster(fromStopGroupGpuid, createStopClusterProperties);
 
     expect(groundPlacesService.getGroundPlaces()).toEqual([
       {
@@ -84,7 +84,7 @@ describe('#createStopCluster', () => {
       };
       const fromStopGroupGpuid = 'g|FRststbi__@u0tkxd';
 
-      groundPlacesService.createStopCluster(createStopClusterProperties, fromStopGroupGpuid);
+      groundPlacesService.createStopCluster(fromStopGroupGpuid, createStopClusterProperties);
     } catch (error) {
       thrownError = error;
     }
@@ -110,7 +110,7 @@ describe('#createStopCluster', () => {
       };
       const fromStopGroupGpuid = 'g|FRststbi__@u0tkxdd';
 
-      groundPlacesService.createStopCluster(createStopClusterProperties, fromStopGroupGpuid);
+      groundPlacesService.createStopCluster(fromStopGroupGpuid, createStopClusterProperties);
     } catch (error) {
       thrownError = error;
     }

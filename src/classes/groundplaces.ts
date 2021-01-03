@@ -124,17 +124,15 @@ export class GroundPlacesController {
 
   /**
    * @description Create a new StopGroup from a SegmentProviderStop.
-   * @param {CreateGroundPlacesParams} createGroundPlaceParams - Parameters that are needed to create a new StopGroup.
-   * @param {StopGroupGpuid} stopGroupParentGpuid - Ground place unique identifier of the current StopGroup parent.
-   * @param {StopClusterGpuid} stopClusterParentGpuid - Ground place unique identifier of the current StopCluster parent.
    * @param {string} segmentProviderStopId - The identifier of the SegmentProvider used to create the new StopGroup.
+   * @param {StopGroupGpuid} fromStopGroupGpuid - Ground place unique identifier of the current StopGroup parent.
+   * @param {CreateGroundPlacesParams} createGroundPlaceParams - Parameters that are needed to create a new StopGroup.
    * @returns {void}
    */
   public createStopGroup(
-    createGroundPlaceParams: CreateGroundPlacesParams,
-    stopGroupParentGpuid: StopGroupGpuid,
-    stopClusterParentGpuid: StopClusterGpuid,
     segmentProviderStopId: string,
+    fromStopGroupGpuid: StopGroupGpuid,
+    createGroundPlaceParams: CreateGroundPlacesParams,
   ): void {
     const cloneGroundPlaces: GroundPlace[] = cloneDeep(this.getGroundPlaces());
 
@@ -148,10 +146,18 @@ export class GroundPlacesController {
 
       this.storageService.addPlace(newStopGroup);
 
-      this.moveSegmentProviderStop(segmentProviderStopId, stopGroupParentGpuid, newStopGroup.gpuid);
+      this.moveSegmentProviderStop(segmentProviderStopId, fromStopGroupGpuid, newStopGroup.gpuid);
 
-      // As the new StopGroup have a segmentProviderStop in it (it's not empty), we have to add it to the StopCluster of the old StopGroup parent
-      this.addStopGroupToStopCluster(newStopGroup.gpuid, stopClusterParentGpuid);
+      // As the new StopGroup have a segmentProviderStop in it (it's not empty), we have to add it inside all its potential StopCluster parents
+      const stopClusterParent: GroundPlace[] = cloneGroundPlaces.filter(
+        (groundPlace: GroundPlace) =>
+          groundPlace.type === GroundPlaceType.CLUSTER &&
+          groundPlace.childs.some((stopGroupGpuidChild: StopGroupGpuid) => stopGroupGpuidChild === fromStopGroupGpuid),
+      );
+
+      stopClusterParent.map(({ gpuid: stopClusterGpuid }: StopCluster) =>
+        this.addStopGroupToStopCluster(newStopGroup.gpuid, stopClusterGpuid),
+      );
     } catch (error) {
       // If there is an error, previous update is reverted
       this.storageService.setGroundPlaces(cloneGroundPlaces);
@@ -162,13 +168,13 @@ export class GroundPlacesController {
 
   /**
    * @description Create a new StopCluster from a StopGroup.
-   * @param {CreateGroundPlacesParams} createGroundPlaceParams - Params that are needed to create a new StopCluster.
    * @param {StopGroupGpuid} fromStopGroupGpuid - Ground place unique identifier of the StopGroup on which the StopCluster will be created.
+   * @param {CreateGroundPlacesParams} createGroundPlaceParams - Params that are needed to create a new StopCluster.
    * @returns {void}
    */
   public createStopCluster(
-    createGroundPlaceParams: CreateGroundPlacesParams,
     fromStopGroupGpuid: StopGroupGpuid,
+    createGroundPlaceParams: CreateGroundPlacesParams,
   ): void {
     const cloneGroundPlaces: GroundPlace[] = cloneDeep(this.getGroundPlaces());
 

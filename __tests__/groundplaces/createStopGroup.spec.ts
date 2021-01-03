@@ -14,16 +14,10 @@ describe('#createStopGroup', () => {
       latitude: 48.5857122,
       longitude: 7.6275127,
     };
-    const currentStopGroupParentGpuid = 'g|FRststbi__@u0tkxd';
-    const currentStopClusterParentGpuid = 'c|FRstrasbou@u0ts2';
+    const fromStopGroupGpuid = 'g|FRststbi__@u0tkxd';
     const segmentProviderStopId = '19528';
 
-    groundPlacesService.createStopGroup(
-      createStopGroupProperties,
-      currentStopGroupParentGpuid,
-      currentStopClusterParentGpuid,
-      segmentProviderStopId,
-    );
+    groundPlacesService.createStopGroup(segmentProviderStopId, fromStopGroupGpuid, createStopGroupProperties);
 
     expect(groundPlacesService.getGroundPlaces()).toEqual([
       {
@@ -77,7 +71,7 @@ describe('#createStopGroup', () => {
     ]);
   });
 
-  it('should throw an error if the new StopGroup is far away from the current StopCluster parent (beyond 70km)', () => {
+  it('should throw an error if the new StopGroup is far away from one of its StopCluster parent (beyond 70km)', () => {
     groundPlacesService.init(mockSmallGroundPlacesFile as GroundPlacesFile);
 
     let thrownError: Error;
@@ -89,16 +83,10 @@ describe('#createStopGroup', () => {
         latitude: 50,
         longitude: 100,
       };
-      const currentStopGroupParentGpuid = 'g|FRststbi__@u0tkxd';
-      const currentStopClusterParentGpuid = 'c|FRstrasbou@u0ts2';
+      const fromStopGroupGpuid = 'g|FRststbi__@u0tkxd';
       const segmentProviderStopId = '19528';
 
-      groundPlacesService.createStopGroup(
-        createStopGroupProperties,
-        currentStopGroupParentGpuid,
-        currentStopClusterParentGpuid,
-        segmentProviderStopId,
-      );
+      groundPlacesService.createStopGroup(segmentProviderStopId, fromStopGroupGpuid, createStopGroupProperties);
     } catch (error) {
       thrownError = error;
     }
@@ -110,7 +98,7 @@ describe('#createStopGroup', () => {
     );
   });
 
-  it('should throw an error if the currentStopGroup parent is not found', () => {
+  it('should throw an error if the fromStopGroupGpuid parent is not found', () => {
     groundPlacesService.init(mockSmallGroundPlacesFile as GroundPlacesFile);
 
     let thrownError: Error;
@@ -122,50 +110,15 @@ describe('#createStopGroup', () => {
         latitude: 50,
         longitude: 100,
       };
-      const currentStopGroupParentGpuid = 'g|FRststbi__@u0tkxdddd';
-      const currentStopClusterParentGpuid = 'c|FRstrasbou@u0ts2';
+      const fromStopGroupGpuid = 'g|FRststbi__@u0tkxdddd';
       const segmentProviderStopId = '19528';
 
-      groundPlacesService.createStopGroup(
-        createStopGroupProperties,
-        currentStopGroupParentGpuid,
-        currentStopClusterParentGpuid,
-        segmentProviderStopId,
-      );
+      groundPlacesService.createStopGroup(segmentProviderStopId, fromStopGroupGpuid, createStopGroupProperties);
     } catch (error) {
       thrownError = error;
     }
 
     expect(thrownError).toEqual(new Error('The StopGroup with the Gpuid "g|FRststbi__@u0tkxdddd" is not found.'));
-  });
-
-  it('should throw an error if the currentStopCluster parent is not found', () => {
-    groundPlacesService.init(mockSmallGroundPlacesFile as GroundPlacesFile);
-
-    let thrownError: Error;
-
-    try {
-      const createStopGroupProperties = {
-        countryCode: CountryCode.FR,
-        name: 'Strasbourg - Wolfisheim',
-        latitude: 50,
-        longitude: 100,
-      };
-      const currentStopGroupParentGpuid = 'g|FRststbi__@u0tkxd';
-      const currentStopClusterParentGpuid = 'c|FRstrasbou@u0ts2222';
-      const segmentProviderStopId = '19528';
-
-      groundPlacesService.createStopGroup(
-        createStopGroupProperties,
-        currentStopGroupParentGpuid,
-        currentStopClusterParentGpuid,
-        segmentProviderStopId,
-      );
-    } catch (error) {
-      thrownError = error;
-    }
-
-    expect(thrownError).toEqual(new Error('The StopCluster with the Gpuid "c|FRstrasbou@u0ts2222" is not found.'));
   });
 
   it('should throw an error if the segmentProviderStop is not found', () => {
@@ -180,16 +133,10 @@ describe('#createStopGroup', () => {
         latitude: 50,
         longitude: 100,
       };
-      const currentStopGroupParentGpuid = 'g|FRststbi__@u0tkxd';
-      const currentStopClusterParentGpuid = 'c|FRstrasbou@u0ts2';
+      const fromStopGroupGpuid = 'g|FRststbi__@u0tkxd';
       const segmentProviderStopId = '1952888';
 
-      groundPlacesService.createStopGroup(
-        createStopGroupProperties,
-        currentStopGroupParentGpuid,
-        currentStopClusterParentGpuid,
-        segmentProviderStopId,
-      );
+      groundPlacesService.createStopGroup(segmentProviderStopId, fromStopGroupGpuid, createStopGroupProperties);
     } catch (error) {
       thrownError = error;
     }
