@@ -52,7 +52,7 @@ describe('#updateStopCluster', () => {
     ]);
   });
 
-  it('should update the name of the StopCluster', () => {
+  it('should throw an error if the new position of the updated StopCluster is far away from one of its StopGroup childs (limit is 70km)', () => {
     groundPlacesService.init(mockSmallGroundPlacesFile as GroundPlacesFile);
 
     let thrownError: Error;

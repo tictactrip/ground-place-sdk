@@ -1,2 +1,2 @@
-export { distanceBetweenTwoPlaceInKm } from './distance';
-export { parsePlaceCreated } from './parse';
+export { calculateDistanceBetweenTwoPlaceInKm } from './distance';
+export { parseGeneratePlaceToGroundPlace } from './parse';

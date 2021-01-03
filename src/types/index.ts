@@ -45,7 +45,7 @@ interface StopCluster extends StopClusterFromFile {
   gpuid: StopClusterGpuid;
 }
 
-interface PlaceCreated {
+interface GenerateGpuidGroundPlace {
   id: Gpuid;
   countryCode: CountryCode;
   name: string;
@@ -65,14 +65,14 @@ interface SegmentProviderStop {
   longitude: number;
 }
 
-interface CreatePlaceProperties {
+interface CreateGroundPlacesParams {
   countryCode: CountryCode;
   name: string;
   longitude: number;
   latitude: number;
 }
 
-interface UpdateStopProperties {
+interface UpdateGroundPlaceProperties {
   name?: string;
   longitude?: number;
   latitude?: number;
@@ -375,11 +375,11 @@ export {
   GroundPlaceType,
   GroundPlaceServiced,
   GroundPlaceActionType,
-  CreatePlaceProperties,
-  UpdateStopProperties,
+  CreateGroundPlacesParams,
+  UpdateGroundPlaceProperties,
   CountryCode,
   StopGroupFromFile,
   StopClusterFromFile,
   GroundPlaceFromFile,
-  PlaceCreated,
+  GenerateGpuidGroundPlace,
 };
