@@ -10,7 +10,7 @@ import { GroundPlace } from 'src/types';
  * @param {GroundPlace} secondPlace - The second place to check, it also could be a StopGroup or a StopCluster.
  * @returns {number}
  */
-const distanceBetweenTwoPlaceInKm = (firstPlace: GroundPlace, secondPlace: GroundPlace): number => {
+const calculateDistanceBetweenTwoPlaceInKm = (firstPlace: GroundPlace, secondPlace: GroundPlace): number => {
   const { latitude: firstPlaceLat, longitude: firstPlaceLong } = firstPlace;
   const { latitude: secondPlaceLat, longitude: secondPlaceLong } = secondPlace;
 
@@ -39,4 +39,4 @@ const distanceBetweenTwoPlaceInKm = (firstPlace: GroundPlace, secondPlace: Groun
   return parseFloat(distanceInKm.toFixed(2));
 };
 
-export { distanceBetweenTwoPlaceInKm };
+export { calculateDistanceBetweenTwoPlaceInKm };

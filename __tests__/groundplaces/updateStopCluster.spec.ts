@@ -4,9 +4,10 @@ import { GroundPlacesFile } from '../../src/types';
 
 describe('#updateStopCluster', () => {
   const groundPlacesService: GroundPlacesController = new GroundPlacesController();
-  groundPlacesService.init(mockSmallGroundPlacesFile as GroundPlacesFile);
 
   it('should update the name of the StopCluster', () => {
+    groundPlacesService.init(mockSmallGroundPlacesFile as GroundPlacesFile);
+
     groundPlacesService.updateStopCluster('c|FRstrasbou@u0ts2', { name: 'Strasbourg, Est, France' });
 
     expect(groundPlacesService.getGroundPlaces()).toStrictEqual([
@@ -49,5 +50,27 @@ describe('#updateStopCluster', () => {
         type: 'group',
       },
     ]);
+  });
+
+  it('should throw an error if the new position of the updated StopCluster is far away from one of its StopGroup childs (limit is 70km)', () => {
+    groundPlacesService.init(mockSmallGroundPlacesFile as GroundPlacesFile);
+
+    let thrownError: Error;
+
+    try {
+      groundPlacesService.updateStopCluster('c|FRstrasbou@u0ts2', {
+        name: 'Strasbourg, Est, France',
+        latitude: 100,
+        longitude: 50,
+      });
+    } catch (error) {
+      thrownError = error;
+    }
+
+    expect(thrownError).toEqual(
+      new Error(
+        'You can\'t update the StopCluster with the Gpuid "c|FRstrasbou@u0ts2" because it\'s "5466.21km" away from the StopGroup children with the Gpuid "g|FRststbi__@u0tkxd" (the limit is 70km).',
+      ),
+    );
   });
 });

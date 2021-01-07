@@ -177,7 +177,7 @@ describe('#moveStopGroup', () => {
 
     expect(thrownError).toEqual(
       new Error(
-        'You can\'t move the StopGroup with the Gpuid "g|FRststbi__@u0tkxd" because it\'s "115.82km" away from the new StopCluster parent (the limit is 70km).',
+        'You can\'t attach the StopGroup with the Gpuid "g|FRststbi__@u0tkxd" to the StopCluster with the Gpuid "c|FRnaarto__@u0skg" because they are "115.82km" away (the limit is 70km).',
       ),
     );
   });
