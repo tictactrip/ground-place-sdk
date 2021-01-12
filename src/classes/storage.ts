@@ -8,7 +8,7 @@ import {
   StopClusterGpuid,
   GroundPlaceType,
   Gpuid,
-  UpdateStopProperties,
+  UpdateGroundPlaceProperties,
   GroundPlaceFromFile,
 } from '../types';
 
@@ -112,11 +112,15 @@ export class Storage {
   /**
    * @description Update StopGroup or StopCluster with new informations like name, latitude, longitude, etc.
    * @param {Gpuid} placeGpuid - Ground place unique identifier of the place to update.
-   * @param {UpdateStopProperties} propertiesToUpdate - Properties to update {name, lattitude, longitude}.
+   * @param {UpdateGroundPlaceProperties} propertiesToUpdate - Properties to update {name, lattitude, longitude}.
    * @param {GroundPlaceType} placeType - The type of the place to update, can be StopGroup or StopCluster.
    * @returns {void}
    */
-  public updatePlace(placeGpuid: Gpuid, propertiesToUpdate: UpdateStopProperties, placeType: GroundPlaceType): void {
+  public updatePlace(
+    placeGpuid: Gpuid,
+    propertiesToUpdate: UpdateGroundPlaceProperties,
+    placeType: GroundPlaceType,
+  ): void {
     const groundPlace: GroundPlace = this.getPlaceByGpuid(placeGpuid, placeType);
 
     const newGroundPlace: GroundPlace = {

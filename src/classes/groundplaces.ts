@@ -8,7 +8,6 @@ import {
   CreateGroundPlacesParams,
   UpdateGroundPlaceProperties,
   AutocompleteFilter,
-  GroundPlacesDiff,
   GroundPlaceType,
   GroundPlacesFile,
   GroundPlace,
@@ -17,6 +16,10 @@ import {
   SegmentProviderStop,
   StopGroup,
   GenerateGpuidGroundPlace,
+  GroundPlacesDiffAction,
+  GroundPlacesDiffActionOptions,
+  GroundPlacesDiffActionType,
+  Gpuid,
 } from '../types';
 import { calculateDistanceBetweenTwoPlaceInKm, parseGeneratePlaceToGroundPlace } from '../helpers';
 import { MAX_DISTANCE_BETWEEN_STOP_GROUP_AND_STOP_CLUSTER_IN_KM } from '../constants';
@@ -550,37 +553,69 @@ export class GroundPlacesController {
   }
 
   /**
+   * @description Apply the diff file to the GroundPlaces object.
+   * @param {GroundPlacesDiffAction[]} groundPlacesDiff - Array that store the history of changes of the GroundPlaces.
+   * @returns {void}
+   */
+  public applyGroundPlacesDiff(groundPlacesDiff: GroundPlacesDiffAction[]): void {
+    // Uses all the handling methods to apply the diff
+    // This method will be used by the backend (could also be used by front)
+    // It should first check the integrity of our ground_places_diff.json
+    // Then apply it to the object
+    groundPlacesDiff.map((groundPlacesDiffAction: GroundPlacesDiffAction) => {
+      const [groundPlaceGpuid, { type, params }]: [Gpuid, GroundPlacesDiffActionOptions] = Object.entries(
+        groundPlacesDiffAction,
+      )[0];
+
+      switch (type) {
+        case GroundPlacesDiffActionType.CREATE_STOP_GROUP: {
+          this.createStopGroup(params.segmentProviderStopId, groundPlaceGpuid, {
+            countryCode: params.countryCode,
+            latitude: params.latitude,
+            longitude: params.longitude,
+            name: params.name,
+          });
+        }
+
+        case GroundPlacesDiffActionType.CREATE_STOP_CLUSTER: {
+          this.createStopCluster(groundPlaceGpuid, {
+            countryCode: params.countryCode,
+            latitude: params.latitude,
+            longitude: params.longitude,
+            name: params.name,
+          });
+        }
+
+        case GroundPlacesDiffActionType.UPDATE_STOP_GROUP: {
+          this.updateStopGroup(groundPlaceGpuid, {
+            latitude: params.latitude,
+            longitude: params.longitude,
+            name: params.name,
+          });
+        }
+      }
+    });
+  }
+
+  /**
+   * @description Check the validity of the GroundPlacesDiff structure.
+   * @param {GroundPlacesDiffAction[]} groundPlacesDiff - Array that store the history of changes of the GroundPlaces
+   * @returns {boolean}
+   */
+  // @ts-ignore
+  private checkGroundPlacesDiffValidity(groundPlacesDiff: GroundPlacesDiffAction[]): boolean {
+    return true;
+  }
+
+  /**
    * @description Download the GroundPlacesDiff file in JSON and store it on Desktop.
    * @returns {void}
    */
-  public downloadGroundPlacesDiffToDesktop(): void {}
+  public downloadGroundPlacesDiffFileToDesktop(): void {}
 
   /**
    * @description Download the GroundPlaces file in JSON and store it on Desktop.
    * @returns {void}
    */
   public downloadGroundPlacesFileToDesktop(): void {}
-
-  /**
-   * @description Apply the diff file to the GroundPlacesDiff object.
-   * @param {GroundPlacesDiff} groundPlacesDiff - Object that store the history of changes of the GroundPlaces.
-   * @returns {void}
-   */
-  // @ts-ignore
-  public applyGroundPlacesDiff(groundPlacesDiff: GroundPlacesDiff): void {
-    // Uses all the handling methode to apply the diff
-    // This method will be used by the backend (could also be used by front)
-    // It should first check the integrity of our ground_places_diff.json
-    // Then apply it to the object
-    // Then check the integrity of the resulting file
-  }
-
-  /**
-   * @description Check the validity of the GroundPlacesDiff structure.
-   *
-   * Returns true if everything ok, throw an error with all issues if not.
-   * @returns {boolean}
-   */
-  // @ts-ignore
-  private checkGroundPlacesDiffValidity(): boolean {}
 }
