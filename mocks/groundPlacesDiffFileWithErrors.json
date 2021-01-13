@@ -1,0 +1,91 @@
+[
+  {
+     "g|FRststbi__@u0tkxd":{
+        "type": "createStopGroup",
+        "params": {
+          "segmentProviderStopId": "19528",
+          "countryCode": "fr",
+          "latitude": 49,
+          "longitude": 7.8,
+          "name": "Strasbourg, Roethig"
+        }
+     }
+  },
+  {
+    "g|FRstraroet@u0twc2": {
+      "type": "createStopCluster",
+      "params": {
+        "countryCode": "fr",
+        "latitude": 49,
+        "longitude": 7.8,
+        "name": "Strasbourg, Grand-Ouest"
+      }
+    }
+  },
+  {
+    "g|FRstraroet@u0twc2": {
+      "type": "updateStopGroup",
+      "params": {
+        "name": "Strasbourg, Grand-Nord"
+      }
+    }
+  },
+  {
+    "c|FRstrasbou@u0ts2": {
+      "type": "updateStopCluster",
+      "params": {
+        "latitude": 48.45 
+      }
+    }
+  },
+  {
+    "g|FRststbi__@u0tkxd": {
+      "type": "addStopGroupToStopCluster",
+      "into": "c|FRstrasbou@u0twc"
+    }
+  },
+  {
+    "g|FRststbi__@u0tkxd": {
+      "type": "removeStopGroupFromStopCluster",
+      "from": "c|FRstrasbou@u0ts2"
+    }
+  },
+  {
+    "g|FRststbi__@u0tkxd": {
+      "type": "moveStopGroup",
+      "from": "c|FRstrasbou@u0ts2",
+      "into": "c|FRstrasbou@u0ts2"
+    }
+  },
+  {
+    "g|FRstraroet@u0twc2": {
+      "type": "moveSegmentProviderStop",
+      "into": "g|FRststbi__@u0tkxd",
+      "params": {
+        "segmentProviderStopId": "19528"
+      }
+    }
+  },
+  {
+    "g|FRststbi__@u0tkxd": {
+      "type": "mergeStopGroup",
+      "into": "g|FRstraroet@u0twc2"
+    }
+  },
+  {
+    "c|FRstrasbou@u0twc": {
+      "type": "mergeStopCluster",
+      "into": "c|FRstrasbou@u0ts2"
+    }
+  },
+  {
+    "g|FRststbi__@u0tkxd": {
+      "type": "deleteStopGroup"
+    }
+  },
+  {
+    "c|FRstrasbou@u0twc": {
+      "type": "deleteStopCluster"
+    }
+  }
+]

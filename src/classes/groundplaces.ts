@@ -580,15 +580,17 @@ export class GroundPlacesController {
 
   /**
    * @description Apply the diff file to the GroundPlaces object.
-   * @param {GroundPlacesDiffFile} groundPlacesDiffFile - Array that store the history of changes of the GroundPlaces.
+   * @param {GroundPlacesDiffFile} groundPlacesDiffFile - File that store changes to apply on the GroundPlacesFile.
    * @returns {void}
    */
   public applyGroundPlacesDiff(groundPlacesDiffFile: GroundPlacesDiffFile): void {
-    // Uses all the handling methods to apply the diff
-    // This method will be used by the backend (could also be used by front)
-    // It should first check the integrity of our ground_places_diff.json
-    // Then apply it to the object
     const cloneGroundPlaces: GroundPlace[] = cloneDeep(this.getGroundPlaces());
+
+    if (!cloneGroundPlaces) {
+      throw new Error(
+        `You can't apply your GroundPlacesDiffFile because there is no GroundPlaces available on this instance. You should call the "init" method with your GroundPlacesFile before using this method.`,
+      );
+    }
 
     try {
       groundPlacesDiffFile.map((groundPlacesDiffAction: GroundPlacesDiffAction) => {
@@ -660,18 +662,8 @@ export class GroundPlacesController {
       // If there is an error, previous update is reverted
       this.storageService.setGroundPlaces(cloneGroundPlaces);
 
-      throw new Error(error.message);
+      throw new Error(`There is an error inside your GroundPlacesDiffFile. More details: "${error.message}"`);
     }
-  }
-
-  /**
-   * @description Check the validity of the GroundPlacesDiff structure.
-   * @param {GroundPlacesDiffFile} groundPlacesDiffFile - Array that store the history of changes of the GroundPlaces
-   * @returns {boolean}
-   */
-  // @ts-ignore
-  private checkGroundPlacesDiffValidity(groundPlacesDiffFile: GroundPlacesDiffFile): boolean {
-    return true;
   }
 
   /**
