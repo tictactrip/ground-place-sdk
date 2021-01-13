@@ -8,6 +8,8 @@ type GroundPlaceFromFile = StopGroupFromFile | StopClusterFromFile;
 
 type GroundPlacesFile = Record<Gpuid, GroundPlaceFromFile>;
 
+type GroundPlacesDiffFile = GroundPlacesDiffAction[];
+
 type GroundPlace = StopGroup | StopCluster;
 
 type GroundPlacesDiffAction = Record<Gpuid, GroundPlacesDiffActionOptions>;
@@ -82,11 +84,10 @@ interface UpdateGroundPlaceProperties {
 
 interface GroundPlacesDiffActionOptions {
   type: GroundPlacesDiffActionType;
+  from?: Gpuid;
   into?: Gpuid;
   params?: {
     segmentProviderStopId?: string;
-    stopGroupParentGpuid?: StopGroupGpuid;
-    stopClusterParentGpuid?: StopClusterGpuid;
     countryCode?: CountryCode;
     name?: string;
     longitude?: number;
@@ -400,4 +401,5 @@ export {
   GroundPlacesDiffAction,
   GroundPlacesDiffActionOptions,
   GroundPlacesDiffActionType,
+  GroundPlacesDiffFile,
 };

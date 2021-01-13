@@ -123,6 +123,13 @@ export class Storage {
   ): void {
     const groundPlace: GroundPlace = this.getPlaceByGpuid(placeGpuid, placeType);
 
+    // Filter the `propertiesToUpdate` object with values properly defined
+    Object.keys(propertiesToUpdate).forEach((key: string) => {
+      if (propertiesToUpdate[key] === undefined) {
+        delete propertiesToUpdate[key];
+      }
+    });
+
     const newGroundPlace: GroundPlace = {
       ...groundPlace,
       ...propertiesToUpdate,

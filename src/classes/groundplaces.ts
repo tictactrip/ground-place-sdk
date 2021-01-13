@@ -3,6 +3,7 @@ import { Generator as GenerateGpuid } from '@tictactrip/gp-uid';
 import { Storage } from '../classes/storage';
 import { WebServices } from './webservices';
 import {
+  Gpuid,
   StopGroupGpuid,
   StopClusterGpuid,
   CreateGroundPlacesParams,
@@ -19,7 +20,7 @@ import {
   GroundPlacesDiffAction,
   GroundPlacesDiffActionOptions,
   GroundPlacesDiffActionType,
-  Gpuid,
+  GroundPlacesDiffFile,
 } from '../types';
 import { calculateDistanceBetweenTwoPlaceInKm, parseGeneratePlaceToGroundPlace } from '../helpers';
 import { MAX_DISTANCE_BETWEEN_STOP_GROUP_AND_STOP_CLUSTER_IN_KM } from '../constants';
@@ -127,7 +128,7 @@ export class GroundPlacesController {
 
   /**
    * @description Create a new StopGroup from a SegmentProviderStop.
-   * @param {string} segmentProviderStopId - The identifier of the SegmentProvider used to create the new StopGroup.
+   * @param {string} segmentProviderStopId - The identifier of the SegmentProviderStop used to create the new StopGroup.
    * @param {StopGroupGpuid} fromStopGroupGpuid - Ground place unique identifier of the current StopGroup parent.
    * @param {CreateGroundPlacesParams} createGroundPlaceParams - Parameters that are needed to create a new StopGroup.
    * @returns {void}
@@ -137,6 +138,19 @@ export class GroundPlacesController {
     fromStopGroupGpuid: StopGroupGpuid,
     createGroundPlaceParams: CreateGroundPlacesParams,
   ): void {
+    if (
+      !segmentProviderStopId ||
+      !fromStopGroupGpuid ||
+      !createGroundPlaceParams.countryCode ||
+      !createGroundPlaceParams.latitude ||
+      !createGroundPlaceParams.longitude ||
+      !createGroundPlaceParams.name
+    ) {
+      throw new Error(
+        'Error while creating a new StopGroup, please check that you have provide all properties needed (segmentProviderId, fromStopGroupGpuid, countryCode, latitude, longitude and name).',
+      );
+    }
+
     const cloneGroundPlaces: GroundPlace[] = cloneDeep(this.getGroundPlaces());
 
     try {
@@ -179,6 +193,18 @@ export class GroundPlacesController {
     fromStopGroupGpuid: StopGroupGpuid,
     createGroundPlaceParams: CreateGroundPlacesParams,
   ): void {
+    if (
+      !fromStopGroupGpuid ||
+      !createGroundPlaceParams.countryCode ||
+      !createGroundPlaceParams.latitude ||
+      !createGroundPlaceParams.longitude ||
+      !createGroundPlaceParams.name
+    ) {
+      throw new Error(
+        'Error while creating a new StopCluster, please check that you have provide all properties needed (fromStopGroupGpuid, countryCode, latitude, longitude and name).',
+      );
+    }
+
     const cloneGroundPlaces: GroundPlace[] = cloneDeep(this.getGroundPlaces());
 
     try {
@@ -554,85 +580,97 @@ export class GroundPlacesController {
 
   /**
    * @description Apply the diff file to the GroundPlaces object.
-   * @param {GroundPlacesDiffAction[]} groundPlacesDiff - Array that store the history of changes of the GroundPlaces.
+   * @param {GroundPlacesDiffFile} groundPlacesDiffFile - Array that store the history of changes of the GroundPlaces.
    * @returns {void}
    */
-  public applyGroundPlacesDiff(groundPlacesDiff: GroundPlacesDiffAction[]): void {
+  public applyGroundPlacesDiff(groundPlacesDiffFile: GroundPlacesDiffFile): void {
     // Uses all the handling methods to apply the diff
     // This method will be used by the backend (could also be used by front)
     // It should first check the integrity of our ground_places_diff.json
     // Then apply it to the object
-    groundPlacesDiff.map((groundPlacesDiffAction: GroundPlacesDiffAction) => {
-      const [groundPlaceGpuid, { type, into: intoGroundPlaceGpuid, params }]: [
-        Gpuid,
-        GroundPlacesDiffActionOptions,
-      ] = Object.entries(groundPlacesDiffAction)[0];
+    const cloneGroundPlaces: GroundPlace[] = cloneDeep(this.getGroundPlaces());
 
-      switch (type) {
-        case GroundPlacesDiffActionType.CREATE_STOP_GROUP:
-          this.createStopGroup(params.segmentProviderStopId, groundPlaceGpuid, {
-            countryCode: params.countryCode,
-            latitude: params.latitude,
-            longitude: params.longitude,
-            name: params.name,
-          });
+    try {
+      groundPlacesDiffFile.map((groundPlacesDiffAction: GroundPlacesDiffAction) => {
+        const [groundPlaceGpuid, { type, into: intoGroundPlaceGpuid, from: fromGroundPlaceGpuid, params }]: [
+          Gpuid,
+          GroundPlacesDiffActionOptions,
+        ] = Object.entries(groundPlacesDiffAction)[0];
 
-        case GroundPlacesDiffActionType.CREATE_STOP_CLUSTER:
-          this.createStopCluster(groundPlaceGpuid, {
-            countryCode: params.countryCode,
-            latitude: params.latitude,
-            longitude: params.longitude,
-            name: params.name,
-          });
+        switch (type) {
+          case GroundPlacesDiffActionType.CREATE_STOP_GROUP:
+            return this.createStopGroup(params.segmentProviderStopId, groundPlaceGpuid, {
+              countryCode: params.countryCode,
+              latitude: params.latitude,
+              longitude: params.longitude,
+              name: params.name,
+            });
 
-        case GroundPlacesDiffActionType.UPDATE_STOP_GROUP:
-          this.updateStopGroup(groundPlaceGpuid, {
-            latitude: params.latitude,
-            longitude: params.longitude,
-            name: params.name,
-          });
+          case GroundPlacesDiffActionType.CREATE_STOP_CLUSTER:
+            return this.createStopCluster(groundPlaceGpuid, {
+              countryCode: params.countryCode,
+              latitude: params.latitude,
+              longitude: params.longitude,
+              name: params.name,
+            });
 
-        case GroundPlacesDiffActionType.UPDATE_STOP_CLUSTER:
-          this.updateStopCluster(groundPlaceGpuid, {
-            latitude: params.latitude,
-            longitude: params.longitude,
-            name: params.name,
-          });
+          case GroundPlacesDiffActionType.UPDATE_STOP_GROUP:
+            return this.updateStopGroup(groundPlaceGpuid, {
+              latitude: params.latitude,
+              longitude: params.longitude,
+              name: params.name,
+            });
 
-        case GroundPlacesDiffActionType.ADD_STOP_GROUP_TO_STOP_CLUSTER:
-          this.addStopGroupToStopCluster(groundPlaceGpuid, intoGroundPlaceGpuid);
+          case GroundPlacesDiffActionType.UPDATE_STOP_CLUSTER:
+            return this.updateStopCluster(groundPlaceGpuid, {
+              latitude: params.latitude,
+              longitude: params.longitude,
+              name: params.name,
+            });
 
-        case GroundPlacesDiffActionType.REMOVE_STOP_GROUP_FROM_STOP_CLUSTER:
-          this.removeStopGroupFromStopCluster(groundPlaceGpuid, params.stopClusterParentGpuid);
+          case GroundPlacesDiffActionType.ADD_STOP_GROUP_TO_STOP_CLUSTER:
+            return this.addStopGroupToStopCluster(groundPlaceGpuid, intoGroundPlaceGpuid);
 
-        case GroundPlacesDiffActionType.MOVE_STOP_GROUP:
-          this.moveStopGroup(groundPlaceGpuid, params.stopClusterParentGpuid, intoGroundPlaceGpuid);
+          case GroundPlacesDiffActionType.REMOVE_STOP_GROUP_FROM_STOP_CLUSTER:
+            return this.removeStopGroupFromStopCluster(groundPlaceGpuid, fromGroundPlaceGpuid);
 
-        case GroundPlacesDiffActionType.MOVE_SEGMENT_PROVIDER_STOP:
-          this.moveSegmentProviderStop(params.segmentProviderStopId, params.stopGroupParentGpuid, intoGroundPlaceGpuid);
+          case GroundPlacesDiffActionType.MOVE_STOP_GROUP:
+            return this.moveStopGroup(groundPlaceGpuid, fromGroundPlaceGpuid, intoGroundPlaceGpuid);
 
-        case GroundPlacesDiffActionType.MERGE_STOP_GROUP:
-          this.mergeStopGroup(groundPlaceGpuid, intoGroundPlaceGpuid);
+          case GroundPlacesDiffActionType.MOVE_SEGMENT_PROVIDER_STOP:
+            return this.moveSegmentProviderStop(params.segmentProviderStopId, groundPlaceGpuid, intoGroundPlaceGpuid);
 
-        case GroundPlacesDiffActionType.MERGE_STOP_CLUSTER:
-          this.mergeStopCluster(groundPlaceGpuid, intoGroundPlaceGpuid);
+          case GroundPlacesDiffActionType.MERGE_STOP_GROUP:
+            return this.mergeStopGroup(groundPlaceGpuid, intoGroundPlaceGpuid);
 
-        case GroundPlacesDiffActionType.DELETE_STOP_GROUP:
-          this.deleteStopGroup(groundPlaceGpuid);
+          case GroundPlacesDiffActionType.MERGE_STOP_CLUSTER:
+            return this.mergeStopCluster(groundPlaceGpuid, intoGroundPlaceGpuid);
 
-        case GroundPlacesDiffActionType.DELETE_STOP_CLUSTER:
-          this.deleteStopCluster(groundPlaceGpuid);
-      }
-    });
+          case GroundPlacesDiffActionType.DELETE_STOP_GROUP:
+            return this.deleteStopGroup(groundPlaceGpuid);
+
+          case GroundPlacesDiffActionType.DELETE_STOP_CLUSTER:
+            return this.deleteStopCluster(groundPlaceGpuid);
+
+          default:
+            return;
+        }
+      });
+    } catch (error) {
+      // If there is an error, previous update is reverted
+      this.storageService.setGroundPlaces(cloneGroundPlaces);
+
+      throw new Error(error.message);
+    }
   }
 
   /**
    * @description Check the validity of the GroundPlacesDiff structure.
-   * @param {GroundPlacesDiffAction[]} groundPlacesDiff - Array that store the history of changes of the GroundPlaces
+   * @param {GroundPlacesDiffFile} groundPlacesDiffFile - Array that store the history of changes of the GroundPlaces
    * @returns {boolean}
    */
   // @ts-ignore
-  private checkGroundPlacesDiffValidity(groundPlacesDiff: GroundPlacesDiffAction[]): boolean {
+  private checkGroundPlacesDiffValidity(groundPlacesDiffFile: GroundPlacesDiffFile): boolean {
     return true;
   }
 
