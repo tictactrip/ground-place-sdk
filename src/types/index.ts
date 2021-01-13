@@ -85,6 +85,8 @@ interface GroundPlacesDiffActionOptions {
   into?: Gpuid;
   params?: {
     segmentProviderStopId?: string;
+    stopGroupParentGpuid?: StopGroupGpuid;
+    stopClusterParentGpuid?: StopClusterGpuid;
     countryCode?: CountryCode;
     name?: string;
     longitude?: number;

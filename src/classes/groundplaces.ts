@@ -563,36 +563,65 @@ export class GroundPlacesController {
     // It should first check the integrity of our ground_places_diff.json
     // Then apply it to the object
     groundPlacesDiff.map((groundPlacesDiffAction: GroundPlacesDiffAction) => {
-      const [groundPlaceGpuid, { type, params }]: [Gpuid, GroundPlacesDiffActionOptions] = Object.entries(
-        groundPlacesDiffAction,
-      )[0];
+      const [groundPlaceGpuid, { type, into: intoGroundPlaceGpuid, params }]: [
+        Gpuid,
+        GroundPlacesDiffActionOptions,
+      ] = Object.entries(groundPlacesDiffAction)[0];
 
       switch (type) {
-        case GroundPlacesDiffActionType.CREATE_STOP_GROUP: {
+        case GroundPlacesDiffActionType.CREATE_STOP_GROUP:
           this.createStopGroup(params.segmentProviderStopId, groundPlaceGpuid, {
             countryCode: params.countryCode,
             latitude: params.latitude,
             longitude: params.longitude,
             name: params.name,
           });
-        }
 
-        case GroundPlacesDiffActionType.CREATE_STOP_CLUSTER: {
+        case GroundPlacesDiffActionType.CREATE_STOP_CLUSTER:
           this.createStopCluster(groundPlaceGpuid, {
             countryCode: params.countryCode,
             latitude: params.latitude,
             longitude: params.longitude,
             name: params.name,
           });
-        }
 
-        case GroundPlacesDiffActionType.UPDATE_STOP_GROUP: {
+        case GroundPlacesDiffActionType.UPDATE_STOP_GROUP:
           this.updateStopGroup(groundPlaceGpuid, {
             latitude: params.latitude,
             longitude: params.longitude,
             name: params.name,
           });
-        }
+
+        case GroundPlacesDiffActionType.UPDATE_STOP_CLUSTER:
+          this.updateStopCluster(groundPlaceGpuid, {
+            latitude: params.latitude,
+            longitude: params.longitude,
+            name: params.name,
+          });
+
+        case GroundPlacesDiffActionType.ADD_STOP_GROUP_TO_STOP_CLUSTER:
+          this.addStopGroupToStopCluster(groundPlaceGpuid, intoGroundPlaceGpuid);
+
+        case GroundPlacesDiffActionType.REMOVE_STOP_GROUP_FROM_STOP_CLUSTER:
+          this.removeStopGroupFromStopCluster(groundPlaceGpuid, params.stopClusterParentGpuid);
+
+        case GroundPlacesDiffActionType.MOVE_STOP_GROUP:
+          this.moveStopGroup(groundPlaceGpuid, params.stopClusterParentGpuid, intoGroundPlaceGpuid);
+
+        case GroundPlacesDiffActionType.MOVE_SEGMENT_PROVIDER_STOP:
+          this.moveSegmentProviderStop(params.segmentProviderStopId, params.stopGroupParentGpuid, intoGroundPlaceGpuid);
+
+        case GroundPlacesDiffActionType.MERGE_STOP_GROUP:
+          this.mergeStopGroup(groundPlaceGpuid, intoGroundPlaceGpuid);
+
+        case GroundPlacesDiffActionType.MERGE_STOP_CLUSTER:
+          this.mergeStopCluster(groundPlaceGpuid, intoGroundPlaceGpuid);
+
+        case GroundPlacesDiffActionType.DELETE_STOP_GROUP:
+          this.deleteStopGroup(groundPlaceGpuid);
+
+        case GroundPlacesDiffActionType.DELETE_STOP_CLUSTER:
+          this.deleteStopCluster(groundPlaceGpuid);
       }
     });
   }
