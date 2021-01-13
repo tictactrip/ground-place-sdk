@@ -1,6 +1,6 @@
 import { GroundPlacesController } from '../../src/classes/groundplaces';
 import * as mockSmallGroundPlacesFile from '../../mocks/smallGroundPlacesFile.json';
-import { CountryCode, GroundPlacesFile } from '../../src/types';
+import { CountryCode, GroundPlacesFile, CreateGroundPlacesParams } from '../../src/types';
 
 describe('#createStopGroup', () => {
   const groundPlacesService: GroundPlacesController = new GroundPlacesController();
@@ -144,6 +144,36 @@ describe('#createStopGroup', () => {
     expect(thrownError).toEqual(
       new Error(
         'The SegmentProviderStop with the ID "1952888" doesn\'t exists inside the StopGroup with the Gpuid "g|FRststbi__@u0tkxd".',
+      ),
+    );
+  });
+
+  it('should throw an error if there is missing values', () => {
+    groundPlacesService.init(mockSmallGroundPlacesFile as GroundPlacesFile);
+
+    let thrownError: Error;
+
+    try {
+      const createStopGroupProperties = {
+        countryCode: CountryCode.FR,
+        name: 'Strasbourg - Wolfisheim',
+        latitude: 50,
+      };
+      const fromStopGroupGpuid = 'g|FRststbi__@u0tkxd';
+      const segmentProviderStopId = '1952888';
+
+      groundPlacesService.createStopGroup(
+        segmentProviderStopId,
+        fromStopGroupGpuid,
+        createStopGroupProperties as CreateGroundPlacesParams,
+      );
+    } catch (error) {
+      thrownError = error;
+    }
+
+    expect(thrownError).toEqual(
+      new Error(
+        'Error while creating a new StopGroup, please check that you have provide all properties needed (segmentProviderId, fromStopGroupGpuid, countryCode, latitude, longitude and name).',
       ),
     );
   });

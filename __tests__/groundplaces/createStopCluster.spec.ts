@@ -1,6 +1,6 @@
 import { GroundPlacesController } from '../../src/classes/groundplaces';
 import * as mockSmallGroundPlacesFile from '../../mocks/smallGroundPlacesFile.json';
-import { CountryCode, GroundPlacesFile } from '../../src/types';
+import { CountryCode, GroundPlacesFile, CreateGroundPlacesParams } from '../../src/types';
 
 describe('#createStopCluster', () => {
   const groundPlacesService: GroundPlacesController = new GroundPlacesController();
@@ -116,5 +116,33 @@ describe('#createStopCluster', () => {
     }
 
     expect(thrownError).toEqual(new Error('The StopGroup with the Gpuid "g|FRststbi__@u0tkxdd" is not found.'));
+  });
+
+  it('should throw an error if there is missing values', () => {
+    groundPlacesService.init(mockSmallGroundPlacesFile as GroundPlacesFile);
+
+    let thrownError: Error;
+
+    try {
+      const createStopClusterProperties = {
+        countryCode: CountryCode.FR,
+        latitude: 100,
+        longitude: 50,
+      };
+      const fromStopGroupGpuid = 'g|FRststbi__@u0tkxdd';
+
+      groundPlacesService.createStopCluster(
+        fromStopGroupGpuid,
+        createStopClusterProperties as CreateGroundPlacesParams,
+      );
+    } catch (error) {
+      thrownError = error;
+    }
+
+    expect(thrownError).toEqual(
+      new Error(
+        'Error while creating a new StopCluster, please check that you have provide all properties needed (fromStopGroupGpuid, countryCode, latitude, longitude and name).',
+      ),
+    );
   });
 });
