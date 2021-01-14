@@ -86,6 +86,13 @@ describe('#deleteStopCluster', () => {
         type: 'group',
       },
     ]);
+    expect(groundPlacesService.getGroundPlacesDiff()).toEqual([
+      {
+        'c|FRnaarto__@u0skg': {
+          type: 'deleteStopCluster',
+        },
+      },
+    ]);
   });
 
   it('should throw an error if the StopCluster to delete has children', () => {

@@ -151,6 +151,14 @@ describe('#addStopGroupToStopCluster', () => {
         type: 'group',
       },
     ]);
+    expect(groundPlacesService.getGroundPlacesDiff()).toStrictEqual([
+      {
+        'g|FRnanvanna@u0skgb': {
+          type: 'addStopGroupToStopCluster',
+          into: 'c|FRnancy___@u0sku',
+        },
+      },
+    ]);
   });
 
   it('should throw an error if the StopGroup to add is far away from the new StopCluster parent', () => {

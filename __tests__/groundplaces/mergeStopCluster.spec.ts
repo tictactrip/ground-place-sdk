@@ -155,6 +155,14 @@ describe('#mergeStopCluster', () => {
         type: 'group',
       },
     ]);
+    expect(groundPlacesService.getGroundPlacesDiff()).toStrictEqual([
+      {
+        'c|FRnancy___@u0sku': {
+          type: 'mergeStopCluster',
+          into: 'c|FRnaarto__@u0skg',
+        },
+      },
+    ]);
   });
 
   it('should throw an error if the two StopCluster to merge are too far apart (beyond 70km)', () => {

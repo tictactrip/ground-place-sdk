@@ -19,7 +19,7 @@ describe('#createStopGroup', () => {
 
     groundPlacesService.createStopGroup(segmentProviderStopId, fromStopGroupGpuid, createStopGroupProperties);
 
-    expect(groundPlacesService.getGroundPlaces()).toEqual([
+    expect(groundPlacesService.getGroundPlaces()).toStrictEqual([
       {
         gpuid: 'c|FRstrasbou@u0ts2',
         unique_name: 'strasbourg',
@@ -67,6 +67,20 @@ describe('#createStopGroup', () => {
             id: '19528',
           },
         ],
+      },
+    ]);
+    expect(groundPlacesService.getGroundPlacesDiff()).toStrictEqual([
+      {
+        'g|FRststbi__@u0tkxd': {
+          type: 'createStopGroup',
+          params: {
+            segmentProviderStopId: '19528',
+            countryCode: 'fr',
+            name: 'Strasbourg - Wolfisheim',
+            latitude: 48.5857122,
+            longitude: 7.6275127,
+          },
+        },
       },
     ]);
   });

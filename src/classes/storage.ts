@@ -38,7 +38,7 @@ export class Storage {
   }
 
   /**
-   * @description This method is used by all the handling methods of the GroundPlacesController class to store the history of changes inside an GroundPlacesDiff object.
+   * @description This method is used by all the handling methods of the GroundPlacesController class to add a new diff to the history of changes inside an GroundPlacesDiff object.
    * @param {Gpuid} groundPlaceGpuid - Ground place unique identifier of the StopGroup or the StopCluster that is concerns by the changes.
    * @param {GroundPlaceDiffOptions} groundPlaceDiffOptions - Options that are used by the GroundPlacesController handling method concerned.
    * @returns {void}

@@ -156,6 +156,15 @@ describe('#moveStopGroup', () => {
         type: 'group',
       },
     ]);
+    expect(groundPlacesService.getGroundPlacesDiff()).toStrictEqual([
+      {
+        'g|FRnanvanna@u0skgb': {
+          type: 'moveStopGroup',
+          from: 'c|FRnaarto__@u0skg',
+          into: 'c|FRnancy___@u0sku',
+        },
+      },
+    ]);
   });
 
   it('should throw an error if the StopGroup to move is far away from the new StopCluster parent', () => {

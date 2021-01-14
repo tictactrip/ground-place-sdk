@@ -3,9 +3,9 @@ import * as mockSmallGroundPlacesFile from '../../mocks/smallGroundPlacesFile.js
 import { GroundPlacesFile } from '../../src/types';
 
 describe('#updateStopCluster', () => {
-  const groundPlacesService: GroundPlacesController = new GroundPlacesController();
-
   it('should update the name of the StopCluster', () => {
+    const groundPlacesService: GroundPlacesController = new GroundPlacesController();
+
     groundPlacesService.init(mockSmallGroundPlacesFile as GroundPlacesFile);
 
     groundPlacesService.updateStopCluster('c|FRstrasbou@u0ts2', { name: 'Strasbourg, Est, France' });
@@ -52,7 +52,71 @@ describe('#updateStopCluster', () => {
     ]);
   });
 
+  it('should update the name of the StopCluster and avoid undefined values that can be pass', () => {
+    const groundPlacesService: GroundPlacesController = new GroundPlacesController();
+
+    groundPlacesService.init(mockSmallGroundPlacesFile as GroundPlacesFile);
+
+    groundPlacesService.updateStopCluster('c|FRstrasbou@u0ts2', {
+      name: 'Strasbourg, Est, France',
+      longitude: undefined,
+    });
+
+    expect(groundPlacesService.getGroundPlaces()).toStrictEqual([
+      {
+        gpuid: 'c|FRstrasbou@u0ts2',
+        unique_name: 'strasbourg',
+        childs: ['g|FRststbi__@u0tkxd'],
+        serviced: 'True',
+        has_been_modified: false,
+        warning: false,
+        country_code: 'fr',
+        is_latest: true,
+        name: 'Strasbourg, Est, France',
+        longitude: 7.74815,
+        latitude: 48.583,
+        type: 'cluster',
+      },
+      {
+        gpuid: 'g|FRststbi__@u0tkxd',
+        childs: [
+          {
+            unique_name: null,
+            company_name: 'flixbus',
+            name: 'Strasbourg, Strasbourg - Bischheim',
+            latitude: 48.616228,
+            serviced: 'True',
+            company_id: 5,
+            longitude: 7.719863,
+            id: '19528',
+          },
+        ],
+        name: 'Strasbourg, Strasbourg - Bischheim',
+        longitude: 7.719863,
+        serviced: 'True',
+        has_been_modified: false,
+        warning: false,
+        country_code: 'fr',
+        latitude: 48.616228,
+        is_latest: true,
+        type: 'group',
+      },
+    ]);
+    expect(groundPlacesService.getGroundPlacesDiff()).toStrictEqual([
+      {
+        'c|FRstrasbou@u0ts2': {
+          type: 'updateStopCluster',
+          params: {
+            name: 'Strasbourg, Est, France',
+          },
+        },
+      },
+    ]);
+  });
+
   it('should throw an error if the new position of the updated StopCluster is far away from one of its StopGroup childs (limit is 70km)', () => {
+    const groundPlacesService: GroundPlacesController = new GroundPlacesController();
+
     groundPlacesService.init(mockSmallGroundPlacesFile as GroundPlacesFile);
 
     let thrownError: Error;

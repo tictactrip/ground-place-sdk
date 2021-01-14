@@ -3,14 +3,14 @@ import * as mockSmallGroundPlacesFile from '../../mocks/smallGroundPlacesFile.js
 import * as mockGroundPlacesDiffFileCorrect from '../../mocks/groundPlacesDiffFileCorrect.json';
 import * as mockGroundPlacesDiffFileWithErrors from '../../mocks/groundPlacesDiffFileWithErrors.json';
 import * as mockGroundPlacesDiffFileWithMissingValues from '../../mocks/groundPlacesDiffFileWithMissingValues.json';
-import { GroundPlacesFile, GroundPlacesDiffFile } from '../../src/types';
+import { GroundPlacesFile, GroundPlaceDiff } from '../../src/types';
 
 describe('#applyGroundPlacesDiff', () => {
   it('should make all Ground Places diff changes', () => {
     const groundPlacesService: GroundPlacesController = new GroundPlacesController();
 
     groundPlacesService.init(mockSmallGroundPlacesFile as GroundPlacesFile);
-    groundPlacesService.applyGroundPlacesDiff(mockGroundPlacesDiffFileCorrect as GroundPlacesDiffFile);
+    groundPlacesService.applyGroundPlacesDiff(mockGroundPlacesDiffFileCorrect as GroundPlaceDiff[]);
 
     expect(groundPlacesService.getGroundPlaces()).toStrictEqual([
       {
@@ -57,7 +57,7 @@ describe('#applyGroundPlacesDiff', () => {
     let thrownError: Error;
 
     try {
-      groundPlacesService.applyGroundPlacesDiff(mockGroundPlacesDiffFileCorrect as GroundPlacesDiffFile);
+      groundPlacesService.applyGroundPlacesDiff(mockGroundPlacesDiffFileCorrect as GroundPlaceDiff[]);
     } catch (error) {
       thrownError = error;
     }
@@ -76,7 +76,7 @@ describe('#applyGroundPlacesDiff', () => {
 
     try {
       groundPlacesService.init(mockSmallGroundPlacesFile as GroundPlacesFile);
-      groundPlacesService.applyGroundPlacesDiff(mockGroundPlacesDiffFileWithErrors as GroundPlacesDiffFile);
+      groundPlacesService.applyGroundPlacesDiff(mockGroundPlacesDiffFileWithErrors as GroundPlaceDiff[]);
     } catch (error) {
       thrownError = error;
     }
@@ -95,7 +95,7 @@ describe('#applyGroundPlacesDiff', () => {
 
     try {
       groundPlacesService.init(mockSmallGroundPlacesFile as GroundPlacesFile);
-      groundPlacesService.applyGroundPlacesDiff(mockGroundPlacesDiffFileWithMissingValues as GroundPlacesDiffFile);
+      groundPlacesService.applyGroundPlacesDiff(mockGroundPlacesDiffFileWithMissingValues as GroundPlaceDiff[]);
     } catch (error) {
       thrownError = error;
     }

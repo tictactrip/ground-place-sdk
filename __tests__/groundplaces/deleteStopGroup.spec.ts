@@ -87,6 +87,13 @@ describe('#deleteStopGroup', () => {
         type: 'cluster',
       },
     ]);
+    expect(groundPlacesService.getGroundPlacesDiff()).toEqual([
+      {
+        'g|FRststbi__@u0tkxd': {
+          type: 'deleteStopGroup',
+        },
+      },
+    ]);
   });
 
   it('should throw an error if the StopGroup to delete has children', () => {
