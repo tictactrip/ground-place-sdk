@@ -1,4 +1,5 @@
 import * as cloneDeep from 'lodash.clonedeep';
+import * as isEqual from 'fast-deep-equal';
 import { Generator as GenerateGpuid } from '@tictactrip/gp-uid';
 import { Storage } from '../classes/storage';
 import { WebServices } from './webservices';
@@ -687,6 +688,7 @@ export class GroundPlacesController {
    * @returns {void}
    */
   public applyGroundPlacesDiff(groundPlacesDiff: GroundPlaceDiff[]): void {
+    const groundPlaces: GroundPlace[] = this.getGroundPlaces();
     const cloneGroundPlaces: GroundPlace[] = cloneDeep(this.getGroundPlaces());
 
     if (!cloneGroundPlaces.length) {
@@ -766,6 +768,12 @@ export class GroundPlacesController {
       this.storageService.setGroundPlaces(cloneGroundPlaces);
 
       throw new Error(`There is an error inside your GroundPlacesDiffFile. More details: "${error.message}"`);
+    }
+
+    if (isEqual(groundPlaces, cloneGroundPlaces)) {
+      throw new Error(
+        'GroundPlaces update did not work. Please check the structure and integrity of the GroundPlacesDiff file used before apply it.',
+      );
     }
   }
 

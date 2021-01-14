@@ -3,6 +3,7 @@ import * as mockSmallGroundPlacesFile from '../../mocks/smallGroundPlacesFile.js
 import * as mockGroundPlacesDiffFileCorrect from '../../mocks/groundPlacesDiffFileCorrect.json';
 import * as mockGroundPlacesDiffFileWithErrors from '../../mocks/groundPlacesDiffFileWithErrors.json';
 import * as mockGroundPlacesDiffFileWithMissingValues from '../../mocks/groundPlacesDiffFileWithMissingValues.json';
+import * as mockGroundPlacesDiffFileWithNothing from '../../mocks/groundPlacesDiffFileWithNothing.json';
 import { GroundPlacesFile, GroundPlaceDiff } from '../../src/types';
 
 describe('#applyGroundPlacesDiff', () => {
@@ -103,6 +104,25 @@ describe('#applyGroundPlacesDiff', () => {
     expect(thrownError).toEqual(
       new Error(
         'There is an error inside your GroundPlacesDiffFile. More details: "Error while creating a new StopCluster, please check that you have provide all properties needed (fromStopGroupGpuid, countryCode, latitude, longitude and name)."',
+      ),
+    );
+  });
+
+  it('should throw an error if the GroundPlaces did not have any update', () => {
+    const groundPlacesService: GroundPlacesController = new GroundPlacesController();
+
+    let thrownError: Error;
+
+    try {
+      groundPlacesService.init(mockSmallGroundPlacesFile as GroundPlacesFile);
+      groundPlacesService.applyGroundPlacesDiff(mockGroundPlacesDiffFileWithNothing as GroundPlaceDiff[]);
+    } catch (error) {
+      thrownError = error;
+    }
+
+    expect(thrownError).toEqual(
+      new Error(
+        'GroundPlaces update did not work. Please check the structure and integrity of the GroundPlacesDiff file used before apply it.',
       ),
     );
   });
