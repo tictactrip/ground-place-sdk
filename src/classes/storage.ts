@@ -10,13 +10,16 @@ import {
   Gpuid,
   UpdateGroundPlaceProperties,
   GroundPlaceFromFile,
+  GroundPlaceDiff,
+  GroundPlaceDiffOptions,
 } from '../types';
 
 /**
  * @description Manipulate GroundPlaces.
  */
 export class Storage {
-  private groundPlaces: GroundPlace[];
+  private groundPlaces: GroundPlace[] = [];
+  private groundPlacesDiff: GroundPlaceDiff[] = [];
 
   /**
    * @description Init and parse the GroundPlaces file into an array manipulable.
@@ -35,11 +38,35 @@ export class Storage {
   }
 
   /**
+   * @description This method is used by all the handling methods of the GroundPlacesController class to store the history of changes inside an GroundPlacesDiff object.
+   * @param {Gpuid} groundPlaceGpuid - Ground place unique identifier of the StopGroup or the StopCluster that is concerns by the changes.
+   * @param {GroundPlaceDiffOptions} groundPlaceDiffOptions - Options that are used by the GroundPlacesController handling method concerned.
+   * @returns {void}
+   */
+  public addGroundPlaceDiff(groundPlaceGpuid: Gpuid, groundPlaceDiffOptions: GroundPlaceDiffOptions): void {
+    const groundPlaceDiff: GroundPlaceDiff = {
+      [groundPlaceGpuid]: {
+        ...groundPlaceDiffOptions,
+      },
+    };
+
+    this.groundPlacesDiff.push(groundPlaceDiff);
+  }
+
+  /**
    * @description Getter to retrieve the Ground places.
    * @returns {GroundPlace[]}
    */
   public getGroundPlaces(): GroundPlace[] {
     return this.groundPlaces;
+  }
+
+  /**
+   * @description Getter to retrieve the Ground places.
+   * @returns {GroundPlaceDiff[]}
+   */
+  public getGroundPlacesDiff(): GroundPlaceDiff[] {
+    return this.groundPlacesDiff;
   }
 
   /**
