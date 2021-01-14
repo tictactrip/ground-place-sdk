@@ -383,11 +383,13 @@ export class GroundPlacesController {
    * @description Remove the reference of a StopGroup from a StopCluster.
    * @param {StopGroupGpuid} stopGroupGpuidToRemove - Ground place unique identifier of the StopGroup to remove.
    * @param {StopClusterGpuid} stopClusterGpuidParent - Ground place unique identifier of the StopCluster parent.
+   * @param {CreateDiff} shouldCreateDiff - True by default, if you don't want to have diff from this method, you can deactivate it.
    * @returns {void}
    */
   public removeStopGroupFromStopCluster(
     stopGroupGpuidToRemove: StopGroupGpuid,
     stopClusterGpuidParent: StopClusterGpuid,
+    shouldCreateDiff: CreateDiff = CreateDiff.TRUE,
   ): void {
     const stopClusterParent: StopCluster = this.storageService.getStopClusterByGpuid(stopClusterGpuidParent);
     const groundPlaces: GroundPlace[] = this.getGroundPlaces();
@@ -425,10 +427,12 @@ export class GroundPlacesController {
       );
     }
 
-    this.storageService.addGroundPlaceDiff(stopGroupGpuidToRemove, {
-      type: ActionType.REMOVE_STOP_GROUP_FROM_STOP_CLUSTER,
-      from: stopClusterGpuidParent,
-    });
+    if (shouldCreateDiff === CreateDiff.TRUE) {
+      this.storageService.addGroundPlaceDiff(stopGroupGpuidToRemove, {
+        type: ActionType.REMOVE_STOP_GROUP_FROM_STOP_CLUSTER,
+        from: stopClusterGpuidParent,
+      });
+    }
   }
 
   /**
@@ -436,12 +440,14 @@ export class GroundPlacesController {
    * @param {StopGroupGpuid} stopGroupToMoveGpuid - Ground place unique identifier of the StopGroup to move.
    * @param {StopClusterGpuid} fromStopClusterGpuid - Ground place unique identifier of the old StopCluster.
    * @param {StopClusterGpuid} intoStopClusterGpuid - Ground place unique identifier of the new StopCluster.
+   * @param {CreateDiff} shouldCreateDiff - True by default, if you don't want to have diff from this method, you can deactivate it.
    * @returns {void}
    */
   public moveStopGroup(
     stopGroupToMoveGpuid: StopGroupGpuid,
     fromStopClusterGpuid: StopClusterGpuid,
     intoStopClusterGpuid: StopClusterGpuid,
+    shouldCreateDiff: CreateDiff = CreateDiff.TRUE,
   ): void {
     if (fromStopClusterGpuid === intoStopClusterGpuid) {
       throw new Error(
@@ -452,8 +458,8 @@ export class GroundPlacesController {
     const cloneGroundPlaces: GroundPlace[] = cloneDeep(this.getGroundPlaces());
 
     try {
-      this.addStopGroupToStopCluster(stopGroupToMoveGpuid, intoStopClusterGpuid);
-      this.removeStopGroupFromStopCluster(stopGroupToMoveGpuid, fromStopClusterGpuid);
+      this.addStopGroupToStopCluster(stopGroupToMoveGpuid, intoStopClusterGpuid, CreateDiff.FALSE);
+      this.removeStopGroupFromStopCluster(stopGroupToMoveGpuid, fromStopClusterGpuid, CreateDiff.FALSE);
     } catch (error) {
       // If there is an error, previous update is reverted
       this.storageService.setGroundPlaces(cloneGroundPlaces);
@@ -461,11 +467,13 @@ export class GroundPlacesController {
       throw new Error(error.message);
     }
 
-    this.storageService.addGroundPlaceDiff(stopGroupToMoveGpuid, {
-      type: ActionType.MOVE_STOP_GROUP,
-      from: fromStopClusterGpuid,
-      into: intoStopClusterGpuid,
-    });
+    if (shouldCreateDiff === CreateDiff.TRUE) {
+      this.storageService.addGroundPlaceDiff(stopGroupToMoveGpuid, {
+        type: ActionType.MOVE_STOP_GROUP,
+        from: fromStopClusterGpuid,
+        into: intoStopClusterGpuid,
+      });
+    }
   }
 
   /**
@@ -473,7 +481,7 @@ export class GroundPlacesController {
    * @param {string} segmentProviderStopId - The identifier of the SegmentProvider to move.
    * @param {StopGroupGpuid} fromStopGroupGpuid - Ground place unique identifier of the old StopGroup.
    * @param {StopGroupGpuid} intoStopGroupGpuid - Ground place unique identifier of the new StopGroup.
-   * @param {DeactivateDiff} shouldCreateDiff - True by default, if you don't want to have diff from this method, you can deactivate it.
+   * @param {CreateDiff} shouldCreateDiff - True by default, if you don't want to have diff from this method, you can deactivate it.
    * @returns {void}
    */
   public moveSegmentProviderStop(
@@ -564,7 +572,12 @@ export class GroundPlacesController {
       const stopGroupToMerge: StopGroup = this.storageService.getStopGroupByGpuid(stopGroupToMergeGpuid);
 
       stopGroupToMerge.childs.map(({ id: segmentProviderStopId }: SegmentProviderStop) =>
-        this.moveSegmentProviderStop(segmentProviderStopId, stopGroupToMergeGpuid, intoStopGroupGpuid),
+        this.moveSegmentProviderStop(
+          segmentProviderStopId,
+          stopGroupToMergeGpuid,
+          intoStopGroupGpuid,
+          CreateDiff.FALSE,
+        ),
       );
     } catch (error) {
       // If there is an error, previous update is reverted
@@ -607,10 +620,10 @@ export class GroundPlacesController {
 
         // If its the case, only remove it from the first StopCluster
         if (isStopGroupAlreadyExists) {
-          this.removeStopGroupFromStopCluster(stopGroupGpuid, stopClusterToMergeGpuid);
+          this.removeStopGroupFromStopCluster(stopGroupGpuid, stopClusterToMergeGpuid, CreateDiff.FALSE);
           // If not, move it from the first StopCluster and remove it from it
         } else {
-          this.moveStopGroup(stopGroupGpuid, stopClusterToMergeGpuid, intoStopClusterGpuid);
+          this.moveStopGroup(stopGroupGpuid, stopClusterToMergeGpuid, intoStopClusterGpuid, CreateDiff.FALSE);
         }
       });
     } catch (error) {
