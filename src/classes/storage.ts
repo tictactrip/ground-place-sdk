@@ -47,13 +47,13 @@ export class Storage {
     groundPlaceGpuid: Gpuid,
     groundPlaceActionOptions: GroundPlaceActionOptions,
   ): void {
-    const groundPlaceDiff: GroundPlaceActionHistory = {
+    const groundPlaceActionHistory: GroundPlaceActionHistory = {
       [groundPlaceGpuid]: {
         ...groundPlaceActionOptions,
       },
     };
 
-    this.groundPlacesActionHistory.push(groundPlaceDiff);
+    this.groundPlacesActionHistory.push(groundPlaceActionHistory);
   }
 
   /**
