@@ -69,7 +69,7 @@ describe('#createStopGroup', () => {
         ],
       },
     ]);
-    expect(groundPlacesService.getGroundPlacesDiff()).toStrictEqual([
+    expect(groundPlacesService.getGroundPlacesActionHistory()).toStrictEqual([
       {
         'g|FRststbi__@u0tkxd': {
           type: 'createStopGroup',

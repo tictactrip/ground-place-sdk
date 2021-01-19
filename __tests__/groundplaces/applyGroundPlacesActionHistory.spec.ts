@@ -3,15 +3,14 @@ import * as mockSmallGroundPlacesFile from '../../mocks/smallGroundPlacesFile.js
 import * as mockGroundPlacesDiffFileCorrect from '../../mocks/groundPlacesDiffFileCorrect.json';
 import * as mockGroundPlacesDiffFileWithErrors from '../../mocks/groundPlacesDiffFileWithErrors.json';
 import * as mockGroundPlacesDiffFileWithMissingValues from '../../mocks/groundPlacesDiffFileWithMissingValues.json';
-import * as mockGroundPlacesDiffFileWithNothing from '../../mocks/groundPlacesDiffFileWithNothing.json';
-import { GroundPlacesFile, GroundPlaceDiff } from '../../src/types';
+import { GroundPlacesFile, GroundPlaceActionHistory } from '../../src/types';
 
-describe('#applyGroundPlacesDiff', () => {
-  it('should make all Ground Places diff changes', () => {
+describe('#applyGroundPlacesActionHistory', () => {
+  it('should make all GroundPlacesActionHistory changes', () => {
     const groundPlacesService: GroundPlacesController = new GroundPlacesController();
 
     groundPlacesService.init(mockSmallGroundPlacesFile as GroundPlacesFile);
-    groundPlacesService.applyGroundPlacesDiff(mockGroundPlacesDiffFileCorrect as GroundPlaceDiff[]);
+    groundPlacesService.applyGroundPlacesActionHistory(mockGroundPlacesDiffFileCorrect as GroundPlaceActionHistory[]);
 
     expect(groundPlacesService.getGroundPlaces()).toStrictEqual([
       {
@@ -58,14 +57,14 @@ describe('#applyGroundPlacesDiff', () => {
     let thrownError: Error;
 
     try {
-      groundPlacesService.applyGroundPlacesDiff(mockGroundPlacesDiffFileCorrect as GroundPlaceDiff[]);
+      groundPlacesService.applyGroundPlacesActionHistory(mockGroundPlacesDiffFileCorrect as GroundPlaceActionHistory[]);
     } catch (error) {
       thrownError = error;
     }
 
     expect(thrownError).toEqual(
       new Error(
-        'You can\'t apply your GroundPlacesDiffFile because there is no GroundPlaces available on this instance. You should call the "init" method with your GroundPlacesFile before using this method.',
+        'You can\'t apply your GroundPlacesActionHistory file because there is no GroundPlaces available on this instance. You should call the "init" method with your GroundPlacesFile before using this method.',
       ),
     );
   });
@@ -77,14 +76,16 @@ describe('#applyGroundPlacesDiff', () => {
 
     try {
       groundPlacesService.init(mockSmallGroundPlacesFile as GroundPlacesFile);
-      groundPlacesService.applyGroundPlacesDiff(mockGroundPlacesDiffFileWithErrors as GroundPlaceDiff[]);
+      groundPlacesService.applyGroundPlacesActionHistory(
+        mockGroundPlacesDiffFileWithErrors as GroundPlaceActionHistory[],
+      );
     } catch (error) {
       thrownError = error;
     }
 
     expect(thrownError).toEqual(
       new Error(
-        'There is an error inside your GroundPlacesDiffFile. More details: "You can\'t move the StopGroup with the Gpuid "g|FRststbi__@u0tkxd" because the new StopCluster parent is the same as before."',
+        'There is an error inside your GroundPlacesActionHistory file. More details: "You can\'t move the StopGroup with the Gpuid "g|FRststbi__@u0tkxd" because the new StopCluster parent is the same as before."',
       ),
     );
   });
@@ -96,14 +97,16 @@ describe('#applyGroundPlacesDiff', () => {
 
     try {
       groundPlacesService.init(mockSmallGroundPlacesFile as GroundPlacesFile);
-      groundPlacesService.applyGroundPlacesDiff(mockGroundPlacesDiffFileWithMissingValues as GroundPlaceDiff[]);
+      groundPlacesService.applyGroundPlacesActionHistory(
+        mockGroundPlacesDiffFileWithMissingValues as GroundPlaceActionHistory[],
+      );
     } catch (error) {
       thrownError = error;
     }
 
     expect(thrownError).toEqual(
       new Error(
-        'There is an error inside your GroundPlacesDiffFile. More details: "Error while creating a new StopCluster, please check that you have provide all properties needed (fromStopGroupGpuid, countryCode, latitude, longitude and name)."',
+        'There is an error inside your GroundPlacesActionHistory file. More details: "Error while creating a new StopCluster, please check that you have provide all properties needed (fromStopGroupGpuid, countryCode, latitude, longitude and name)."',
       ),
     );
   });
@@ -115,14 +118,14 @@ describe('#applyGroundPlacesDiff', () => {
 
     try {
       groundPlacesService.init(mockSmallGroundPlacesFile as GroundPlacesFile);
-      groundPlacesService.applyGroundPlacesDiff(mockGroundPlacesDiffFileWithNothing as GroundPlaceDiff[]);
+      groundPlacesService.applyGroundPlacesActionHistory([]);
     } catch (error) {
       thrownError = error;
     }
 
     expect(thrownError).toEqual(
       new Error(
-        'GroundPlaces update did not work. Please check the structure and integrity of the GroundPlacesDiff file used before apply it.',
+        'GroundPlaces update did not work. Please check the structure and integrity of the GroundPlacesActionHistory file used before apply it.',
       ),
     );
   });

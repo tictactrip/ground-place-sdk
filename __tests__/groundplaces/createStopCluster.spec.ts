@@ -68,7 +68,7 @@ describe('#createStopCluster', () => {
         type: 'cluster',
       },
     ]);
-    expect(groundPlacesService.getGroundPlacesDiff()).toStrictEqual([
+    expect(groundPlacesService.getGroundPlacesActionHistory()).toStrictEqual([
       {
         'g|FRststbi__@u0tkxd': {
           type: 'createStopCluster',

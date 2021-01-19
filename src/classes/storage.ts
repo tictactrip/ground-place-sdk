@@ -10,8 +10,8 @@ import {
   Gpuid,
   UpdateGroundPlaceProperties,
   GroundPlaceFromFile,
-  GroundPlaceDiff,
-  GroundPlaceDiffOptions,
+  GroundPlaceActionHistory,
+  GroundPlaceActionOptions,
 } from '../types';
 
 /**
@@ -19,7 +19,7 @@ import {
  */
 export class Storage {
   private groundPlaces: GroundPlace[] = [];
-  private groundPlacesDiff: GroundPlaceDiff[] = [];
+  private groundPlacesActionHistory: GroundPlaceActionHistory[] = [];
 
   /**
    * @description Init and parse the GroundPlaces file into an array manipulable.
@@ -38,19 +38,22 @@ export class Storage {
   }
 
   /**
-   * @description This method is used by all the handling methods of the GroundPlacesController class to add a new diff to the history of changes inside an GroundPlacesDiff object.
+   * @description This method is used by all the handling methods of the GroundPlacesController class to add a new action to the history of changes inside an GroundPlacesActionHistory object.
    * @param {Gpuid} groundPlaceGpuid - Ground place unique identifier of the StopGroup or the StopCluster that is concerns by the changes.
-   * @param {GroundPlaceDiffOptions} groundPlaceDiffOptions - Options that are used by the GroundPlacesController handling method concerned.
+   * @param {GroundPlaceActionOptions} groundPlaceActionOptions - Options that are used by the GroundPlacesController handling method concerned.
    * @returns {void}
    */
-  public addGroundPlaceDiff(groundPlaceGpuid: Gpuid, groundPlaceDiffOptions: GroundPlaceDiffOptions): void {
-    const groundPlaceDiff: GroundPlaceDiff = {
+  public addGroundPlaceActionHistory(
+    groundPlaceGpuid: Gpuid,
+    groundPlaceActionOptions: GroundPlaceActionOptions,
+  ): void {
+    const groundPlaceDiff: GroundPlaceActionHistory = {
       [groundPlaceGpuid]: {
-        ...groundPlaceDiffOptions,
+        ...groundPlaceActionOptions,
       },
     };
 
-    this.groundPlacesDiff.push(groundPlaceDiff);
+    this.groundPlacesActionHistory.push(groundPlaceDiff);
   }
 
   /**
@@ -63,10 +66,10 @@ export class Storage {
 
   /**
    * @description Getter to retrieve the Ground places.
-   * @returns {GroundPlaceDiff[]}
+   * @returns {GroundPlaceActionHistory[]}
    */
-  public getGroundPlacesDiff(): GroundPlaceDiff[] {
-    return this.groundPlacesDiff;
+  public getGroundPlacesActionHistory(): GroundPlaceActionHistory[] {
+    return this.groundPlacesActionHistory;
   }
 
   /**

@@ -86,7 +86,7 @@ describe('#deleteStopCluster', () => {
         type: 'group',
       },
     ]);
-    expect(groundPlacesService.getGroundPlacesDiff()).toEqual([
+    expect(groundPlacesService.getGroundPlacesActionHistory()).toEqual([
       {
         'c|FRnaarto__@u0skg': {
           type: 'deleteStopCluster',

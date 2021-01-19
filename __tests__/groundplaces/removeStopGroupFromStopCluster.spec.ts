@@ -151,7 +151,7 @@ describe('#removeStopGroupFromStopCluster', () => {
         type: 'group',
       },
     ]);
-    expect(groundPlacesService.getGroundPlacesDiff()).toStrictEqual([
+    expect(groundPlacesService.getGroundPlacesActionHistory()).toStrictEqual([
       {
         'g|FRnancy___@u0skux': {
           type: 'removeStopGroupFromStopCluster',

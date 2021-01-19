@@ -151,7 +151,7 @@ describe('#addStopGroupToStopCluster', () => {
         type: 'group',
       },
     ]);
-    expect(groundPlacesService.getGroundPlacesDiff()).toStrictEqual([
+    expect(groundPlacesService.getGroundPlacesActionHistory()).toStrictEqual([
       {
         'g|FRnanvanna@u0skgb': {
           type: 'addStopGroupToStopCluster',

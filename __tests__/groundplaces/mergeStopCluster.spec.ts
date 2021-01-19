@@ -155,7 +155,7 @@ describe('#mergeStopCluster', () => {
         type: 'group',
       },
     ]);
-    expect(groundPlacesService.getGroundPlacesDiff()).toStrictEqual([
+    expect(groundPlacesService.getGroundPlacesActionHistory()).toStrictEqual([
       {
         'c|FRnancy___@u0sku': {
           type: 'mergeStopCluster',

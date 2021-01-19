@@ -155,7 +155,7 @@ describe('#mergeStopGroup', () => {
         type: 'group',
       },
     ]);
-    expect(groundPlacesService.getGroundPlacesDiff()).toStrictEqual([
+    expect(groundPlacesService.getGroundPlacesActionHistory()).toStrictEqual([
       {
         'g|FRstrasbou@u0tkru': {
           type: 'mergeStopGroup',

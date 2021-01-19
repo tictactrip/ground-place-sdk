@@ -102,7 +102,7 @@ describe('#updateStopCluster', () => {
         type: 'group',
       },
     ]);
-    expect(groundPlacesService.getGroundPlacesDiff()).toStrictEqual([
+    expect(groundPlacesService.getGroundPlacesActionHistory()).toStrictEqual([
       {
         'c|FRstrasbou@u0ts2': {
           type: 'updateStopCluster',

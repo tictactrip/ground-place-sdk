@@ -10,7 +10,7 @@ type GroundPlacesFile = Record<Gpuid, GroundPlaceFromFile>;
 
 type GroundPlace = StopGroup | StopCluster;
 
-type GroundPlaceDiff = Record<Gpuid, GroundPlaceDiffOptions>;
+type GroundPlaceActionHistory = Record<Gpuid, GroundPlaceActionOptions>;
 
 interface StopGroupFromFile {
   country_code: CountryCode;
@@ -80,7 +80,7 @@ interface UpdateGroundPlaceProperties {
   latitude?: number;
 }
 
-interface GroundPlaceDiffOptions {
+interface GroundPlaceActionOptions {
   type: ActionType;
   from?: Gpuid;
   into?: Gpuid;
@@ -125,9 +125,8 @@ enum AutocompleteFilter {
   SEGMENT_PROVIDER_STOP = 'segmentProviderStop',
 }
 
-enum CreateDiff {
+enum RemoveActionHistory {
   TRUE = 'True',
-  FALSE = 'False',
 }
 
 enum CountryCode {
@@ -402,7 +401,7 @@ export {
   GroundPlaceFromFile,
   GenerateGpuidGroundPlace,
   ActionType,
-  GroundPlaceDiff,
-  GroundPlaceDiffOptions,
-  CreateDiff,
+  GroundPlaceActionHistory,
+  GroundPlaceActionOptions,
+  RemoveActionHistory,
 };

@@ -104,7 +104,7 @@ describe('#moveSegmentProviderStop', () => {
         type: 'cluster',
       },
     ]);
-    expect(groundPlacesService.getGroundPlacesDiff()).toStrictEqual([
+    expect(groundPlacesService.getGroundPlacesActionHistory()).toStrictEqual([
       {
         'g|FRstraroet@u0tkr3': {
           type: 'moveSegmentProviderStop',
