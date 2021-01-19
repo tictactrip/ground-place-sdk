@@ -4,39 +4,34 @@ type StopGroupGpuid = Gpuid;
 
 type StopClusterGpuid = Gpuid;
 
-type GroundPlaceFromFile = StopGroupFromFile | StopClusterFromFile;
-
 type GroundPlacesFile = Record<Gpuid, GroundPlaceFromFile>;
+
+type GroundPlaceFromFile = StopGroupFromFile | StopClusterFromFile;
 
 type GroundPlace = StopGroup | StopCluster;
 
 type GroundPlaceActionHistory = Record<Gpuid, GroundPlaceActionOptions>;
 
-interface StopGroupFromFile {
+interface GroundPlaceBase {
   country_code: CountryCode;
   name: string;
   longitude: number;
   latitude: number;
-  type: GroundPlaceType.GROUP;
-  childs: SegmentProviderStop[];
   serviced: GroundPlaceServiced;
   has_been_modified?: boolean;
   warning?: boolean;
   is_latest?: boolean;
 }
 
-interface StopClusterFromFile {
-  country_code: CountryCode;
-  name: string;
-  longitude: number;
-  latitude: number;
+interface StopGroupFromFile extends GroundPlaceBase {
+  type: GroundPlaceType.GROUP;
+  childs: SegmentProviderStop[];
+}
+
+interface StopClusterFromFile extends GroundPlaceBase {
   type: GroundPlaceType.CLUSTER;
   childs: StopGroupGpuid[];
-  serviced: GroundPlaceServiced;
   unique_name?: string;
-  has_been_modified?: boolean;
-  warning?: boolean;
-  is_latest?: boolean;
 }
 
 interface StopGroup extends StopGroupFromFile {
@@ -396,8 +391,6 @@ export {
   CreateGroundPlacesParams,
   UpdateGroundPlaceProperties,
   CountryCode,
-  StopGroupFromFile,
-  StopClusterFromFile,
   GroundPlaceFromFile,
   GenerateGpuidGroundPlace,
   ActionType,
