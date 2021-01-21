@@ -120,8 +120,9 @@ enum AutocompleteFilter {
   SEGMENT_PROVIDER_STOP = 'segmentProviderStop',
 }
 
-enum RemoveActionHistory {
+enum CreateActionHistory {
   TRUE = 'True',
+  FALSE = 'False',
 }
 
 enum CountryCode {
@@ -396,5 +397,5 @@ export {
   ActionType,
   GroundPlaceActionHistory,
   GroundPlaceActionOptions,
-  RemoveActionHistory,
+  CreateActionHistory,
 };
