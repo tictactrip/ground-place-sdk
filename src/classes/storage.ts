@@ -65,7 +65,7 @@ export class Storage {
   }
 
   /**
-   * @description Getter to retrieve the Ground places.
+   * @description Getter to retrieve the GroundPlaceActionHistory object.
    * @returns {GroundPlaceActionHistory[]}
    */
   public getGroundPlacesActionHistory(): GroundPlaceActionHistory[] {
@@ -83,7 +83,7 @@ export class Storage {
 
   /**
    * @description Add a new place to the Ground places.
-   * @param {GroundPlace} groundPlace - Could be a StopGroup or a StopCluster
+   * @param {GroundPlace} groundPlace - Could be a StopGroup or a StopCluster.
    * @returns {void}
    */
   public addPlace(groundPlace: GroundPlace): void {
@@ -127,7 +127,7 @@ export class Storage {
   /**
    * @description Find the correct place based on the Ground place unique identifier provided and the type of the place.
    * @param {Gpuid} placeGpuid - Ground place unique identifier of the place to search.
-   * @param {GroundPlaceType} placeType - The type of the place to search, can be StopGroup or StopCluster
+   * @param {GroundPlaceType} placeType - The type of the place to search, can be StopGroup or StopCluster.
    */
   public getPlaceByGpuid(placeGpuid: Gpuid, placeType: GroundPlaceType): GroundPlace {
     switch (placeType) {
@@ -153,10 +153,11 @@ export class Storage {
   ): void {
     const groundPlace: GroundPlace = this.getPlaceByGpuid(placeGpuid, placeType);
 
-    // Filter the `propertiesToUpdate` object with values properly defined
     Object.keys(propertiesToUpdate).forEach((key: string) => {
       if (propertiesToUpdate[key] === undefined) {
-        delete propertiesToUpdate[key];
+        throw new Error(
+          `You can't update the "${placeType}" with the Gpuid "${placeGpuid}" because the property named "${key}" is undefined.`,
+        );
       }
     });
 

@@ -23,7 +23,11 @@ import {
   GroundPlaceActionOptions,
   CreateActionHistory,
 } from '../types';
-import { calculateDistanceBetweenTwoPlaceInKm, parseGeneratePlaceToGroundPlace } from '../helpers';
+import {
+  calculateDistanceBetweenTwoPlaceInKm,
+  parseGeneratePlaceToGroundPlace,
+  sanitizeGroundPlacePropertiesToUpdate,
+} from '../helpers';
 import { MAX_DISTANCE_BETWEEN_STOP_GROUP_AND_STOP_CLUSTER_IN_KM } from '../constants';
 
 /**
@@ -695,7 +699,7 @@ export class GroundPlacesController {
     const groundPlaces: GroundPlace[] = this.getGroundPlaces();
     const cloneGroundPlaces: GroundPlace[] = cloneDeep(this.getGroundPlaces());
 
-    if (!cloneGroundPlaces.length) {
+    if (!groundPlaces.length) {
       throw new Error(
         `You can't apply your GroundPlacesActionHistory file because there is no GroundPlaces available on this instance. You should call the "init" method with your GroundPlacesFile before using this method.`,
       );
@@ -725,19 +729,29 @@ export class GroundPlacesController {
               name: params.name,
             });
 
-          case ActionType.UPDATE_STOP_GROUP:
-            return this.updateStopGroup(groundPlaceGpuid, {
+          case ActionType.UPDATE_STOP_GROUP: {
+            const propertiesToUpdate: UpdateGroundPlaceProperties = {
               latitude: params.latitude,
               longitude: params.longitude,
               name: params.name,
-            });
+            };
 
-          case ActionType.UPDATE_STOP_CLUSTER:
-            return this.updateStopCluster(groundPlaceGpuid, {
+            sanitizeGroundPlacePropertiesToUpdate(propertiesToUpdate);
+
+            return this.updateStopGroup(groundPlaceGpuid, propertiesToUpdate);
+          }
+
+          case ActionType.UPDATE_STOP_CLUSTER: {
+            const propertiesToUpdate: UpdateGroundPlaceProperties = {
               latitude: params.latitude,
               longitude: params.longitude,
               name: params.name,
-            });
+            };
+
+            sanitizeGroundPlacePropertiesToUpdate(propertiesToUpdate);
+
+            return this.updateStopCluster(groundPlaceGpuid, propertiesToUpdate);
+          }
 
           case ActionType.ADD_STOP_GROUP_TO_STOP_CLUSTER:
             return this.addStopGroupToStopCluster(groundPlaceGpuid, intoGroundPlaceGpuid);
