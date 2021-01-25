@@ -1,8 +1,6 @@
 import * as cloneDeep from 'lodash.clonedeep';
-import * as isEqual from 'fast-deep-equal';
 import { Generator as GenerateGpuid } from '@tictactrip/gp-uid';
 import { Storage } from '../classes/storage';
-import { WebServices } from './webservices';
 import {
   Gpuid,
   StopGroupGpuid,
@@ -35,7 +33,6 @@ import { MAX_DISTANCE_BETWEEN_STOP_GROUP_AND_STOP_CLUSTER_IN_KM } from '../const
  */
 export class GroundPlacesController {
   private readonly storageService: Storage;
-  private readonly webService: WebServices;
   private readonly generateGpuidService: GenerateGpuid;
 
   /**
@@ -44,26 +41,16 @@ export class GroundPlacesController {
    */
   constructor() {
     this.storageService = new Storage();
-    this.webService = new WebServices();
     this.generateGpuidService = new GenerateGpuid();
   }
 
   /**
    * @description Init GroundPlaces file.
-   * @param {GroundPlacesFile|undefined} groundPlacesFile
-   * The file to manipulate, can only be JSON for now.
-   *
-   * If you provide empty value, the default file will be the file retrieved from Amazon S3.
+   * @param {GroundPlacesFile} groundPlacesFile
    * @returns {void}
    */
-  public init(groundPlacesFile?: GroundPlacesFile): void {
-    if (groundPlacesFile) {
-      this.storageService.initFile(groundPlacesFile);
-    } else {
-      const groundPlacesFileS3: GroundPlacesFile = this.webService.downloadDistantGroundPlacesMaster();
-
-      this.storageService.initFile(groundPlacesFileS3);
-    }
+  public init(groundPlacesFile: GroundPlacesFile): void {
+    this.storageService.initFile(groundPlacesFile);
   }
 
   /**
@@ -787,23 +774,5 @@ export class GroundPlacesController {
 
       throw new Error(`There is an error inside your GroundPlacesActionHistory file. More details: "${error.message}"`);
     }
-
-    if (isEqual(groundPlaces, cloneGroundPlaces)) {
-      throw new Error(
-        'GroundPlaces update did not work. Please check the structure and integrity of the GroundPlacesActionHistory file used before apply it.',
-      );
-    }
   }
-
-  /**
-   * @description Download the GroundPlacesActionHistory file in JSON and store it on Desktop.
-   * @returns {void}
-   */
-  public downloadGroundPlacesActionHistoryFileToDesktop(): void {}
-
-  /**
-   * @description Download the GroundPlaces file in JSON and store it on Desktop.
-   * @returns {void}
-   */
-  public downloadGroundPlacesFileToDesktop(): void {}
 }
