@@ -1,8 +1,8 @@
 import { GroundPlacesController } from '../../src/classes/groundplaces';
 import * as mockSmallGroundPlacesFile from '../../mocks/smallGroundPlacesFile.json';
-import * as mockGroundPlacesDiffFileCorrect from '../../mocks/groundPlacesDiffFileCorrect.json';
-import * as mockGroundPlacesDiffFileWithErrors from '../../mocks/groundPlacesDiffFileWithErrors.json';
-import * as mockGroundPlacesDiffFileWithMissingValues from '../../mocks/groundPlacesDiffFileWithMissingValues.json';
+import * as mockGroundPlacesActionHistoryCorrect from '../../mocks/groundPlacesActionHistoryCorrect.json';
+import * as mockGroundPlacesActionHistoryWithErrors from '../../mocks/groundPlacesActionHistoryWithErrors.json';
+import * as mockGroundPlacesActionHistoryWithMissingValues from '../../mocks/groundPlacesActionHistoryWithMissingValues.json';
 import { GroundPlacesFile, GroundPlaceActionHistory } from '../../src/types';
 
 describe('#applyGroundPlacesActionHistory', () => {
@@ -10,7 +10,9 @@ describe('#applyGroundPlacesActionHistory', () => {
     const groundPlacesService: GroundPlacesController = new GroundPlacesController();
 
     groundPlacesService.init(mockSmallGroundPlacesFile as GroundPlacesFile);
-    groundPlacesService.applyGroundPlacesActionHistory(mockGroundPlacesDiffFileCorrect as GroundPlaceActionHistory[]);
+    groundPlacesService.applyGroundPlacesActionHistory(
+      mockGroundPlacesActionHistoryCorrect as GroundPlaceActionHistory[],
+    );
 
     expect(groundPlacesService.getGroundPlaces()).toStrictEqual([
       {
@@ -57,7 +59,9 @@ describe('#applyGroundPlacesActionHistory', () => {
     let thrownError: Error;
 
     try {
-      groundPlacesService.applyGroundPlacesActionHistory(mockGroundPlacesDiffFileCorrect as GroundPlaceActionHistory[]);
+      groundPlacesService.applyGroundPlacesActionHistory(
+        mockGroundPlacesActionHistoryWithErrors as GroundPlaceActionHistory[],
+      );
     } catch (error) {
       thrownError = error;
     }
@@ -77,7 +81,7 @@ describe('#applyGroundPlacesActionHistory', () => {
     try {
       groundPlacesService.init(mockSmallGroundPlacesFile as GroundPlacesFile);
       groundPlacesService.applyGroundPlacesActionHistory(
-        mockGroundPlacesDiffFileWithErrors as GroundPlaceActionHistory[],
+        mockGroundPlacesActionHistoryWithErrors as GroundPlaceActionHistory[],
       );
     } catch (error) {
       thrownError = error;
@@ -98,7 +102,7 @@ describe('#applyGroundPlacesActionHistory', () => {
     try {
       groundPlacesService.init(mockSmallGroundPlacesFile as GroundPlacesFile);
       groundPlacesService.applyGroundPlacesActionHistory(
-        mockGroundPlacesDiffFileWithMissingValues as GroundPlaceActionHistory[],
+        mockGroundPlacesActionHistoryWithMissingValues as GroundPlaceActionHistory[],
       );
     } catch (error) {
       thrownError = error;
@@ -107,25 +111,6 @@ describe('#applyGroundPlacesActionHistory', () => {
     expect(thrownError).toEqual(
       new Error(
         'There is an error inside your GroundPlacesActionHistory file. More details: "Error while creating a new StopCluster, please check that you have provide all properties needed (fromStopGroupGpuid, countryCode, latitude, longitude and name)."',
-      ),
-    );
-  });
-
-  it('should throw an error if the GroundPlaces did not have any update', () => {
-    const groundPlacesService: GroundPlacesController = new GroundPlacesController();
-
-    let thrownError: Error;
-
-    try {
-      groundPlacesService.init(mockSmallGroundPlacesFile as GroundPlacesFile);
-      groundPlacesService.applyGroundPlacesActionHistory([]);
-    } catch (error) {
-      thrownError = error;
-    }
-
-    expect(thrownError).toEqual(
-      new Error(
-        'GroundPlaces update did not work. Please check the structure and integrity of the GroundPlacesActionHistory file used before apply it.',
       ),
     );
   });
