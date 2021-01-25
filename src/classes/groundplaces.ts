@@ -36,8 +36,7 @@ export class GroundPlacesController {
   private readonly generateGpuidService: GenerateGpuid;
 
   /**
-   * @description Manipulate GroundPlaces file.
-   * @param {string} groundPlacesFile - The file to manipulate, can only be JSON for now.
+   * @constructor Manipulate GroundPlaces file.
    */
   constructor() {
     this.storageService = new Storage();
