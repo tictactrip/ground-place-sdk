@@ -154,7 +154,7 @@ export class GroundPlacesController {
 
       this.storageService.addPlace(newStopGroup);
 
-      this.moveSegmentProviderStop(
+      this.moveSegmentProviderStopWithHistory(
         segmentProviderStopId,
         fromStopGroupGpuid,
         newStopGroup.gpuid,
@@ -476,14 +476,34 @@ export class GroundPlacesController {
    * @param {string} segmentProviderStopId - The identifier of the SegmentProvider to move.
    * @param {StopGroupGpuid} fromStopGroupGpuid - Ground place unique identifier of the old StopGroup.
    * @param {StopGroupGpuid} intoStopGroupGpuid - Ground place unique identifier of the new StopGroup.
-   * @param {CreateActionHistory} createActionHistory - If you don't want to have ActionHistory created from this method, you can deactivate it by passing `CreateActionHistory.FALSE`.
    * @returns {void}
    */
   public moveSegmentProviderStop(
     segmentProviderStopId: string,
     fromStopGroupGpuid: StopGroupGpuid,
     intoStopGroupGpuid: StopGroupGpuid,
-    createActionHistory?: CreateActionHistory,
+  ): void {
+    this.moveSegmentProviderStopWithHistory(
+      segmentProviderStopId,
+      fromStopGroupGpuid,
+      intoStopGroupGpuid,
+      CreateActionHistory.TRUE,
+    );
+  }
+
+  /**
+   * @description This method is used by 'moveSegmentProviderStop' and the other handle places methods that use it, to emit or not an ActionHistory.
+   * @param {string} segmentProviderStopId - The identifier of the SegmentProvider to move.
+   * @param {StopGroupGpuid} fromStopGroupGpuid - Ground place unique identifier of the old StopGroup.
+   * @param {StopGroupGpuid} intoStopGroupGpuid - Ground place unique identifier of the new StopGroup.
+   * @param {CreateActionHistory} createActionHistory - Enable or disable ActionHistory emitted.
+   * @returns {void}
+   */
+  private moveSegmentProviderStopWithHistory(
+    segmentProviderStopId: string,
+    fromStopGroupGpuid: StopGroupGpuid,
+    intoStopGroupGpuid: StopGroupGpuid,
+    createActionHistory: CreateActionHistory,
   ): void {
     if (fromStopGroupGpuid === intoStopGroupGpuid) {
       throw new Error(
@@ -537,7 +557,7 @@ export class GroundPlacesController {
       throw new Error(error.message);
     }
 
-    if (createActionHistory !== CreateActionHistory.FALSE) {
+    if (createActionHistory === CreateActionHistory.TRUE) {
       this.storageService.addGroundPlaceActionHistory(fromStopGroupGpuid, {
         type: ActionType.MOVE_SEGMENT_PROVIDER_STOP,
         into: intoStopGroupGpuid,
@@ -567,7 +587,7 @@ export class GroundPlacesController {
       const stopGroupToMerge: StopGroup = this.storageService.getStopGroupByGpuid(stopGroupToMergeGpuid);
 
       stopGroupToMerge.childs.map(({ id: segmentProviderStopId }: SegmentProviderStop) =>
-        this.moveSegmentProviderStop(
+        this.moveSegmentProviderStopWithHistory(
           segmentProviderStopId,
           stopGroupToMergeGpuid,
           intoStopGroupGpuid,
