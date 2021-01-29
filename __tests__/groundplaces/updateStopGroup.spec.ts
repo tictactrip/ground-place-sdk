@@ -101,6 +101,29 @@ describe('#updateStopGroup', () => {
     ]);
   });
 
+  it('should throw an error if one property passed is undefined', () => {
+    const groundPlacesService: GroundPlacesController = new GroundPlacesController();
+
+    groundPlacesService.init(mockSmallGroundPlacesFile as GroundPlacesFile);
+
+    let thrownError: Error;
+
+    try {
+      groundPlacesService.updateStopGroup('g|FRststbi__@u0tkxd', {
+        name: 'Strasbourg, Grand-Est, France',
+        latitude: undefined,
+      });
+    } catch (error) {
+      thrownError = error;
+    }
+
+    expect(thrownError).toEqual(
+      new Error(
+        'You can\'t update the "group" with the Gpuid "g|FRststbi__@u0tkxd" because the property named "latitude" is undefined.',
+      ),
+    );
+  });
+
   it('should throw an error if the new position of the updated StopGroup is far away from its StopCluster parent', () => {
     const groundPlacesService: GroundPlacesController = new GroundPlacesController();
 

@@ -155,6 +155,14 @@ describe('#mergeStopGroup', () => {
         type: 'group',
       },
     ]);
+    expect(groundPlacesService.getGroundPlacesActionHistory()).toStrictEqual([
+      {
+        'g|FRstrasbou@u0tkru': {
+          type: 'mergeStopGroup',
+          into: 'g|FRststbi__@u0tkxd',
+        },
+      },
+    ]);
   });
 
   it('should throw an error if the two StopGroup to merge are the same', () => {

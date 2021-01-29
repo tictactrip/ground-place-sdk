@@ -104,6 +104,17 @@ describe('#moveSegmentProviderStop', () => {
         type: 'cluster',
       },
     ]);
+    expect(groundPlacesService.getGroundPlacesActionHistory()).toStrictEqual([
+      {
+        'g|FRstraroet@u0tkr3': {
+          type: 'moveSegmentProviderStop',
+          into: 'g|FRstrasbou@u0tkru',
+          params: {
+            segmentProviderStopId: 'FRBUK',
+          },
+        },
+      },
+    ]);
   });
 
   it('should throw an error if the current StopGroup parent and the new one are the same', () => {

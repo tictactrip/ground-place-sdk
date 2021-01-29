@@ -1,14 +1,13 @@
 import * as cloneDeep from 'lodash.clonedeep';
 import { Generator as GenerateGpuid } from '@tictactrip/gp-uid';
 import { Storage } from '../classes/storage';
-import { WebServices } from './webservices';
 import {
+  Gpuid,
   StopGroupGpuid,
   StopClusterGpuid,
   CreateGroundPlacesParams,
   UpdateGroundPlaceProperties,
   AutocompleteFilter,
-  GroundPlacesDiff,
   GroundPlaceType,
   GroundPlacesFile,
   GroundPlace,
@@ -17,8 +16,16 @@ import {
   SegmentProviderStop,
   StopGroup,
   GenerateGpuidGroundPlace,
+  ActionType,
+  GroundPlaceActionHistory,
+  GroundPlaceActionOptions,
+  CreateActionHistory,
 } from '../types';
-import { calculateDistanceBetweenTwoPlaceInKm, parseGeneratePlaceToGroundPlace } from '../helpers';
+import {
+  calculateDistanceBetweenTwoPlaceInKm,
+  parseGeneratePlaceToGroundPlace,
+  sanitizeGroundPlacePropertiesToUpdate,
+} from '../helpers';
 import { MAX_DISTANCE_BETWEEN_STOP_GROUP_AND_STOP_CLUSTER_IN_KM } from '../constants';
 
 /**
@@ -26,35 +33,23 @@ import { MAX_DISTANCE_BETWEEN_STOP_GROUP_AND_STOP_CLUSTER_IN_KM } from '../const
  */
 export class GroundPlacesController {
   private readonly storageService: Storage;
-  private readonly webService: WebServices;
   private readonly generateGpuidService: GenerateGpuid;
 
   /**
-   * @description Manipulate GroundPlaces file.
-   * @param {string} groundPlacesFile - The file to manipulate, can only be JSON for now.
+   * @constructor Manipulate GroundPlaces file.
    */
   constructor() {
     this.storageService = new Storage();
-    this.webService = new WebServices();
     this.generateGpuidService = new GenerateGpuid();
   }
 
   /**
    * @description Init GroundPlaces file.
-   * @param {GroundPlacesFile|undefined} groundPlacesFile
-   * The file to manipulate, can only be JSON for now.
-   *
-   * If you provide empty value, the default file will be the file retrieved from Amazon S3.
+   * @param {GroundPlacesFile} groundPlacesFile
    * @returns {void}
    */
-  public init(groundPlacesFile?: GroundPlacesFile): void {
-    if (groundPlacesFile) {
-      this.storageService.initFile(groundPlacesFile);
-    } else {
-      const groundPlacesFileS3: GroundPlacesFile = this.webService.downloadDistantGroundPlacesMaster();
-
-      this.storageService.initFile(groundPlacesFileS3);
-    }
+  public init(groundPlacesFile: GroundPlacesFile): void {
+    this.storageService.initFile(groundPlacesFile);
   }
 
   /**
@@ -124,7 +119,7 @@ export class GroundPlacesController {
 
   /**
    * @description Create a new StopGroup from a SegmentProviderStop.
-   * @param {string} segmentProviderStopId - The identifier of the SegmentProvider used to create the new StopGroup.
+   * @param {string} segmentProviderStopId - The identifier of the SegmentProviderStop used to create the new StopGroup.
    * @param {StopGroupGpuid} fromStopGroupGpuid - Ground place unique identifier of the current StopGroup parent.
    * @param {CreateGroundPlacesParams} createGroundPlaceParams - Parameters that are needed to create a new StopGroup.
    * @returns {void}
@@ -134,6 +129,19 @@ export class GroundPlacesController {
     fromStopGroupGpuid: StopGroupGpuid,
     createGroundPlaceParams: CreateGroundPlacesParams,
   ): void {
+    if (
+      !segmentProviderStopId ||
+      !fromStopGroupGpuid ||
+      !createGroundPlaceParams.countryCode ||
+      !createGroundPlaceParams.latitude ||
+      !createGroundPlaceParams.longitude ||
+      !createGroundPlaceParams.name
+    ) {
+      throw new Error(
+        'Error while creating a new StopGroup, please check that you have provide all properties needed (segmentProviderId, fromStopGroupGpuid, countryCode, latitude, longitude and name).',
+      );
+    }
+
     const cloneGroundPlaces: GroundPlace[] = cloneDeep(this.getGroundPlaces());
 
     try {
@@ -146,7 +154,12 @@ export class GroundPlacesController {
 
       this.storageService.addPlace(newStopGroup);
 
-      this.moveSegmentProviderStop(segmentProviderStopId, fromStopGroupGpuid, newStopGroup.gpuid);
+      this.internalMoveSegmentProviderStop(
+        segmentProviderStopId,
+        fromStopGroupGpuid,
+        newStopGroup.gpuid,
+        CreateActionHistory.FALSE,
+      );
 
       // As the new StopGroup have a segmentProviderStop in it (it's not empty), we have to add it inside all its potential StopCluster parents
       const stopClusterParent: GroundPlace[] = cloneGroundPlaces.filter(
@@ -156,7 +169,7 @@ export class GroundPlacesController {
       );
 
       stopClusterParent.map(({ gpuid: stopClusterGpuid }: StopCluster) =>
-        this.addStopGroupToStopCluster(newStopGroup.gpuid, stopClusterGpuid),
+        this.internalAddStopGroupToStopCluster(newStopGroup.gpuid, stopClusterGpuid, CreateActionHistory.FALSE),
       );
     } catch (error) {
       // If there is an error, previous update is reverted
@@ -164,6 +177,14 @@ export class GroundPlacesController {
 
       throw new Error(error.message);
     }
+
+    this.storageService.addGroundPlaceActionHistory(fromStopGroupGpuid, {
+      type: ActionType.CREATE_STOP_GROUP,
+      params: {
+        segmentProviderStopId,
+        ...createGroundPlaceParams,
+      },
+    });
   }
 
   /**
@@ -176,6 +197,18 @@ export class GroundPlacesController {
     fromStopGroupGpuid: StopGroupGpuid,
     createGroundPlaceParams: CreateGroundPlacesParams,
   ): void {
+    if (
+      !fromStopGroupGpuid ||
+      !createGroundPlaceParams.countryCode ||
+      !createGroundPlaceParams.latitude ||
+      !createGroundPlaceParams.longitude ||
+      !createGroundPlaceParams.name
+    ) {
+      throw new Error(
+        'Error while creating a new StopCluster, please check that you have provide all properties needed (fromStopGroupGpuid, countryCode, latitude, longitude and name).',
+      );
+    }
+
     const cloneGroundPlaces: GroundPlace[] = cloneDeep(this.getGroundPlaces());
 
     try {
@@ -188,13 +221,20 @@ export class GroundPlacesController {
 
       this.storageService.addPlace(newStopCluster);
 
-      this.addStopGroupToStopCluster(fromStopGroupGpuid, newStopCluster.gpuid);
+      this.internalAddStopGroupToStopCluster(fromStopGroupGpuid, newStopCluster.gpuid, CreateActionHistory.FALSE);
     } catch (error) {
       // If there is an error, previous update is reverted
       this.storageService.setGroundPlaces(cloneGroundPlaces);
 
       throw new Error(error.message);
     }
+
+    this.storageService.addGroundPlaceActionHistory(fromStopGroupGpuid, {
+      type: ActionType.CREATE_STOP_CLUSTER,
+      params: {
+        ...createGroundPlaceParams,
+      },
+    });
   }
 
   /**
@@ -236,6 +276,13 @@ export class GroundPlacesController {
 
       throw new Error(error.message);
     }
+
+    this.storageService.addGroundPlaceActionHistory(stopGroupGpuid, {
+      type: ActionType.UPDATE_STOP_GROUP,
+      params: {
+        ...propertiesToUpdate,
+      },
+    });
   }
 
   /**
@@ -272,8 +319,14 @@ export class GroundPlacesController {
 
       throw new Error(error.message);
     }
-  }
 
+    this.storageService.addGroundPlaceActionHistory(stopClusterGpuid, {
+      type: ActionType.UPDATE_STOP_CLUSTER,
+      params: {
+        ...propertiesToUpdate,
+      },
+    });
+  }
   /**
    * @description Add a StopGroup to a StopCluster.
    * @param {StopGroupGpuid} stopGroupGpuidToAdd - Ground place unique identifier of the StopGroup to add.
@@ -281,6 +334,23 @@ export class GroundPlacesController {
    * @returns {void}
    */
   public addStopGroupToStopCluster(stopGroupGpuidToAdd: StopGroupGpuid, intoStopClusterGpuid: StopClusterGpuid): void {
+    /* Since 'addStopGroupToStopCluster' can be used both by the user of the package and other method that handle places.
+    We need to create another method that will handle the creation or not of an ActionHistory from this method. */
+    this.internalAddStopGroupToStopCluster(stopGroupGpuidToAdd, intoStopClusterGpuid, CreateActionHistory.TRUE);
+  }
+
+  /**
+   * @description Add a StopGroup to a StopCluster (with ActionHistory switchable).
+   * @param {StopGroupGpuid} stopGroupGpuidToAdd - Ground place unique identifier of the StopGroup to add.
+   * @param {StopClusterGpuid} intoStopClusterGpuid - Ground Place unique identifier of the new StopCluster parent.
+   * @param {CreateActionHistory} createActionHistory - Emit or not an ActionHistory.
+   * @returns {void}
+   */
+  private internalAddStopGroupToStopCluster(
+    stopGroupGpuidToAdd: StopGroupGpuid,
+    intoStopClusterGpuid: StopClusterGpuid,
+    createActionHistory: CreateActionHistory,
+  ): void {
     const stopGroupToMove: StopGroup = this.storageService.getStopGroupByGpuid(stopGroupGpuidToAdd);
     const newStopClusterParent: StopCluster = this.storageService.getStopClusterByGpuid(intoStopClusterGpuid);
 
@@ -307,6 +377,13 @@ export class GroundPlacesController {
 
     // Update the place with the new StopCluster parent
     this.storageService.replacePlace(newStopClusterParent);
+
+    if (createActionHistory === CreateActionHistory.TRUE) {
+      this.storageService.addGroundPlaceActionHistory(stopGroupGpuidToAdd, {
+        type: ActionType.ADD_STOP_GROUP_TO_STOP_CLUSTER,
+        into: intoStopClusterGpuid,
+      });
+    }
   }
 
   /**
@@ -318,6 +395,27 @@ export class GroundPlacesController {
   public removeStopGroupFromStopCluster(
     stopGroupGpuidToRemove: StopGroupGpuid,
     stopClusterGpuidParent: StopClusterGpuid,
+  ): void {
+    /* Since 'removeStopGroupFromStopCluster' can be used both by the user of the package and other method that handle places.
+    We need to create another method that will handle the creation or not of an ActionHistory from this method. */
+    this.internalRemoveStopGroupFromStopCluster(
+      stopGroupGpuidToRemove,
+      stopClusterGpuidParent,
+      CreateActionHistory.TRUE,
+    );
+  }
+
+  /**
+   * @description Remove the reference of a StopGroup from a StopCluster (with ActionHistory switchable).
+   * @param {StopGroupGpuid} stopGroupGpuidToRemove - Ground place unique identifier of the StopGroup to remove.
+   * @param {StopClusterGpuid} stopClusterGpuidParent - Ground place unique identifier of the StopCluster parent.
+   * @param {CreateActionHistory} createActionHistory - Emit or not an ActionHistory.
+   * @returns {void}
+   */
+  private internalRemoveStopGroupFromStopCluster(
+    stopGroupGpuidToRemove: StopGroupGpuid,
+    stopClusterGpuidParent: StopClusterGpuid,
+    createActionHistory: CreateActionHistory,
   ): void {
     const stopClusterParent: StopCluster = this.storageService.getStopClusterByGpuid(stopClusterGpuidParent);
     const groundPlaces: GroundPlace[] = this.getGroundPlaces();
@@ -354,6 +452,13 @@ export class GroundPlacesController {
         `Impossible to remove the StopGroup with the Gpuid "${stopGroupGpuidToRemove}". Make sure that the StopGroup you want to remove will not be without any StopCluster parent after this operation.`,
       );
     }
+
+    if (createActionHistory === CreateActionHistory.TRUE) {
+      this.storageService.addGroundPlaceActionHistory(stopGroupGpuidToRemove, {
+        type: ActionType.REMOVE_STOP_GROUP_FROM_STOP_CLUSTER,
+        from: stopClusterGpuidParent,
+      });
+    }
   }
 
   /**
@@ -368,6 +473,30 @@ export class GroundPlacesController {
     fromStopClusterGpuid: StopClusterGpuid,
     intoStopClusterGpuid: StopClusterGpuid,
   ): void {
+    /* Since 'moveStopGroup' can be used both by the user of the package and other method that handle places.
+    We need to create another method that will handle the creation or not of an ActionHistory from this method. */
+    this.internalMoveStopGroup(
+      stopGroupToMoveGpuid,
+      fromStopClusterGpuid,
+      intoStopClusterGpuid,
+      CreateActionHistory.TRUE,
+    );
+  }
+
+  /**
+   * @description Move a StopGroup from a StopCluster to another StopCluster (with ActionHistory switchable).
+   * @param {StopGroupGpuid} stopGroupToMoveGpuid - Ground place unique identifier of the StopGroup to move.
+   * @param {StopClusterGpuid} fromStopClusterGpuid - Ground place unique identifier of the old StopCluster.
+   * @param {StopClusterGpuid} intoStopClusterGpuid - Ground place unique identifier of the new StopCluster.
+   * @param {CreateActionHistory} createActionHistory - Emit or not an ActionHistory.
+   * @returns {void}
+   */
+  private internalMoveStopGroup(
+    stopGroupToMoveGpuid: StopGroupGpuid,
+    fromStopClusterGpuid: StopClusterGpuid,
+    intoStopClusterGpuid: StopClusterGpuid,
+    createActionHistory: CreateActionHistory,
+  ): void {
     if (fromStopClusterGpuid === intoStopClusterGpuid) {
       throw new Error(
         `You can't move the StopGroup with the Gpuid "${stopGroupToMoveGpuid}" because the new StopCluster parent is the same as before.`,
@@ -377,13 +506,25 @@ export class GroundPlacesController {
     const cloneGroundPlaces: GroundPlace[] = cloneDeep(this.getGroundPlaces());
 
     try {
-      this.addStopGroupToStopCluster(stopGroupToMoveGpuid, intoStopClusterGpuid);
-      this.removeStopGroupFromStopCluster(stopGroupToMoveGpuid, fromStopClusterGpuid);
+      this.internalAddStopGroupToStopCluster(stopGroupToMoveGpuid, intoStopClusterGpuid, CreateActionHistory.FALSE);
+      this.internalRemoveStopGroupFromStopCluster(
+        stopGroupToMoveGpuid,
+        fromStopClusterGpuid,
+        CreateActionHistory.FALSE,
+      );
     } catch (error) {
       // If there is an error, previous update is reverted
       this.storageService.setGroundPlaces(cloneGroundPlaces);
 
       throw new Error(error.message);
+    }
+
+    if (createActionHistory === CreateActionHistory.TRUE) {
+      this.storageService.addGroundPlaceActionHistory(stopGroupToMoveGpuid, {
+        type: ActionType.MOVE_STOP_GROUP,
+        from: fromStopClusterGpuid,
+        into: intoStopClusterGpuid,
+      });
     }
   }
 
@@ -398,6 +539,30 @@ export class GroundPlacesController {
     segmentProviderStopId: string,
     fromStopGroupGpuid: StopGroupGpuid,
     intoStopGroupGpuid: StopGroupGpuid,
+  ): void {
+    /* Since 'moveSegmentProviderStop' can be used both by the user of the package and other method that handle places.
+    We need to create another method that will handle the creation or not of an ActionHistory from this method. */
+    this.internalMoveSegmentProviderStop(
+      segmentProviderStopId,
+      fromStopGroupGpuid,
+      intoStopGroupGpuid,
+      CreateActionHistory.TRUE,
+    );
+  }
+
+  /**
+   * @description Move a SegmentProviderStop from a StopGroup to another StopGroup (with ActionHistory switchable).
+   * @param {string} segmentProviderStopId - The identifier of the SegmentProvider to move.
+   * @param {StopGroupGpuid} fromStopGroupGpuid - Ground place unique identifier of the old StopGroup.
+   * @param {StopGroupGpuid} intoStopGroupGpuid - Ground place unique identifier of the new StopGroup.
+   * @param {CreateActionHistory} createActionHistory - Emit or not an ActionHistory.
+   * @returns {void}
+   */
+  private internalMoveSegmentProviderStop(
+    segmentProviderStopId: string,
+    fromStopGroupGpuid: StopGroupGpuid,
+    intoStopGroupGpuid: StopGroupGpuid,
+    createActionHistory: CreateActionHistory,
   ): void {
     if (fromStopGroupGpuid === intoStopGroupGpuid) {
       throw new Error(
@@ -450,6 +615,16 @@ export class GroundPlacesController {
 
       throw new Error(error.message);
     }
+
+    if (createActionHistory === CreateActionHistory.TRUE) {
+      this.storageService.addGroundPlaceActionHistory(fromStopGroupGpuid, {
+        type: ActionType.MOVE_SEGMENT_PROVIDER_STOP,
+        into: intoStopGroupGpuid,
+        params: {
+          segmentProviderStopId,
+        },
+      });
+    }
   }
 
   /**
@@ -471,7 +646,12 @@ export class GroundPlacesController {
       const stopGroupToMerge: StopGroup = this.storageService.getStopGroupByGpuid(stopGroupToMergeGpuid);
 
       stopGroupToMerge.childs.map(({ id: segmentProviderStopId }: SegmentProviderStop) =>
-        this.moveSegmentProviderStop(segmentProviderStopId, stopGroupToMergeGpuid, intoStopGroupGpuid),
+        this.internalMoveSegmentProviderStop(
+          segmentProviderStopId,
+          stopGroupToMergeGpuid,
+          intoStopGroupGpuid,
+          CreateActionHistory.FALSE,
+        ),
       );
     } catch (error) {
       // If there is an error, previous update is reverted
@@ -479,6 +659,11 @@ export class GroundPlacesController {
 
       throw new Error(error.message);
     }
+
+    this.storageService.addGroundPlaceActionHistory(stopGroupToMergeGpuid, {
+      type: ActionType.MERGE_STOP_GROUP,
+      into: intoStopGroupGpuid,
+    });
   }
 
   /**
@@ -509,10 +694,19 @@ export class GroundPlacesController {
 
         // If its the case, only remove it from the first StopCluster
         if (isStopGroupAlreadyExists) {
-          this.removeStopGroupFromStopCluster(stopGroupGpuid, stopClusterToMergeGpuid);
+          this.internalRemoveStopGroupFromStopCluster(
+            stopGroupGpuid,
+            stopClusterToMergeGpuid,
+            CreateActionHistory.FALSE,
+          );
           // If not, move it from the first StopCluster and remove it from it
         } else {
-          this.moveStopGroup(stopGroupGpuid, stopClusterToMergeGpuid, intoStopClusterGpuid);
+          this.internalMoveStopGroup(
+            stopGroupGpuid,
+            stopClusterToMergeGpuid,
+            intoStopClusterGpuid,
+            CreateActionHistory.FALSE,
+          );
         }
       });
     } catch (error) {
@@ -521,6 +715,11 @@ export class GroundPlacesController {
 
       throw new Error(error.message);
     }
+
+    this.storageService.addGroundPlaceActionHistory(stopClusterToMergeGpuid, {
+      type: ActionType.MERGE_STOP_CLUSTER,
+      into: intoStopClusterGpuid,
+    });
   }
 
   /**
@@ -530,6 +729,10 @@ export class GroundPlacesController {
    */
   public deleteStopGroup(stopGroupGpuid: StopGroupGpuid): void {
     this.storageService.deletePlace(stopGroupGpuid, GroundPlaceType.GROUP);
+
+    this.storageService.addGroundPlaceActionHistory(stopGroupGpuid, {
+      type: ActionType.DELETE_STOP_GROUP,
+    });
   }
 
   /**
@@ -539,10 +742,14 @@ export class GroundPlacesController {
    */
   public deleteStopCluster(stopClusterGpuid: StopClusterGpuid): void {
     this.storageService.deletePlace(stopClusterGpuid, GroundPlaceType.CLUSTER);
+
+    this.storageService.addGroundPlaceActionHistory(stopClusterGpuid, {
+      type: ActionType.DELETE_STOP_CLUSTER,
+    });
   }
 
   /**
-   * @description Getter to retrieve the Ground places.
+   * @description Getter to retrieve the GroundPlaces object.
    * @returns {GroundPlace[]}
    */
   public getGroundPlaces(): GroundPlace[] {
@@ -550,37 +757,109 @@ export class GroundPlacesController {
   }
 
   /**
-   * @description Download the GroundPlacesDiff file in JSON and store it on Desktop.
-   * @returns {void}
+   * @description Getter to retrieve the GroundPlaceActionHistory object.
+   * @returns {GroundPlaceActionHistory[]}
    */
-  public downloadGroundPlacesDiffToDesktop(): void {}
-
-  /**
-   * @description Download the GroundPlaces file in JSON and store it on Desktop.
-   * @returns {void}
-   */
-  public downloadGroundPlacesFileToDesktop(): void {}
-
-  /**
-   * @description Apply the diff file to the GroundPlacesDiff object.
-   * @param {GroundPlacesDiff} groundPlacesDiff - Object that store the history of changes of the GroundPlaces.
-   * @returns {void}
-   */
-  // @ts-ignore
-  public applyGroundPlacesDiff(groundPlacesDiff: GroundPlacesDiff): void {
-    // Uses all the handling methode to apply the diff
-    // This method will be used by the backend (could also be used by front)
-    // It should first check the integrity of our ground_places_diff.json
-    // Then apply it to the object
-    // Then check the integrity of the resulting file
+  public getGroundPlacesActionHistory(): GroundPlaceActionHistory[] {
+    return this.storageService.getGroundPlacesActionHistory();
   }
 
   /**
-   * @description Check the validity of the GroundPlacesDiff structure.
-   *
-   * Returns true if everything ok, throw an error with all issues if not.
-   * @returns {boolean}
+   * @description Apply the GroundPlacesActionHistory file to the GroundPlaces object.
+   * @param {GroundPlaceActionHistory[]} groundPlacesActionHistory - File that store all changes to apply on the GroundPlacesFile.
+   * @returns {void}
    */
-  // @ts-ignore
-  private checkGroundPlacesDiffValidity(): boolean {}
+  public applyGroundPlacesActionHistory(groundPlacesActionHistory: GroundPlaceActionHistory[]): void {
+    const groundPlaces: GroundPlace[] = this.getGroundPlaces();
+    const cloneGroundPlaces: GroundPlace[] = cloneDeep(this.getGroundPlaces());
+
+    if (!groundPlaces.length) {
+      throw new Error(
+        `You can't apply your GroundPlacesActionHistory file because there is no GroundPlaces available on this instance. You should call the "init" method with your GroundPlacesFile before using this method.`,
+      );
+    }
+
+    try {
+      groundPlacesActionHistory.map((groundPlaceActionHistory: GroundPlaceActionHistory) => {
+        const [groundPlaceGpuid, { type, into: intoGroundPlaceGpuid, from: fromGroundPlaceGpuid, params }]: [
+          Gpuid,
+          GroundPlaceActionOptions,
+        ] = Object.entries(groundPlaceActionHistory)[0];
+
+        switch (type) {
+          case ActionType.CREATE_STOP_GROUP:
+            return this.createStopGroup(params.segmentProviderStopId, groundPlaceGpuid, {
+              countryCode: params.countryCode,
+              latitude: params.latitude,
+              longitude: params.longitude,
+              name: params.name,
+            });
+
+          case ActionType.CREATE_STOP_CLUSTER:
+            return this.createStopCluster(groundPlaceGpuid, {
+              countryCode: params.countryCode,
+              latitude: params.latitude,
+              longitude: params.longitude,
+              name: params.name,
+            });
+
+          case ActionType.UPDATE_STOP_GROUP: {
+            const propertiesToUpdate: UpdateGroundPlaceProperties = {
+              latitude: params.latitude,
+              longitude: params.longitude,
+              name: params.name,
+            };
+
+            sanitizeGroundPlacePropertiesToUpdate(propertiesToUpdate);
+
+            return this.updateStopGroup(groundPlaceGpuid, propertiesToUpdate);
+          }
+
+          case ActionType.UPDATE_STOP_CLUSTER: {
+            const propertiesToUpdate: UpdateGroundPlaceProperties = {
+              latitude: params.latitude,
+              longitude: params.longitude,
+              name: params.name,
+            };
+
+            sanitizeGroundPlacePropertiesToUpdate(propertiesToUpdate);
+
+            return this.updateStopCluster(groundPlaceGpuid, propertiesToUpdate);
+          }
+
+          case ActionType.ADD_STOP_GROUP_TO_STOP_CLUSTER:
+            return this.addStopGroupToStopCluster(groundPlaceGpuid, intoGroundPlaceGpuid);
+
+          case ActionType.REMOVE_STOP_GROUP_FROM_STOP_CLUSTER:
+            return this.removeStopGroupFromStopCluster(groundPlaceGpuid, fromGroundPlaceGpuid);
+
+          case ActionType.MOVE_STOP_GROUP:
+            return this.moveStopGroup(groundPlaceGpuid, fromGroundPlaceGpuid, intoGroundPlaceGpuid);
+
+          case ActionType.MOVE_SEGMENT_PROVIDER_STOP:
+            return this.moveSegmentProviderStop(params.segmentProviderStopId, groundPlaceGpuid, intoGroundPlaceGpuid);
+
+          case ActionType.MERGE_STOP_GROUP:
+            return this.mergeStopGroup(groundPlaceGpuid, intoGroundPlaceGpuid);
+
+          case ActionType.MERGE_STOP_CLUSTER:
+            return this.mergeStopCluster(groundPlaceGpuid, intoGroundPlaceGpuid);
+
+          case ActionType.DELETE_STOP_GROUP:
+            return this.deleteStopGroup(groundPlaceGpuid);
+
+          case ActionType.DELETE_STOP_CLUSTER:
+            return this.deleteStopCluster(groundPlaceGpuid);
+
+          default:
+            return;
+        }
+      });
+    } catch (error) {
+      // If there is an error, previous update is reverted
+      this.storageService.setGroundPlaces(cloneGroundPlaces);
+
+      throw new Error(`There is an error inside your GroundPlacesActionHistory file. More details: "${error.message}"`);
+    }
+  }
 }

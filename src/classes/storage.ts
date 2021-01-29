@@ -8,15 +8,18 @@ import {
   StopClusterGpuid,
   GroundPlaceType,
   Gpuid,
-  UpdateStopProperties,
+  UpdateGroundPlaceProperties,
   GroundPlaceFromFile,
+  GroundPlaceActionHistory,
+  GroundPlaceActionOptions,
 } from '../types';
 
 /**
  * @description Manipulate GroundPlaces.
  */
 export class Storage {
-  private groundPlaces: GroundPlace[];
+  private groundPlaces: GroundPlace[] = [];
+  private groundPlacesActionHistory: GroundPlaceActionHistory[] = [];
 
   /**
    * @description Init and parse the GroundPlaces file into an array manipulable.
@@ -35,11 +38,38 @@ export class Storage {
   }
 
   /**
+   * @description This method is used by all the handling methods of the GroundPlacesController class to add a new action to the history of changes inside an GroundPlacesActionHistory object.
+   * @param {Gpuid} groundPlaceGpuid - Ground place unique identifier of the StopGroup or the StopCluster that is concerns by the changes.
+   * @param {GroundPlaceActionOptions} groundPlaceActionOptions - Options that are used by the GroundPlacesController handling method concerned.
+   * @returns {void}
+   */
+  public addGroundPlaceActionHistory(
+    groundPlaceGpuid: Gpuid,
+    groundPlaceActionOptions: GroundPlaceActionOptions,
+  ): void {
+    const groundPlaceActionHistory: GroundPlaceActionHistory = {
+      [groundPlaceGpuid]: {
+        ...groundPlaceActionOptions,
+      },
+    };
+
+    this.groundPlacesActionHistory.push(groundPlaceActionHistory);
+  }
+
+  /**
    * @description Getter to retrieve the Ground places.
    * @returns {GroundPlace[]}
    */
   public getGroundPlaces(): GroundPlace[] {
     return this.groundPlaces;
+  }
+
+  /**
+   * @description Getter to retrieve the GroundPlaceActionHistory object.
+   * @returns {GroundPlaceActionHistory[]}
+   */
+  public getGroundPlacesActionHistory(): GroundPlaceActionHistory[] {
+    return this.groundPlacesActionHistory;
   }
 
   /**
@@ -53,7 +83,7 @@ export class Storage {
 
   /**
    * @description Add a new place to the Ground places.
-   * @param {GroundPlace} groundPlace - Could be a StopGroup or a StopCluster
+   * @param {GroundPlace} groundPlace - Could be a StopGroup or a StopCluster.
    * @returns {void}
    */
   public addPlace(groundPlace: GroundPlace): void {
@@ -97,7 +127,7 @@ export class Storage {
   /**
    * @description Find the correct place based on the Ground place unique identifier provided and the type of the place.
    * @param {Gpuid} placeGpuid - Ground place unique identifier of the place to search.
-   * @param {GroundPlaceType} placeType - The type of the place to search, can be StopGroup or StopCluster
+   * @param {GroundPlaceType} placeType - The type of the place to search, can be StopGroup or StopCluster.
    */
   public getPlaceByGpuid(placeGpuid: Gpuid, placeType: GroundPlaceType): GroundPlace {
     switch (placeType) {
@@ -112,12 +142,24 @@ export class Storage {
   /**
    * @description Update StopGroup or StopCluster with new informations like name, latitude, longitude, etc.
    * @param {Gpuid} placeGpuid - Ground place unique identifier of the place to update.
-   * @param {UpdateStopProperties} propertiesToUpdate - Properties to update {name, lattitude, longitude}.
+   * @param {UpdateGroundPlaceProperties} propertiesToUpdate - Properties to update {name, lattitude, longitude}.
    * @param {GroundPlaceType} placeType - The type of the place to update, can be StopGroup or StopCluster.
    * @returns {void}
    */
-  public updatePlace(placeGpuid: Gpuid, propertiesToUpdate: UpdateStopProperties, placeType: GroundPlaceType): void {
+  public updatePlace(
+    placeGpuid: Gpuid,
+    propertiesToUpdate: UpdateGroundPlaceProperties,
+    placeType: GroundPlaceType,
+  ): void {
     const groundPlace: GroundPlace = this.getPlaceByGpuid(placeGpuid, placeType);
+
+    Object.keys(propertiesToUpdate).forEach((key: string) => {
+      if (propertiesToUpdate[key] === undefined) {
+        throw new Error(
+          `You can't update the "${placeType}" with the Gpuid "${placeGpuid}" because the property named "${key}" is undefined.`,
+        );
+      }
+    });
 
     const newGroundPlace: GroundPlace = {
       ...groundPlace,

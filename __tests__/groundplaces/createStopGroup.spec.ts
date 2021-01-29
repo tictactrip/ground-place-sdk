@@ -1,6 +1,6 @@
 import { GroundPlacesController } from '../../src/classes/groundplaces';
 import * as mockSmallGroundPlacesFile from '../../mocks/smallGroundPlacesFile.json';
-import { CountryCode, GroundPlacesFile } from '../../src/types';
+import { CountryCode, GroundPlacesFile, CreateGroundPlacesParams } from '../../src/types';
 
 describe('#createStopGroup', () => {
   const groundPlacesService: GroundPlacesController = new GroundPlacesController();
@@ -19,7 +19,7 @@ describe('#createStopGroup', () => {
 
     groundPlacesService.createStopGroup(segmentProviderStopId, fromStopGroupGpuid, createStopGroupProperties);
 
-    expect(groundPlacesService.getGroundPlaces()).toEqual([
+    expect(groundPlacesService.getGroundPlaces()).toStrictEqual([
       {
         gpuid: 'c|FRstrasbou@u0ts2',
         unique_name: 'strasbourg',
@@ -67,6 +67,20 @@ describe('#createStopGroup', () => {
             id: '19528',
           },
         ],
+      },
+    ]);
+    expect(groundPlacesService.getGroundPlacesActionHistory()).toStrictEqual([
+      {
+        'g|FRststbi__@u0tkxd': {
+          type: 'createStopGroup',
+          params: {
+            segmentProviderStopId: '19528',
+            countryCode: 'fr',
+            name: 'Strasbourg - Wolfisheim',
+            latitude: 48.5857122,
+            longitude: 7.6275127,
+          },
+        },
       },
     ]);
   });
@@ -144,6 +158,36 @@ describe('#createStopGroup', () => {
     expect(thrownError).toEqual(
       new Error(
         'The SegmentProviderStop with the ID "1952888" doesn\'t exists inside the StopGroup with the Gpuid "g|FRststbi__@u0tkxd".',
+      ),
+    );
+  });
+
+  it('should throw an error if there is missing values', () => {
+    groundPlacesService.init(mockSmallGroundPlacesFile as GroundPlacesFile);
+
+    let thrownError: Error;
+
+    try {
+      const createStopGroupProperties = {
+        countryCode: CountryCode.FR,
+        name: 'Strasbourg - Wolfisheim',
+        latitude: 50,
+      };
+      const fromStopGroupGpuid = 'g|FRststbi__@u0tkxd';
+      const segmentProviderStopId = '1952888';
+
+      groundPlacesService.createStopGroup(
+        segmentProviderStopId,
+        fromStopGroupGpuid,
+        createStopGroupProperties as CreateGroundPlacesParams,
+      );
+    } catch (error) {
+      thrownError = error;
+    }
+
+    expect(thrownError).toEqual(
+      new Error(
+        'Error while creating a new StopGroup, please check that you have provide all properties needed (segmentProviderId, fromStopGroupGpuid, countryCode, latitude, longitude and name).',
       ),
     );
   });

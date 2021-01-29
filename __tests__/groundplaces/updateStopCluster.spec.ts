@@ -3,9 +3,9 @@ import * as mockSmallGroundPlacesFile from '../../mocks/smallGroundPlacesFile.js
 import { GroundPlacesFile } from '../../src/types';
 
 describe('#updateStopCluster', () => {
-  const groundPlacesService: GroundPlacesController = new GroundPlacesController();
-
   it('should update the name of the StopCluster', () => {
+    const groundPlacesService: GroundPlacesController = new GroundPlacesController();
+
     groundPlacesService.init(mockSmallGroundPlacesFile as GroundPlacesFile);
 
     groundPlacesService.updateStopCluster('c|FRstrasbou@u0ts2', { name: 'Strasbourg, Est, France' });
@@ -52,7 +52,32 @@ describe('#updateStopCluster', () => {
     ]);
   });
 
+  it('should throw an error if one property passed is undefined', () => {
+    const groundPlacesService: GroundPlacesController = new GroundPlacesController();
+
+    groundPlacesService.init(mockSmallGroundPlacesFile as GroundPlacesFile);
+
+    let thrownError: Error;
+
+    try {
+      groundPlacesService.updateStopCluster('c|FRstrasbou@u0ts2', {
+        name: 'Strasbourg, Est, France',
+        longitude: undefined,
+      });
+    } catch (error) {
+      thrownError = error;
+    }
+
+    expect(thrownError).toEqual(
+      new Error(
+        'You can\'t update the "cluster" with the Gpuid "c|FRstrasbou@u0ts2" because the property named "longitude" is undefined.',
+      ),
+    );
+  });
+
   it('should throw an error if the new position of the updated StopCluster is far away from one of its StopGroup childs (limit is 70km)', () => {
+    const groundPlacesService: GroundPlacesController = new GroundPlacesController();
+
     groundPlacesService.init(mockSmallGroundPlacesFile as GroundPlacesFile);
 
     let thrownError: Error;

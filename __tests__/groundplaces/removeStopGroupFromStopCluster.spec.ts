@@ -151,6 +151,14 @@ describe('#removeStopGroupFromStopCluster', () => {
         type: 'group',
       },
     ]);
+    expect(groundPlacesService.getGroundPlacesActionHistory()).toStrictEqual([
+      {
+        'g|FRnancy___@u0skux': {
+          type: 'removeStopGroupFromStopCluster',
+          from: 'c|FRnaarto__@u0skg',
+        },
+      },
+    ]);
   });
 
   it('should throw an error if the StopGroup to remove does not belong to the StopCluster specified', () => {

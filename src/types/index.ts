@@ -4,37 +4,34 @@ type StopGroupGpuid = Gpuid;
 
 type StopClusterGpuid = Gpuid;
 
-type GroundPlaceFromFile = StopGroupFromFile | StopClusterFromFile;
-
 type GroundPlacesFile = Record<Gpuid, GroundPlaceFromFile>;
+
+type GroundPlaceFromFile = StopGroupFromFile | StopClusterFromFile;
 
 type GroundPlace = StopGroup | StopCluster;
 
-interface StopGroupFromFile {
+type GroundPlaceActionHistory = Record<Gpuid, GroundPlaceActionOptions>;
+
+interface GroundPlaceBase {
   country_code: CountryCode;
   name: string;
   longitude: number;
   latitude: number;
-  type: GroundPlaceType.GROUP;
-  childs: SegmentProviderStop[];
   serviced: GroundPlaceServiced;
   has_been_modified?: boolean;
   warning?: boolean;
   is_latest?: boolean;
 }
 
-interface StopClusterFromFile {
-  country_code: CountryCode;
-  name: string;
-  longitude: number;
-  latitude: number;
+interface StopGroupFromFile extends GroundPlaceBase {
+  type: GroundPlaceType.GROUP;
+  childs: SegmentProviderStop[];
+}
+
+interface StopClusterFromFile extends GroundPlaceBase {
   type: GroundPlaceType.CLUSTER;
   childs: StopGroupGpuid[];
-  serviced: GroundPlaceServiced;
   unique_name?: string;
-  has_been_modified?: boolean;
-  warning?: boolean;
-  is_latest?: boolean;
 }
 
 interface StopGroup extends StopGroupFromFile {
@@ -78,18 +75,32 @@ interface UpdateGroundPlaceProperties {
   latitude?: number;
 }
 
-interface GroundPlacesDiff {
-  [gpuid: string]: {
-    type: GroundPlaceActionType;
-    into?: string;
+interface GroundPlaceActionOptions {
+  type: ActionType;
+  from?: Gpuid;
+  into?: Gpuid;
+  params?: {
+    segmentProviderStopId?: string;
+    countryCode?: CountryCode;
+    name?: string;
+    longitude?: number;
+    latitude?: number;
   };
 }
 
-enum GroundPlaceActionType {
-  CREATE = 'create',
-  MOVE = 'move',
-  UPDATE = 'update',
-  DELETE = 'delete',
+enum ActionType {
+  CREATE_STOP_GROUP = 'createStopGroup',
+  CREATE_STOP_CLUSTER = 'createStopCluster',
+  UPDATE_STOP_GROUP = 'updateStopGroup',
+  UPDATE_STOP_CLUSTER = 'updateStopCluster',
+  ADD_STOP_GROUP_TO_STOP_CLUSTER = 'addStopGroupToStopCluster',
+  REMOVE_STOP_GROUP_FROM_STOP_CLUSTER = 'removeStopGroupFromStopCluster',
+  MOVE_STOP_GROUP = 'moveStopGroup',
+  MOVE_SEGMENT_PROVIDER_STOP = 'moveSegmentProviderStop',
+  MERGE_STOP_GROUP = 'mergeStopGroup',
+  MERGE_STOP_CLUSTER = 'mergeStopCluster',
+  DELETE_STOP_GROUP = 'deleteStopGroup',
+  DELETE_STOP_CLUSTER = 'deleteStopCluster',
 }
 
 enum GroundPlaceType {
@@ -107,6 +118,11 @@ enum AutocompleteFilter {
   STOP_CLUSTER = 'stopCluster',
   SERVICED = 'serviced',
   SEGMENT_PROVIDER_STOP = 'segmentProviderStop',
+}
+
+enum CreateActionHistory {
+  TRUE = 'True',
+  FALSE = 'False',
 }
 
 enum CountryCode {
@@ -371,15 +387,15 @@ export {
   SegmentProviderStop,
   AutocompleteFilter,
   GroundPlacesFile,
-  GroundPlacesDiff,
   GroundPlaceType,
   GroundPlaceServiced,
-  GroundPlaceActionType,
   CreateGroundPlacesParams,
   UpdateGroundPlaceProperties,
   CountryCode,
-  StopGroupFromFile,
-  StopClusterFromFile,
   GroundPlaceFromFile,
   GenerateGpuidGroundPlace,
+  ActionType,
+  GroundPlaceActionHistory,
+  GroundPlaceActionOptions,
+  CreateActionHistory,
 };
