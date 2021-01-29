@@ -154,7 +154,7 @@ export class GroundPlacesController {
 
       this.storageService.addPlace(newStopGroup);
 
-      this.moveSegmentProviderStopWithHistory(
+      this.internalMoveSegmentProviderStop(
         segmentProviderStopId,
         fromStopGroupGpuid,
         newStopGroup.gpuid,
@@ -169,7 +169,7 @@ export class GroundPlacesController {
       );
 
       stopClusterParent.map(({ gpuid: stopClusterGpuid }: StopCluster) =>
-        this.addStopGroupToStopClusterWithHistory(newStopGroup.gpuid, stopClusterGpuid, CreateActionHistory.FALSE),
+        this.internalAddStopGroupToStopCluster(newStopGroup.gpuid, stopClusterGpuid, CreateActionHistory.FALSE),
       );
     } catch (error) {
       // If there is an error, previous update is reverted
@@ -221,7 +221,7 @@ export class GroundPlacesController {
 
       this.storageService.addPlace(newStopCluster);
 
-      this.addStopGroupToStopClusterWithHistory(fromStopGroupGpuid, newStopCluster.gpuid, CreateActionHistory.FALSE);
+      this.internalAddStopGroupToStopCluster(fromStopGroupGpuid, newStopCluster.gpuid, CreateActionHistory.FALSE);
     } catch (error) {
       // If there is an error, previous update is reverted
       this.storageService.setGroundPlaces(cloneGroundPlaces);
@@ -336,7 +336,7 @@ export class GroundPlacesController {
   public addStopGroupToStopCluster(stopGroupGpuidToAdd: StopGroupGpuid, intoStopClusterGpuid: StopClusterGpuid): void {
     /* Since 'addStopGroupToStopCluster' can be used both by the user of the package and other method that handle places.
     We need to create another method that will handle the creation or not of an ActionHistory from this method. */
-    this.addStopGroupToStopClusterWithHistory(stopGroupGpuidToAdd, intoStopClusterGpuid, CreateActionHistory.TRUE);
+    this.internalAddStopGroupToStopCluster(stopGroupGpuidToAdd, intoStopClusterGpuid, CreateActionHistory.TRUE);
   }
 
   /**
@@ -346,7 +346,7 @@ export class GroundPlacesController {
    * @param {CreateActionHistory} createActionHistory - Emit or not an ActionHistory.
    * @returns {void}
    */
-  private addStopGroupToStopClusterWithHistory(
+  private internalAddStopGroupToStopCluster(
     stopGroupGpuidToAdd: StopGroupGpuid,
     intoStopClusterGpuid: StopClusterGpuid,
     createActionHistory: CreateActionHistory,
@@ -398,7 +398,7 @@ export class GroundPlacesController {
   ): void {
     /* Since 'removeStopGroupFromStopCluster' can be used both by the user of the package and other method that handle places.
     We need to create another method that will handle the creation or not of an ActionHistory from this method. */
-    this.removeStopGroupFromStopClusterWithHistory(
+    this.internalRemoveStopGroupFromStopCluster(
       stopGroupGpuidToRemove,
       stopClusterGpuidParent,
       CreateActionHistory.TRUE,
@@ -412,7 +412,7 @@ export class GroundPlacesController {
    * @param {CreateActionHistory} createActionHistory - Emit or not an ActionHistory.
    * @returns {void}
    */
-  private removeStopGroupFromStopClusterWithHistory(
+  private internalRemoveStopGroupFromStopCluster(
     stopGroupGpuidToRemove: StopGroupGpuid,
     stopClusterGpuidParent: StopClusterGpuid,
     createActionHistory: CreateActionHistory,
@@ -475,7 +475,7 @@ export class GroundPlacesController {
   ): void {
     /* Since 'moveStopGroup' can be used both by the user of the package and other method that handle places.
     We need to create another method that will handle the creation or not of an ActionHistory from this method. */
-    this.moveStopGroupWithHistory(
+    this.internalMoveStopGroup(
       stopGroupToMoveGpuid,
       fromStopClusterGpuid,
       intoStopClusterGpuid,
@@ -491,7 +491,7 @@ export class GroundPlacesController {
    * @param {CreateActionHistory} createActionHistory - Emit or not an ActionHistory.
    * @returns {void}
    */
-  private moveStopGroupWithHistory(
+  private internalMoveStopGroup(
     stopGroupToMoveGpuid: StopGroupGpuid,
     fromStopClusterGpuid: StopClusterGpuid,
     intoStopClusterGpuid: StopClusterGpuid,
@@ -506,8 +506,8 @@ export class GroundPlacesController {
     const cloneGroundPlaces: GroundPlace[] = cloneDeep(this.getGroundPlaces());
 
     try {
-      this.addStopGroupToStopClusterWithHistory(stopGroupToMoveGpuid, intoStopClusterGpuid, CreateActionHistory.FALSE);
-      this.removeStopGroupFromStopClusterWithHistory(
+      this.internalAddStopGroupToStopCluster(stopGroupToMoveGpuid, intoStopClusterGpuid, CreateActionHistory.FALSE);
+      this.internalRemoveStopGroupFromStopCluster(
         stopGroupToMoveGpuid,
         fromStopClusterGpuid,
         CreateActionHistory.FALSE,
@@ -542,7 +542,7 @@ export class GroundPlacesController {
   ): void {
     /* Since 'moveSegmentProviderStop' can be used both by the user of the package and other method that handle places.
     We need to create another method that will handle the creation or not of an ActionHistory from this method. */
-    this.moveSegmentProviderStopWithHistory(
+    this.internalMoveSegmentProviderStop(
       segmentProviderStopId,
       fromStopGroupGpuid,
       intoStopGroupGpuid,
@@ -558,7 +558,7 @@ export class GroundPlacesController {
    * @param {CreateActionHistory} createActionHistory - Emit or not an ActionHistory.
    * @returns {void}
    */
-  private moveSegmentProviderStopWithHistory(
+  private internalMoveSegmentProviderStop(
     segmentProviderStopId: string,
     fromStopGroupGpuid: StopGroupGpuid,
     intoStopGroupGpuid: StopGroupGpuid,
@@ -646,7 +646,7 @@ export class GroundPlacesController {
       const stopGroupToMerge: StopGroup = this.storageService.getStopGroupByGpuid(stopGroupToMergeGpuid);
 
       stopGroupToMerge.childs.map(({ id: segmentProviderStopId }: SegmentProviderStop) =>
-        this.moveSegmentProviderStopWithHistory(
+        this.internalMoveSegmentProviderStop(
           segmentProviderStopId,
           stopGroupToMergeGpuid,
           intoStopGroupGpuid,
@@ -694,14 +694,14 @@ export class GroundPlacesController {
 
         // If its the case, only remove it from the first StopCluster
         if (isStopGroupAlreadyExists) {
-          this.removeStopGroupFromStopClusterWithHistory(
+          this.internalRemoveStopGroupFromStopCluster(
             stopGroupGpuid,
             stopClusterToMergeGpuid,
             CreateActionHistory.FALSE,
           );
           // If not, move it from the first StopCluster and remove it from it
         } else {
-          this.moveStopGroupWithHistory(
+          this.internalMoveStopGroup(
             stopGroupGpuid,
             stopClusterToMergeGpuid,
             intoStopClusterGpuid,
