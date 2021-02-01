@@ -34,14 +34,11 @@ groundPlacesService.mergeStopGroup('g|FRstrasbou@u0tkru', 'g|FRststbi__@u0tkxd')
 groundPlacesService.deleteStopGroup('g|FRstrasbou@u0tkru');
 ...
 
-// Once your changes are complete, you can download a JSON file of your changes
-groundPlacesService.downloadGroundPlacesDiffToDesktop();
+// You can get all the Ground places
+groundPlacesService.getGroundPlaces();
 
-// Apply the diff file on your GroundPlacesFile
-groundPlacesService.applyGroundPlacesDiff(GroundPlacesDiffFileJson);
-
-// And download your new GroundPlacesFile with all the changes made before
-groundPlacesService.downloadGroundPlacesFileToDesktop();
+// And also get the history of all actions performed on the Ground places
+groundPlacesService.getGroundPlacesActionHistory();
 ```
 
 ## Scripts
