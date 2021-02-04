@@ -91,7 +91,7 @@ export class Storage {
   }
 
   /**
-   * @description Returns the stopGroup identified by its Gpuid.
+   * @description Returns the StopGroup identified by its Gpuid.
    * @param {StopGroupGpuid} stopGroupGpuid - Ground Place unique identifier of the StopGroup to find.
    * @returns {StopGroup}
    */
@@ -108,7 +108,7 @@ export class Storage {
   }
 
   /**
-   * @description Returns the stopCluster identified by its Gpuid.
+   * @description Returns the StopCluster identified by its Gpuid.
    * @param {StopClusterGpuid} stopClusterGpuid - Ground place unique identifier of the StopCluster to find.
    * @returns {StopCluster}
    */
@@ -126,16 +126,16 @@ export class Storage {
 
   /**
    * @description Find the correct place based on the Ground place unique identifier provided and the type of the place.
-   * @param {Gpuid} placeGpuid - Ground place unique identifier of the place to search.
+   * @param {Gpuid} groundPlaceGpuid - Ground place unique identifier of the place to search.
    * @param {GroundPlaceType} placeType - The type of the place to search, can be StopGroup or StopCluster.
    */
-  public getPlaceByGpuid(placeGpuid: Gpuid, placeType: GroundPlaceType): GroundPlace {
+  public getGroundPlaceByGpuid(groundPlaceGpuid: Gpuid, placeType: GroundPlaceType): GroundPlace {
     switch (placeType) {
       case GroundPlaceType.GROUP:
-        return this.getStopGroupByGpuid(placeGpuid);
+        return this.getStopGroupByGpuid(groundPlaceGpuid);
 
       case GroundPlaceType.CLUSTER:
-        return this.getStopClusterByGpuid(placeGpuid);
+        return this.getStopClusterByGpuid(groundPlaceGpuid);
     }
   }
 
@@ -151,7 +151,7 @@ export class Storage {
     propertiesToUpdate: UpdateGroundPlaceProperties,
     placeType: GroundPlaceType,
   ): void {
-    const groundPlace: GroundPlace = this.getPlaceByGpuid(placeGpuid, placeType);
+    const groundPlace: GroundPlace = this.getGroundPlaceByGpuid(placeGpuid, placeType);
 
     Object.keys(propertiesToUpdate).forEach((key: string) => {
       if (propertiesToUpdate[key] === undefined) {
@@ -194,7 +194,7 @@ export class Storage {
    * @returns {void}
    */
   public deletePlace(placeToRemoveGpuid: Gpuid, placeType: GroundPlaceType): void {
-    const groundPlace: GroundPlace = this.getPlaceByGpuid(placeToRemoveGpuid, placeType);
+    const groundPlace: GroundPlace = this.getGroundPlaceByGpuid(placeToRemoveGpuid, placeType);
 
     if (groundPlace.childs.length) {
       throw new Error(
