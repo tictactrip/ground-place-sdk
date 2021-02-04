@@ -1,4 +1,4 @@
-import { GroundPlaceServiced, GenerateGpuidGroundPlace, GroundPlace } from '../../src/types';
+import { GroundPlaceServiced, GenerateGpuidGroundPlace, GroundPlace } from '../types';
 
 /**
  * @description Parse the place created to format it with the GroundPlaces structure.

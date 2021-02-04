@@ -53,6 +53,33 @@ export class GroundPlacesController {
   }
 
   /**
+   * @description Returns the StopGroup identified by its Gpuid.
+   * @param {StopGroupGpuid} stopGroupGpuid - Ground Place unique identifier of the StopGroup to find.
+   * @returns {StopGroup}
+   */
+  public getStopGroupByGpuid(stopGroupGpuid: StopGroupGpuid): StopGroup {
+    return this.storageService.getStopGroupByGpuid(stopGroupGpuid);
+  }
+
+  /**
+   * @description Returns the StopCluster identified by its Gpuid.
+   * @param {StopClusterGpuid} stopClusterGpuid - Ground place unique identifier of the StopCluster to find.
+   * @returns {StopCluster}
+   */
+  public getStopClusterByGpuid(stopClusterGpuid: StopClusterGpuid): StopCluster {
+    return this.storageService.getStopClusterByGpuid(stopClusterGpuid);
+  }
+
+  /**
+   * @description Find the correct place based on the Ground place unique identifier provided and the type of the place.
+   * @param {Gpuid} groundPlaceGpuid - Ground place unique identifier of the place to search.
+   * @param {GroundPlaceType} placeType - The type of the place to search, can be StopGroup or StopCluster.
+   */
+  public getGroundPlaceByGpuid(groundPlaceGpuid: Gpuid, placeType: GroundPlaceType): GroundPlace {
+    return this.storageService.getGroundPlaceByGpuid(groundPlaceGpuid, placeType);
+  }
+
+  /**
    * @description Returns a list of ground places.
    * @param {string} query - Can be a name, a Gpuid, a unique name or other name.
    * @param {AutoCompleteFilters[]|undefined} filters - Filters with different options (StopGroup, StopCluster, Serviced, SegmentProvider).

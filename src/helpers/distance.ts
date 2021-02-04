@@ -1,4 +1,4 @@
-import { GroundPlace } from 'src/types';
+import { GroundPlace } from '../types';
 
 /**
  * @description This function uses the ‘haversine’ formula to calculate the great-circle distance between two points.
