@@ -166,6 +166,12 @@ export class Storage {
       }
     });
 
+    if (propertiesToUpdate.name === '') {
+      throw new Error(
+        `You can't update the "${placeType}" named "${groundPlace.name}" because the new name defined is empty.`,
+      );
+    }
+
     const newGroundPlace: GroundPlace = {
       ...groundPlace,
       ...propertiesToUpdate,

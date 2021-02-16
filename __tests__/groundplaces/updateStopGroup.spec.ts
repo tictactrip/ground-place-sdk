@@ -143,4 +143,26 @@ describe('#updateStopGroup', () => {
       ),
     );
   });
+
+  it('should thrown an error if the new name of the StopGroup is empty', () => {
+    const groundPlacesService: GroundPlacesController = new GroundPlacesController();
+
+    groundPlacesService.init(mockSmallGroundPlacesFile as GroundPlacesFile);
+
+    let thrownError: Error;
+
+    try {
+      groundPlacesService.updateStopGroup('g|FRststbi__@u0tkxd', {
+        name: '',
+      });
+    } catch (error) {
+      thrownError = error;
+    }
+
+    expect(thrownError).toEqual(
+      new Error(
+        'You can\'t update the "group" named "Strasbourg, Strasbourg - Bischheim" because the new name defined is empty.',
+      ),
+    );
+  });
 });

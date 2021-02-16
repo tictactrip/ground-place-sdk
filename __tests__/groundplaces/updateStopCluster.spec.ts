@@ -98,4 +98,26 @@ describe('#updateStopCluster', () => {
       ),
     );
   });
+
+  it('should thrown an error if the new name of the StopCluster is empty', () => {
+    const groundPlacesService: GroundPlacesController = new GroundPlacesController();
+
+    groundPlacesService.init(mockSmallGroundPlacesFile as GroundPlacesFile);
+
+    let thrownError: Error;
+
+    try {
+      groundPlacesService.updateStopCluster('c|FRstrasbou@u0ts2', {
+        name: '',
+      });
+    } catch (error) {
+      thrownError = error;
+    }
+
+    expect(thrownError).toEqual(
+      new Error(
+        'You can\'t update the "cluster" named "Strasbourg, Grand-Est, France" because the new name defined is empty.',
+      ),
+    );
+  });
 });
