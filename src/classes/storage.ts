@@ -34,7 +34,12 @@ export class Storage {
       }),
     );
 
-    this.groundPlaces = groundPlaces;
+    // Clear GroundPlacesActionHistory on init
+    if (this.groundPlacesActionHistory.length) {
+      this.groundPlacesActionHistory = [];
+    }
+
+    this.setGroundPlaces(groundPlaces);
   }
 
   /**
