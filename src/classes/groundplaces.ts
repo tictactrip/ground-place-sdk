@@ -115,8 +115,8 @@ export class GroundPlacesController {
         }
 
         if (
-          (isFilterByStopGroupActive && place.type !== GroundPlaceType.GROUP) ||
-          (isFilterByStopClusterActive && place.type !== GroundPlaceType.CLUSTER) ||
+          (isFilterByStopGroupActive && !isFilterByStopClusterActive && place.type !== GroundPlaceType.GROUP) ||
+          (isFilterByStopClusterActive && !isFilterByStopGroupActive && place.type !== GroundPlaceType.CLUSTER) ||
           (isFilterByServicedActive && place.serviced !== GroundPlaceServiced.TRUE)
         ) {
           return;
@@ -781,6 +781,14 @@ export class GroundPlacesController {
    */
   public getGroundPlaces(): GroundPlace[] {
     return this.storageService.getGroundPlaces();
+  }
+
+  /**
+   * @description Get the GroundPlaces file.
+   * @returns {GroundPlacesFile}
+   */
+  public getGroundPlacesFile(): GroundPlacesFile {
+    return this.storageService.getGroundPlacesFile();
   }
 
   /**

@@ -34,7 +34,12 @@ export class Storage {
       }),
     );
 
-    this.groundPlaces = groundPlaces;
+    // Clear GroundPlacesActionHistory on init
+    if (this.groundPlacesActionHistory.length) {
+      this.groundPlacesActionHistory = [];
+    }
+
+    this.setGroundPlaces(groundPlaces);
   }
 
   /**
@@ -62,6 +67,20 @@ export class Storage {
    */
   public getGroundPlaces(): GroundPlace[] {
     return this.groundPlaces;
+  }
+
+  /**
+   * @description Get the GroundPlaces file.
+   * @returns {GroundPlacesFile}
+   */
+  public getGroundPlacesFile(): GroundPlacesFile {
+    const groundPlaces: GroundPlace[] = cloneDeep(this.getGroundPlaces());
+
+    const groundPlacesFile: GroundPlacesFile = Object.fromEntries(
+      groundPlaces.map(({ gpuid, ...groundPlace }: GroundPlace) => [gpuid, groundPlace]),
+    );
+
+    return groundPlacesFile;
   }
 
   /**
@@ -160,6 +179,12 @@ export class Storage {
         );
       }
     });
+
+    if (propertiesToUpdate.name === '') {
+      throw new Error(
+        `You can't update the "${placeType}" named "${groundPlace.name}" because the new name defined is empty.`,
+      );
+    }
 
     const newGroundPlace: GroundPlace = {
       ...groundPlace,
