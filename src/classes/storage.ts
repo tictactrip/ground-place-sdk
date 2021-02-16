@@ -70,6 +70,20 @@ export class Storage {
   }
 
   /**
+   * @description Get the GroundPlaces file.
+   * @returns {GroundPlacesFile}
+   */
+  public getGroundPlacesFile(): GroundPlacesFile {
+    const groundPlaces: GroundPlace[] = cloneDeep(this.getGroundPlaces());
+
+    const groundPlacesFile: GroundPlacesFile = Object.fromEntries(
+      groundPlaces.map(({ gpuid, ...groundPlace }: GroundPlace) => [gpuid, groundPlace]),
+    );
+
+    return groundPlacesFile;
+  }
+
+  /**
    * @description Getter to retrieve the GroundPlaceActionHistory object.
    * @returns {GroundPlaceActionHistory[]}
    */

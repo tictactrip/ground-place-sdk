@@ -784,6 +784,14 @@ export class GroundPlacesController {
   }
 
   /**
+   * @description Get the GroundPlaces file.
+   * @returns {GroundPlacesFile}
+   */
+  public getGroundPlacesFile(): GroundPlacesFile {
+    return this.storageService.getGroundPlacesFile();
+  }
+
+  /**
    * @description Getter to retrieve the GroundPlaceActionHistory object.
    * @returns {GroundPlaceActionHistory[]}
    */
