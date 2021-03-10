@@ -608,10 +608,18 @@ export class GroundPlacesController {
         ({ company_name }: SegmentProviderStop) => company_name === segmentProviderStop.company_name,
       );
 
-      // Check if the SegmentProviderStop to move don't already exist inside the new StopGroup parent specified
+      // Check if the new StopGroup specified is already serves by the SegmentProvider of the SegmentProviderStop to move
       if (isAlreadyBelongToNewStopGroup) {
         throw new Error(
-          `The SegmentProviderStop ID "${segmentProviderStopId}" with the segmentProvider "${segmentProviderStop.company_name}" can't be move because it already exists inside the new StopGroup parent with the Gpuid "${intoStopGroupGpuid}".`,
+          `The SegmentProviderStop ID "${segmentProviderStopId}" with the SegmentProvider "${segmentProviderStop.company_name}" can't be move because the SegmentProvider "${segmentProviderStop.company_name}" already exists inside the new StopGroup parent with the Gpuid "${intoStopGroupGpuid}".`,
+        );
+      }
+
+      const distanceInKm: number = calculateDistanceBetweenTwoPlaceInKm(currentStopGroupParent, newStopGroupParent);
+
+      if (distanceInKm > MAX_DISTANCE_BETWEEN_STOP_GROUP_AND_STOP_CLUSTER_IN_KM) {
+        throw new Error(
+          `You can't move the SegmentProviderStop with the ID "${segmentProviderStopId}" inside the StopGroup with the Gpuid "${intoStopGroupGpuid}" because they are "${distanceInKm}km" away (the limit is ${MAX_DISTANCE_BETWEEN_STOP_GROUP_AND_STOP_CLUSTER_IN_KM}km).`,
         );
       }
 

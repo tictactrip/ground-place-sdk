@@ -85,7 +85,7 @@ describe('#createStopGroup', () => {
     ]);
   });
 
-  it('should throw an error if the new StopGroup is far away from one of its StopCluster parent (beyond 70km)', () => {
+  it('should throw an error if the new StopGroup is far away from its SegmentProviderStop children (beyond 70km)', () => {
     groundPlacesService.init(mockSmallGroundPlacesFile as GroundPlacesFile);
 
     let thrownError: Error;
@@ -107,7 +107,7 @@ describe('#createStopGroup', () => {
 
     expect(thrownError).toEqual(
       new Error(
-        'You can\'t attach the StopGroup with the Gpuid "g|FRstrawolf@y0zh7w" to the StopCluster with the Gpuid "c|FRstrasbou@u0ts2" because they are "6237.92km" away (the limit is 70km).',
+        'You can\'t move the SegmentProviderStop with the ID "19528" inside the StopGroup with the Gpuid "g|FRstrawolf@y0zh7w" because they are "6237.19km" away (the limit is 70km).',
       ),
     );
   });
