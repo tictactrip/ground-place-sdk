@@ -668,6 +668,12 @@ export class GroundPlacesController {
     try {
       const stopGroupToMerge: StopGroup = this.storageService.getStopGroupByGpuid(stopGroupToMergeGpuid);
 
+      if (!stopGroupToMerge.childs.length) {
+        throw new Error(
+          `You can't merge the StopGroup with the Gpuid "${stopGroupToMergeGpuid}" because it has no SegmentProviderStop childrens.`,
+        );
+      }
+
       stopGroupToMerge.childs.map(({ id: segmentProviderStopId }: SegmentProviderStop) =>
         this.internalMoveSegmentProviderStop(
           segmentProviderStopId,
