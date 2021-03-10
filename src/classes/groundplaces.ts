@@ -96,7 +96,6 @@ export class GroundPlacesController {
     const isFilterByStopGroupActive: boolean = filters?.includes(AutocompleteFilter.STOP_GROUP);
     const isFilterByStopClusterActive: boolean = filters?.includes(AutocompleteFilter.STOP_CLUSTER);
     const isFilterByServicedActive: boolean = filters?.includes(AutocompleteFilter.SERVICED);
-    const isFilterWithChildrenActive: boolean = filters?.includes(AutocompleteFilter.SEGMENT_PROVIDER_STOP);
 
     return groundPlaces.filter(
       (place: GroundPlace): GroundPlace => {
@@ -104,7 +103,13 @@ export class GroundPlacesController {
         if (
           !place.gpuid.toLowerCase().includes(currentQuery) &&
           !place.name.toLowerCase().includes(currentQuery) &&
-          !(place.type === GroundPlaceType.CLUSTER && place.unique_name.toLowerCase().includes(currentQuery))
+          !(place.type === GroundPlaceType.CLUSTER && place.unique_name.toLowerCase().includes(currentQuery)) &&
+          !(
+            place.type === GroundPlaceType.GROUP &&
+            place.childs.some((segmentProviderStop: SegmentProviderStop) =>
+              segmentProviderStop.name.toLowerCase().includes(currentQuery),
+            )
+          )
         ) {
           return;
         }
@@ -120,23 +125,6 @@ export class GroundPlacesController {
           (isFilterByServicedActive && place.serviced !== GroundPlaceServiced.TRUE)
         ) {
           return;
-        }
-
-        if (isFilterWithChildrenActive) {
-          // Since StopGroups and StopClusters do not share the same structure
-          // We have to search the StopGroups from the StopCluster parent
-          // In order to find potential segmentProviderStop in childrens
-          if (place.type === GroundPlaceType.CLUSTER) {
-            const isSegmentProviderExist: boolean = place.childs.some((stopGroupGpuid: StopGroupGpuid) =>
-              groundPlaces.find((place: GroundPlace) => place.gpuid === stopGroupGpuid && place.childs.length),
-            );
-
-            if (!isSegmentProviderExist) {
-              return;
-            }
-          } else if (place.type === GroundPlaceType.GROUP && !place.childs.length) {
-            return;
-          }
         }
 
         return place;
