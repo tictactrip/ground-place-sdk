@@ -1,6 +1,6 @@
 import { GroundPlacesController } from '../../src/classes/groundplaces';
 import * as mockLargeGroundPlacesFile from '../../mocks/largeGroundPlacesFile.json';
-import * as mockVeryLargeGroundPlacesFile from '../../mocks/veryLargeGroundPlacesFile.json';
+import * as mockVeryLargeGroundPlacesFile from '../../mocks/verylargeGroundPlacesFile.json';
 import { GroundPlacesFile } from '../../src/types';
 
 describe('#moveSegmentProviderStop', () => {
@@ -225,7 +225,7 @@ describe('#moveSegmentProviderStop', () => {
 
     expect(thrownError).toEqual(
       new Error(
-        'The SegmentProviderStop ID "23" with the SegmentProvider "flixbus" can\'t be move because the SegmentProvider "flixbus" already exists inside the new StopGroup parent with the Gpuid "g|FRnanvanna@u0skgb".',
+        'The SegmentProviderStop ID "23" can\'t be move because its SegmentProvider ("flixbus") already exists inside the new StopGroup parent with the Gpuid "g|FRnanvanna@u0skgb".',
       ),
     );
   });

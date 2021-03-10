@@ -611,7 +611,7 @@ export class GroundPlacesController {
       // Check if the new StopGroup specified is already serves by the SegmentProvider of the SegmentProviderStop to move
       if (isAlreadyBelongToNewStopGroup) {
         throw new Error(
-          `The SegmentProviderStop ID "${segmentProviderStopId}" with the SegmentProvider "${segmentProviderStop.company_name}" can't be move because the SegmentProvider "${segmentProviderStop.company_name}" already exists inside the new StopGroup parent with the Gpuid "${intoStopGroupGpuid}".`,
+          `The SegmentProviderStop ID "${segmentProviderStopId}" can't be move because its SegmentProvider ("${segmentProviderStop.company_name}") already exists inside the new StopGroup parent with the Gpuid "${intoStopGroupGpuid}".`,
         );
       }
 
