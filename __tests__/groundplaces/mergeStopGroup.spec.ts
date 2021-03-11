@@ -225,4 +225,27 @@ describe('#mergeStopGroup', () => {
 
     expect(thrownError).toEqual(new Error('The StopGroup with the Gpuid "g|FRstrasbou@u0tkruu" is not found.'));
   });
+
+  it('should throw an error if the StopGroup to merge has no childrens', () => {
+    const groundPlacesService: GroundPlacesController = new GroundPlacesController();
+
+    groundPlacesService.init(mockVerylargeGroundPlacesFile as GroundPlacesFile);
+
+    const stopGroupToMergeGpuid = 'g|FRststbi__@u0tkxd';
+    const intoStopGroupGpuid = 'g|FRstrasbou@u0tkru';
+
+    let thrownError: Error;
+
+    try {
+      groundPlacesService.mergeStopGroup(stopGroupToMergeGpuid, intoStopGroupGpuid);
+    } catch (error) {
+      thrownError = error;
+    }
+
+    expect(thrownError).toEqual(
+      new Error(
+        'You can\'t merge the StopGroup with the Gpuid "g|FRststbi__@u0tkxd" because it has no SegmentProviderStop childrens.',
+      ),
+    );
+  });
 });

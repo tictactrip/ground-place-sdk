@@ -96,7 +96,6 @@ export class GroundPlacesController {
     const isFilterByStopGroupActive: boolean = filters?.includes(AutocompleteFilter.STOP_GROUP);
     const isFilterByStopClusterActive: boolean = filters?.includes(AutocompleteFilter.STOP_CLUSTER);
     const isFilterByServicedActive: boolean = filters?.includes(AutocompleteFilter.SERVICED);
-    const isFilterWithChildrenActive: boolean = filters?.includes(AutocompleteFilter.SEGMENT_PROVIDER_STOP);
 
     return groundPlaces.filter(
       (place: GroundPlace): GroundPlace => {
@@ -104,7 +103,13 @@ export class GroundPlacesController {
         if (
           !place.gpuid.toLowerCase().includes(currentQuery) &&
           !place.name.toLowerCase().includes(currentQuery) &&
-          !(place.type === GroundPlaceType.CLUSTER && place.unique_name.toLowerCase().includes(currentQuery))
+          !(place.type === GroundPlaceType.CLUSTER && place.unique_name.toLowerCase().includes(currentQuery)) &&
+          !(
+            place.type === GroundPlaceType.GROUP &&
+            place.childs.some((segmentProviderStop: SegmentProviderStop) =>
+              segmentProviderStop.name.toLowerCase().includes(currentQuery),
+            )
+          )
         ) {
           return;
         }
@@ -120,23 +125,6 @@ export class GroundPlacesController {
           (isFilterByServicedActive && place.serviced !== GroundPlaceServiced.TRUE)
         ) {
           return;
-        }
-
-        if (isFilterWithChildrenActive) {
-          // Since StopGroups and StopClusters do not share the same structure
-          // We have to search the StopGroups from the StopCluster parent
-          // In order to find potential segmentProviderStop in childrens
-          if (place.type === GroundPlaceType.CLUSTER) {
-            const isSegmentProviderExist: boolean = place.childs.some((stopGroupGpuid: StopGroupGpuid) =>
-              groundPlaces.find((place: GroundPlace) => place.gpuid === stopGroupGpuid && place.childs.length),
-            );
-
-            if (!isSegmentProviderExist) {
-              return;
-            }
-          } else if (place.type === GroundPlaceType.GROUP && !place.childs.length) {
-            return;
-          }
         }
 
         return place;
@@ -620,10 +608,18 @@ export class GroundPlacesController {
         ({ company_name }: SegmentProviderStop) => company_name === segmentProviderStop.company_name,
       );
 
-      // Check if the SegmentProviderStop to move don't already exist inside the new StopGroup parent specified
+      // Check if the new StopGroup specified is already serves by the SegmentProvider of the SegmentProviderStop to move
       if (isAlreadyBelongToNewStopGroup) {
         throw new Error(
-          `The SegmentProviderStop ID "${segmentProviderStopId}" with the segmentProvider "${segmentProviderStop.company_name}" can't be move because it already exists inside the new StopGroup parent with the Gpuid "${intoStopGroupGpuid}".`,
+          `The SegmentProviderStop ID "${segmentProviderStopId}" can't be move because its SegmentProvider ("${segmentProviderStop.company_name}") already exists inside the new StopGroup parent with the Gpuid "${intoStopGroupGpuid}".`,
+        );
+      }
+
+      const distanceInKm: number = calculateDistanceBetweenTwoPlaceInKm(currentStopGroupParent, newStopGroupParent);
+
+      if (distanceInKm > MAX_DISTANCE_BETWEEN_STOP_GROUP_AND_STOP_CLUSTER_IN_KM) {
+        throw new Error(
+          `You can't move the SegmentProviderStop with the ID "${segmentProviderStopId}" inside the StopGroup with the Gpuid "${intoStopGroupGpuid}" because they are "${distanceInKm}km" away (the limit is ${MAX_DISTANCE_BETWEEN_STOP_GROUP_AND_STOP_CLUSTER_IN_KM}km).`,
         );
       }
 
@@ -671,6 +667,12 @@ export class GroundPlacesController {
 
     try {
       const stopGroupToMerge: StopGroup = this.storageService.getStopGroupByGpuid(stopGroupToMergeGpuid);
+
+      if (!stopGroupToMerge.childs.length) {
+        throw new Error(
+          `You can't merge the StopGroup with the Gpuid "${stopGroupToMergeGpuid}" because it has no SegmentProviderStop childrens.`,
+        );
+      }
 
       stopGroupToMerge.childs.map(({ id: segmentProviderStopId }: SegmentProviderStop) =>
         this.internalMoveSegmentProviderStop(

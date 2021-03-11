@@ -117,7 +117,6 @@ enum AutocompleteFilter {
   STOP_GROUP = 'stopGroup',
   STOP_CLUSTER = 'stopCluster',
   SERVICED = 'serviced',
-  SEGMENT_PROVIDER_STOP = 'segmentProviderStop',
 }
 
 enum CreateActionHistory {

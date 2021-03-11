@@ -172,10 +172,9 @@ describe('#autocomplete', () => {
     ]);
   });
 
-  it('should returns only StopClusters that having SegmentProvider in it and matching strasbourg', () => {
+  it('should returns only StopClusters that matching strasbourg', () => {
     const groundPlacesFiltered: GroundPlace[] = groundPlacesService.autocomplete('strasbourg', [
       AutocompleteFilter.STOP_CLUSTER,
-      AutocompleteFilter.SEGMENT_PROVIDER_STOP,
     ]);
 
     expect(groundPlacesFiltered).toStrictEqual([
@@ -250,68 +249,9 @@ describe('#autocomplete', () => {
     ]);
   });
 
-  it('should returns only StopGroups that having SegmentProvider in it', () => {
-    const groundPlacesFiltered: GroundPlace[] = groundPlacesService.autocomplete('', [
-      AutocompleteFilter.STOP_GROUP,
-      AutocompleteFilter.SEGMENT_PROVIDER_STOP,
-    ]);
-
-    expect(groundPlacesFiltered).toStrictEqual([
-      {
-        gpuid: 'g|FRstrasbou@u0tkru',
-        childs: [
-          {
-            unique_name: null,
-            company_name: 'flixbus',
-            name: 'Strasbourg',
-            latitude: 48.574179,
-            serviced: 'False',
-            company_id: 5,
-            longitude: 7.754266,
-            id: '23',
-          },
-        ],
-        name: 'Strasbourg',
-        longitude: 7.73417,
-        serviced: 'False',
-        has_been_modified: false,
-        warning: false,
-        country_code: 'fr',
-        latitude: 48.58392,
-        is_latest: true,
-        type: 'group',
-      },
-      {
-        gpuid: 'g|FRstraroet@u0tkr3',
-        childs: [
-          {
-            unique_name: null,
-            company_name: 'vsc',
-            name: 'Strasbourg Roethig',
-            latitude: 48.569,
-            serviced: 'False',
-            company_id: 10,
-            longitude: 7.704,
-            id: 'FRBUK',
-          },
-        ],
-        name: 'Strasbourg Roethig',
-        longitude: 7.704,
-        serviced: 'False',
-        has_been_modified: false,
-        warning: false,
-        country_code: 'fr',
-        latitude: 48.569,
-        is_latest: true,
-        type: 'group',
-      },
-    ]);
-  });
-
   it('should returns nothing if the query doesnt matching', () => {
     const groundPlacesFiltered: GroundPlace[] = groundPlacesService.autocomplete('Paris', [
       AutocompleteFilter.STOP_GROUP,
-      AutocompleteFilter.SEGMENT_PROVIDER_STOP,
     ]);
 
     expect(groundPlacesFiltered).toStrictEqual([]);
