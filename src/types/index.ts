@@ -21,6 +21,7 @@ interface GroundPlaceBase {
   has_been_modified?: boolean;
   warning?: boolean;
   is_latest?: boolean;
+  not_serviced_since?: string;
 }
 
 interface StopGroupFromFile extends GroundPlaceBase {
