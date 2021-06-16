@@ -45,7 +45,7 @@ export class GroundPlacesController {
 
   /**
    * @description Init GroundPlaces file.
-   * @param {GroundPlacesFile} groundPlacesFile
+   * @param {GroundPlacesFile} groundPlacesFile - File that store all your StopGroup, StopCluster and SegmentProviderStop.
    * @returns {void}
    */
   public init(groundPlacesFile: GroundPlacesFile): void {
