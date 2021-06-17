@@ -71,9 +71,10 @@ export class GroundPlacesController {
   }
 
   /**
-   * @description Find the correct place based on the Ground place unique identifier provided and the type of the place.
-   * @param {Gpuid} groundPlaceGpuid - Ground place unique identifier of the place to search.
-   * @param {GroundPlaceType} placeType - The type of the place to search, can be StopGroup or StopCluster.
+   * @description Returns the correct place based on the Ground place unique identifier provided and the type of the place.
+   * @param {Gpuid} groundPlaceGpuid - Ground place unique identifier of the place to find.
+   * @param {GroundPlaceType} placeType - The type of the place to find, can be StopGroup or StopCluster.
+   * @returns {GroundPlace}
    */
   public getGroundPlaceByGpuid(groundPlaceGpuid: Gpuid, placeType: GroundPlaceType): GroundPlace {
     return this.storageService.getGroundPlaceByGpuid(groundPlaceGpuid, placeType);
@@ -82,7 +83,7 @@ export class GroundPlacesController {
   /**
    * @description Returns a list of ground places.
    * @param {string} query - Can be a name, a Gpuid, a unique name or other name.
-   * @param {AutoCompleteFilters[]|undefined} filters - Filters with different options (StopGroup, StopCluster, Serviced, SegmentProvider).
+   * @param {AutocompleteFilter[]} [filters] - Filters with different options (StopGroup, StopCluster, Serviced, SegmentProvider).
    *
    * If you do not give filters, the list will not be filtered.
    * @returns {GroundPlace[]}
@@ -205,7 +206,7 @@ export class GroundPlacesController {
   /**
    * @description Create a new StopCluster from a StopGroup.
    * @param {StopGroupGpuid} fromStopGroupGpuid - Ground place unique identifier of the StopGroup on which the StopCluster will be created.
-   * @param {CreateGroundPlacesParams} createGroundPlaceParams - Params that are needed to create a new StopCluster.
+   * @param {CreateGroundPlacesParams} createGroundPlaceParams - Parameters that are needed to create a new StopCluster.
    * @returns {void}
    */
   public createStopCluster(
@@ -253,8 +254,8 @@ export class GroundPlacesController {
   }
 
   /**
-   * @description Update the stopGroup with the new values given.
-   * @param {StopGroupGpuid} stopGroupGpuid - Ground place unique identifier of a StopGroup.
+   * @description Update StopGroup specified properties with new values given.
+   * @param {StopGroupGpuid} stopGroupGpuid - Ground place unique identifier of the StopGroup to update.
    * @param {UpdateGroundPlaceProperties} propertiesToUpdate - Properties that need to be update.
    * @returns {void}
    */
@@ -302,7 +303,7 @@ export class GroundPlacesController {
 
   /**
    * @description Update the stopCluster with the new values given.
-   * @param {StopClusterGpuid} stopClusterGpuid - Ground place unique identifier.
+   * @param {StopClusterGpuid} stopClusterGpuid - Ground place unique identifier of the StopCluster to update.
    * @param {UpdateGroundPlaceProperties} propertiesToUpdate - Properties that need to be update.
    * @returns {void}
    */
@@ -651,7 +652,7 @@ export class GroundPlacesController {
   }
 
   /**
-   * @description Merge two stopGroups. It means moving all SegmentProviderStop of a StopGroup into another.
+   * @description Merge two StopGroups. It means moving all SegmentProviderStop of a StopGroup into another.
    * @param {StopGroupGpuid} stopGroupToMergeGpuid - Ground place unique identifier of the StopGroup to merge.
    * @param {StopGroupGpuid} intoStopGroupGpuid - Ground Place unique identifier of the StopGroup to be merged.
    * @returns {void}
@@ -696,9 +697,9 @@ export class GroundPlacesController {
   }
 
   /**
-   * @description Merge two stopClusters. It Means moving all stopGroup of a stopCluster into another.
-   * @param {StopClusterGpuid} stopClusterToMergeGpuid - Ground place unique identifier of the stopCluster to merge.
-   * @param {StopClusterGpuid} intoStopClusterGpuid - Ground place unique identifier of the stopCluster to be merged.
+   * @description Merge two StopClusters. It Means moving all stopGroup of a StopCluster into another.
+   * @param {StopClusterGpuid} stopClusterToMergeGpuid - Ground place unique identifier of the StopCluster to merge.
+   * @param {StopClusterGpuid} intoStopClusterGpuid - Ground place unique identifier of the StopCluster to be merged.
    * @returns {void}
    */
   public mergeStopCluster(stopClusterToMergeGpuid: StopClusterGpuid, intoStopClusterGpuid: StopClusterGpuid): void {
@@ -778,7 +779,7 @@ export class GroundPlacesController {
   }
 
   /**
-   * @description Getter to retrieve the GroundPlaces object.
+   * @description Get all the Ground places inside a manipulable array.
    * @returns {GroundPlace[]}
    */
   public getGroundPlaces(): GroundPlace[] {
@@ -786,7 +787,7 @@ export class GroundPlacesController {
   }
 
   /**
-   * @description Get the GroundPlaces file.
+   * @description Get all the Ground places JSON format file.
    * @returns {GroundPlacesFile}
    */
   public getGroundPlacesFile(): GroundPlacesFile {

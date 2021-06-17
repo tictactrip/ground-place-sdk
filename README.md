@@ -5,11 +5,11 @@
 [![License][license-badge]][license]
 [![PRs Welcome][prs-badge]][prs]
 
-## Main goal
+## Description
 
 This package offers the possibility to precisely manipulate a set of places, change their name, give them a new location, merge them together, etc.
 
-The interest is to be able to easily manage groups of places by creating **Groups** or **Clusters** (Groups of groups) around points of interest that you have defined.
+The main goal is to easily manage groups of places by creating **Groups** or **Clusters** (Groups of groups) around points of interest that you have defined.
 
 To ensure the proper usage of the package, the file of places provided must respect an specific interface that you can find [here](https://github.com/tictactrip/ground-place-sdk/blob/master/docs/ground_places_file_scheme.md).
 
@@ -21,8 +21,7 @@ yarn add @tictactrip/ground-place-sdk
 
 ## API
 
-We documented the **API** in every little details in the [API
-documentation](https://github.com/tictactrip/ground-place-sdk/blob/master/docs/api.md).
+A documentation of the API is available [here](https://github.com/tictactrip/ground-place-sdk/blob/master/docs/api.md).
 
 ## How to use it?
 
