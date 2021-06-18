@@ -151,8 +151,7 @@ export class GroundPlacesController {
       !createGroundPlaceParams.countryCode ||
       !createGroundPlaceParams.latitude ||
       !createGroundPlaceParams.longitude ||
-      !createGroundPlaceParams.name ||
-      !createGroundPlaceParams.address
+      !createGroundPlaceParams.name
     ) {
       throw new Error(
         'Error while creating a new StopGroup, please check that you have provide all properties needed (segmentProviderId, fromStopGroupGpuid, countryCode, latitude, longitude and name).',

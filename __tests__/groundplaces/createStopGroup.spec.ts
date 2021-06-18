@@ -100,7 +100,6 @@ describe('#createStopGroup', () => {
         name: 'Strasbourg - Wolfisheim',
         latitude: 50,
         longitude: 100,
-        address: 'Strasbourg, France',
       };
       const fromStopGroupGpuid = 'g|FRststbi__@u0tkxd';
       const segmentProviderStopId = '19528';
@@ -128,7 +127,6 @@ describe('#createStopGroup', () => {
         name: 'Strasbourg - Wolfisheim',
         latitude: 50,
         longitude: 100,
-        address: 'Strasbourg, France',
       };
       const fromStopGroupGpuid = 'g|FRststbi__@u0tkxdddd';
       const segmentProviderStopId = '19528';
@@ -152,7 +150,6 @@ describe('#createStopGroup', () => {
         name: 'Strasbourg - Wolfisheim',
         latitude: 50,
         longitude: 100,
-        address: 'Strasbourg, France',
       };
       const fromStopGroupGpuid = 'g|FRststbi__@u0tkxd';
       const segmentProviderStopId = '1952888';
@@ -179,7 +176,6 @@ describe('#createStopGroup', () => {
         countryCode: CountryCode.FR,
         name: 'Strasbourg - Wolfisheim',
         latitude: 50,
-        address: 'Strasbourg, France',
       };
       const fromStopGroupGpuid = 'g|FRststbi__@u0tkxd';
       const segmentProviderStopId = '1952888';

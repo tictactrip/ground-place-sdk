@@ -159,9 +159,9 @@ export class Storage {
   }
 
   /**
-   * @description Update StopGroup or StopCluster with new informations like name, latitude, longitude, etc.
+   * @description Update StopGroup or StopCluster with new informations like name, latitude, longitude, address, etc.
    * @param {Gpuid} placeGpuid - Ground place unique identifier of the place to update.
-   * @param {UpdateGroundPlaceProperties} propertiesToUpdate - Properties to update {name, lattitude, longitude}.
+   * @param {UpdateGroundPlaceProperties} propertiesToUpdate - Properties to update {name, lattitude, longitude, address}.
    * @param {GroundPlaceType} placeType - The type of the place to update, can be StopGroup or StopCluster.
    * @returns {void}
    */
