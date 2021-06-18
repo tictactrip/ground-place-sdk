@@ -151,7 +151,8 @@ export class GroundPlacesController {
       !createGroundPlaceParams.countryCode ||
       !createGroundPlaceParams.latitude ||
       !createGroundPlaceParams.longitude ||
-      !createGroundPlaceParams.name
+      !createGroundPlaceParams.name ||
+      !createGroundPlaceParams.address
     ) {
       throw new Error(
         'Error while creating a new StopGroup, please check that you have provide all properties needed (segmentProviderId, fromStopGroupGpuid, countryCode, latitude, longitude and name).',
@@ -166,7 +167,10 @@ export class GroundPlacesController {
         type: GroundPlaceType.GROUP,
       });
 
-      const newStopGroup: GroundPlace = parseGeneratePlaceToGroundPlace(stopGroupCreated);
+      const newStopGroup: GroundPlace = parseGeneratePlaceToGroundPlace({
+        ...stopGroupCreated,
+        address: createGroundPlaceParams.address,
+      });
 
       this.storageService.addPlace(newStopGroup);
 
@@ -831,6 +835,7 @@ export class GroundPlacesController {
               latitude: params.latitude,
               longitude: params.longitude,
               name: params.name,
+              address: params.address,
             });
 
           case ActionType.CREATE_STOP_CLUSTER:

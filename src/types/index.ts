@@ -13,6 +13,7 @@ type GroundPlace = StopGroup | StopCluster;
 type GroundPlaceActionHistory = Record<Gpuid, GroundPlaceActionOptions>;
 
 interface GroundPlaceBase {
+  [key: string]: unknown;
   country_code: CountryCode;
   name: string;
   longitude: number;
@@ -27,6 +28,7 @@ interface GroundPlaceBase {
 interface StopGroupFromFile extends GroundPlaceBase {
   type: GroundPlaceType.GROUP;
   childs: SegmentProviderStop[];
+  address: string;
 }
 
 interface StopClusterFromFile extends GroundPlaceBase {
@@ -50,6 +52,7 @@ interface GenerateGpuidGroundPlace {
   longitude: number;
   latitude: number;
   type: GroundPlaceType;
+  address?: string;
 }
 
 interface SegmentProviderStop {
@@ -68,12 +71,15 @@ interface CreateGroundPlacesParams {
   name: string;
   longitude: number;
   latitude: number;
+  address?: string;
 }
 
 interface UpdateGroundPlaceProperties {
+  [key: string]: number | string;
   name?: string;
   longitude?: number;
   latitude?: number;
+  address?: string;
 }
 
 interface GroundPlaceActionOptions {
@@ -86,6 +92,7 @@ interface GroundPlaceActionOptions {
     name?: string;
     longitude?: number;
     latitude?: number;
+    address?: string;
   };
 }
 
