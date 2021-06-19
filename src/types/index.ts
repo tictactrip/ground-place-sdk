@@ -13,7 +13,6 @@ type GroundPlace = StopGroup | StopCluster;
 type GroundPlaceActionHistory = Record<Gpuid, GroundPlaceActionOptions>;
 
 interface GroundPlaceBase {
-  [key: string]: unknown;
   country_code: CountryCode;
   name: string;
   longitude: number;
@@ -75,7 +74,6 @@ interface CreateGroundPlacesParams {
 }
 
 interface UpdateGroundPlaceProperties {
-  [key: string]: number | string;
   name?: string;
   longitude?: number;
   latitude?: number;

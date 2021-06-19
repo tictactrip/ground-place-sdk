@@ -24,7 +24,7 @@ import {
 import {
   calculateDistanceBetweenTwoPlaceInKm,
   parseGeneratePlaceToGroundPlace,
-  sanitizeGroundPlacePropertiesToUpdate,
+  removeUndefinedValues,
 } from '../helpers';
 import { MAX_DISTANCE_BETWEEN_STOP_GROUP_AND_STOP_CLUSTER_IN_KM } from '../constants';
 
@@ -852,7 +852,7 @@ export class GroundPlacesController {
               name: params.name,
             };
 
-            sanitizeGroundPlacePropertiesToUpdate(propertiesToUpdate);
+            removeUndefinedValues(propertiesToUpdate);
 
             return this.updateStopGroup(groundPlaceGpuid, propertiesToUpdate);
           }
@@ -864,7 +864,7 @@ export class GroundPlacesController {
               name: params.name,
             };
 
-            sanitizeGroundPlacePropertiesToUpdate(propertiesToUpdate);
+            removeUndefinedValues(propertiesToUpdate);
 
             return this.updateStopCluster(groundPlaceGpuid, propertiesToUpdate);
           }
