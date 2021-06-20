@@ -22,12 +22,12 @@ interface GroundPlaceBase {
   warning?: boolean;
   is_latest?: boolean;
   not_serviced_since?: string;
+  address?: string;
 }
 
 interface StopGroupFromFile extends GroundPlaceBase {
   type: GroundPlaceType.GROUP;
   childs: SegmentProviderStop[];
-  address: string;
 }
 
 interface StopClusterFromFile extends GroundPlaceBase {

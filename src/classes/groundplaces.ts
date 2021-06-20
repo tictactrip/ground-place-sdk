@@ -850,6 +850,7 @@ export class GroundPlacesController {
               latitude: params.latitude,
               longitude: params.longitude,
               name: params.name,
+              address: params.address,
             };
 
             removeUndefinedValues(propertiesToUpdate);
