@@ -75,6 +75,7 @@ describe('#createStopCluster', () => {
           type: 'createStopCluster',
           params: {
             countryCode: 'fr',
+            gpuid: 'c|FRstrawolf@u0tkm',
             name: 'Strasbourg - Wolfisheim',
             latitude: 48.5857122,
             longitude: 7.6275127,

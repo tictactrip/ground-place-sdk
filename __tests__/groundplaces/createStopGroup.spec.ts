@@ -79,6 +79,7 @@ describe('#createStopGroup', () => {
           params: {
             segmentProviderStopId: '19528',
             countryCode: 'fr',
+            gpuid: 'g|FRstrawolf@u0tkms',
             name: 'Strasbourg - Wolfisheim',
             latitude: 48.5857122,
             longitude: 7.6275127,

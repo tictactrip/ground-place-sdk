@@ -91,6 +91,7 @@ interface GroundPlaceActionOptions {
     longitude?: number;
     latitude?: number;
     address?: string;
+    gpuid?: Gpuid;
   };
 }
 

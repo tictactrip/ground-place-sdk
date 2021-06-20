@@ -146,12 +146,12 @@ const groundPlacesFiltered: GroundPlace[] = groundPlacesService.autocomplete('st
 **arguments**:
 
 - _segmentProviderStopId_ (`string`): The identifier of the SegmentProviderStop used to create the new StopGroup.
-- _fromStopGroupGpuid_ (`StopGroup`): Ground place unique identifier of the current StopGroup parent.
+- _fromStopGroupGpuid_ (`StopGroupGpuid`): Ground place unique identifier of the current StopGroup parent.
 - _createGroundPlaceParams_ (`CreateGroundPlacesParams`): Parameters that are needed to create a new StopGroup.
 
-**returns**: `void`
+**returns**: `StopGroupGpuid`
 
-Create a new StopGroup from a SegmentProviderStop.
+Create a new StopGroup from a SegmentProviderStop. It also return the `Gpuid` generated for the new `StopGroup`.
 
 **example**:
 
@@ -165,7 +165,11 @@ const createStopGroupProperties = {
 const fromStopGroupGpuid = 'g|FRststbi__@u0tkxd';
 const segmentProviderStopId = '19528';
 
-groundPlacesService.createStopGroup(segmentProviderStopId, fromStopGroupGpuid, createStopGroupProperties);
+const newStopGroupGpuid: StopGroupGpuid = groundPlacesService.createStopGroup(
+  segmentProviderStopId,
+  fromStopGroupGpuid,
+  createStopGroupProperties,
+);
 ```
 
 <a name="createStopCluster"></a>
@@ -179,9 +183,9 @@ groundPlacesService.createStopGroup(segmentProviderStopId, fromStopGroupGpuid, c
 - _fromStopGroupGpuid_ (`StopGroupGpuid`): Ground place unique identifier of the StopGroup on which the StopCluster will be created.
 - _createGroundPlaceParams_ (`CreateGroundPlacesParams`): Parameters that are needed to create a new StopCluster.
 
-**returns**: `void`
+**returns**: `StopGroupGpuid`
 
-Create a new StopCluster from a StopGroup.
+Create a new StopCluster from a StopGroup. It also return the `Gpuid` generated for the new `StopCluster`.
 
 **example**:
 
@@ -194,7 +198,10 @@ const createStopClusterProperties = {
 };
 const fromStopGroupGpuid = 'g|FRststbi__@u0tkxd';
 
-groundPlacesService.createStopCluster(fromStopGroupGpuid, createStopClusterProperties);
+const newStopClusterGpuid: StopClusterGpuid = groundPlacesService.createStopCluster(
+  fromStopGroupGpuid,
+  createStopClusterProperties,
+);
 ```
 
 <a name="updateStopGroup"></a>
