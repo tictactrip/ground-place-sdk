@@ -67,6 +67,7 @@ describe('#createStopCluster', () => {
         longitude: 7.6275127,
         latitude: 48.5857122,
         type: 'cluster',
+        unique_name: null,
       },
     ]);
     expect(groundPlacesService.getGroundPlacesActionHistory()).toStrictEqual([

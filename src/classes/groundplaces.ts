@@ -104,7 +104,7 @@ export class GroundPlacesController {
         if (
           !place.gpuid.toLowerCase().includes(currentQuery) &&
           !place.name.toLowerCase().includes(currentQuery) &&
-          !(place.type === GroundPlaceType.CLUSTER && place.unique_name.toLowerCase().includes(currentQuery)) &&
+          !(place.type === GroundPlaceType.CLUSTER && place.unique_name?.toLowerCase().includes(currentQuery)) &&
           !(
             place.type === GroundPlaceType.GROUP &&
             place.childs.some((segmentProviderStop: SegmentProviderStop) =>

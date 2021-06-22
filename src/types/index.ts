@@ -52,6 +52,7 @@ interface GenerateGpuidGroundPlace {
   latitude: number;
   type: GroundPlaceType;
   address?: string;
+  unique_name?: string | null;
 }
 
 interface SegmentProviderStop {
