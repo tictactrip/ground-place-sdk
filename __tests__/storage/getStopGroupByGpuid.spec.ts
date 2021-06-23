@@ -21,6 +21,7 @@ describe('#getStopGroupByGpuid', () => {
           id: '19528',
         },
       ],
+      address: '99999 Rue du Triage, 67800 Bischheim, France',
       name: 'Strasbourg, Strasbourg - Bischheim',
       longitude: 7.719863,
       serviced: 'True',

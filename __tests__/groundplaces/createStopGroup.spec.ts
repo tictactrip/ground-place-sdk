@@ -13,6 +13,7 @@ describe('#createStopGroup', () => {
       name: 'Strasbourg - Wolfisheim',
       latitude: 48.5857122,
       longitude: 7.6275127,
+      address: 'Strasbourg, France',
     };
     const fromStopGroupGpuid = 'g|FRststbi__@u0tkxd';
     const segmentProviderStopId = '19528';
@@ -36,6 +37,7 @@ describe('#createStopGroup', () => {
       },
       {
         gpuid: 'g|FRststbi__@u0tkxd',
+        address: '99999 Rue du Triage, 67800 Bischheim, France',
         name: 'Strasbourg, Strasbourg - Bischheim',
         longitude: 7.719863,
         serviced: 'True',
@@ -49,6 +51,7 @@ describe('#createStopGroup', () => {
       },
       {
         gpuid: 'g|FRstrawolf@u0tkms',
+        address: 'Strasbourg, France',
         name: 'Strasbourg - Wolfisheim',
         longitude: 7.6275127,
         latitude: 48.5857122,
@@ -76,9 +79,11 @@ describe('#createStopGroup', () => {
           params: {
             segmentProviderStopId: '19528',
             countryCode: 'fr',
+            gpuid: 'g|FRstrawolf@u0tkms',
             name: 'Strasbourg - Wolfisheim',
             latitude: 48.5857122,
             longitude: 7.6275127,
+            address: 'Strasbourg, France',
           },
         },
       },

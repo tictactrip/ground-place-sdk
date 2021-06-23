@@ -1,16 +1,14 @@
-import { UpdateGroundPlaceProperties } from '../types';
-
 /**
- * @description This method is used to remove all `undefined` values that can be found on the propertiesToUpdate object.
- * @param {UpdateGroundPlaceProperties} propertiesToUpdate - Properties to update {name, lattitude, longitude}.
+ * @description Helper to remove all `undefined` values from any object.
+ * @param {Record<string, unknown>} object - Any object that is structured with string index.
  * @returns {void}
  */
-const sanitizeGroundPlacePropertiesToUpdate = (propertiesToUpdate: UpdateGroundPlaceProperties): void => {
-  Object.keys(propertiesToUpdate).forEach((key: string) => {
-    if (propertiesToUpdate[key] === undefined) {
-      delete propertiesToUpdate[key];
+const removeUndefinedValues = <T>(object: T): void => {
+  Object.keys(object).forEach((key: string) => {
+    if (object[key] === undefined) {
+      delete object[key];
     }
   });
 };
 
-export { sanitizeGroundPlacePropertiesToUpdate };
+export { removeUndefinedValues };

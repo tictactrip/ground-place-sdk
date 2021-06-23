@@ -33,6 +33,7 @@ describe('#moveSegmentProviderStop', () => {
       {
         gpuid: 'g|FRststbi__@u0tkxd',
         childs: [],
+        address: 'Route Forestière de la Mattstahl, 67500 Haguenau, France',
         name: 'Strasbourg, Strasbourg - Bischheim',
         longitude: 7.719863,
         serviced: 'False',
@@ -67,6 +68,7 @@ describe('#moveSegmentProviderStop', () => {
             id: 'FRBUK',
           },
         ],
+        address: '22 Place de la Gare, 67000 Strasbourg, France',
         name: 'Strasbourg',
         longitude: 7.73417,
         serviced: 'False',
@@ -80,6 +82,7 @@ describe('#moveSegmentProviderStop', () => {
       {
         gpuid: 'g|FRstraroet@u0tkr3',
         childs: [],
+        address: '1 Quai du Roethig, 67000 Strasbourg, France',
         name: 'Strasbourg Roethig',
         longitude: 7.704,
         serviced: 'False',

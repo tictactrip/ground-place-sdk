@@ -47,6 +47,7 @@ describe('#createStopCluster', () => {
             id: '19528',
           },
         ],
+        address: '99999 Rue du Triage, 67800 Bischheim, France',
         name: 'Strasbourg, Strasbourg - Bischheim',
         longitude: 7.719863,
         serviced: 'True',
@@ -66,6 +67,7 @@ describe('#createStopCluster', () => {
         longitude: 7.6275127,
         latitude: 48.5857122,
         type: 'cluster',
+        unique_name: null,
       },
     ]);
     expect(groundPlacesService.getGroundPlacesActionHistory()).toStrictEqual([
@@ -74,6 +76,7 @@ describe('#createStopCluster', () => {
           type: 'createStopCluster',
           params: {
             countryCode: 'fr',
+            gpuid: 'c|FRstrawolf@u0tkm',
             name: 'Strasbourg - Wolfisheim',
             latitude: 48.5857122,
             longitude: 7.6275127,

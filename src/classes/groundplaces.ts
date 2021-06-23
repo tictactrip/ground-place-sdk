@@ -24,7 +24,7 @@ import {
 import {
   calculateDistanceBetweenTwoPlaceInKm,
   parseGeneratePlaceToGroundPlace,
-  sanitizeGroundPlacePropertiesToUpdate,
+  removeUndefinedValues,
 } from '../helpers';
 import { MAX_DISTANCE_BETWEEN_STOP_GROUP_AND_STOP_CLUSTER_IN_KM } from '../constants';
 
@@ -45,7 +45,7 @@ export class GroundPlacesController {
 
   /**
    * @description Init GroundPlaces file.
-   * @param {GroundPlacesFile} groundPlacesFile
+   * @param {GroundPlacesFile} groundPlacesFile - File that store all your StopGroup, StopCluster and SegmentProviderStop.
    * @returns {void}
    */
   public init(groundPlacesFile: GroundPlacesFile): void {
@@ -71,9 +71,10 @@ export class GroundPlacesController {
   }
 
   /**
-   * @description Find the correct place based on the Ground place unique identifier provided and the type of the place.
-   * @param {Gpuid} groundPlaceGpuid - Ground place unique identifier of the place to search.
-   * @param {GroundPlaceType} placeType - The type of the place to search, can be StopGroup or StopCluster.
+   * @description Returns the correct place based on the Ground place unique identifier provided and the type of the place.
+   * @param {Gpuid} groundPlaceGpuid - Ground place unique identifier of the place to find.
+   * @param {GroundPlaceType} placeType - The type of the place to find, can be StopGroup or StopCluster.
+   * @returns {GroundPlace}
    */
   public getGroundPlaceByGpuid(groundPlaceGpuid: Gpuid, placeType: GroundPlaceType): GroundPlace {
     return this.storageService.getGroundPlaceByGpuid(groundPlaceGpuid, placeType);
@@ -82,7 +83,7 @@ export class GroundPlacesController {
   /**
    * @description Returns a list of ground places.
    * @param {string} query - Can be a name, a Gpuid, a unique name or other name.
-   * @param {AutoCompleteFilters[]|undefined} filters - Filters with different options (StopGroup, StopCluster, Serviced, SegmentProvider).
+   * @param {AutocompleteFilter[]} [filters] - Filters with different options (StopGroup, StopCluster, Serviced, SegmentProvider).
    *
    * If you do not give filters, the list will not be filtered.
    * @returns {GroundPlace[]}
@@ -103,7 +104,7 @@ export class GroundPlacesController {
         if (
           !place.gpuid.toLowerCase().includes(currentQuery) &&
           !place.name.toLowerCase().includes(currentQuery) &&
-          !(place.type === GroundPlaceType.CLUSTER && place.unique_name.toLowerCase().includes(currentQuery)) &&
+          !(place.type === GroundPlaceType.CLUSTER && place.unique_name?.toLowerCase().includes(currentQuery)) &&
           !(
             place.type === GroundPlaceType.GROUP &&
             place.childs.some((segmentProviderStop: SegmentProviderStop) =>
@@ -133,17 +134,17 @@ export class GroundPlacesController {
   }
 
   /**
-   * @description Create a new StopGroup from a SegmentProviderStop.
+   * @description Create a new StopGroup from a SegmentProviderStop and return it's Gpuid.
    * @param {string} segmentProviderStopId - The identifier of the SegmentProviderStop used to create the new StopGroup.
    * @param {StopGroupGpuid} fromStopGroupGpuid - Ground place unique identifier of the current StopGroup parent.
    * @param {CreateGroundPlacesParams} createGroundPlaceParams - Parameters that are needed to create a new StopGroup.
-   * @returns {void}
+   * @returns {StopGroupGpuid}
    */
   public createStopGroup(
     segmentProviderStopId: string,
     fromStopGroupGpuid: StopGroupGpuid,
     createGroundPlaceParams: CreateGroundPlacesParams,
-  ): void {
+  ): StopGroupGpuid {
     if (
       !segmentProviderStopId ||
       !fromStopGroupGpuid ||
@@ -159,13 +160,18 @@ export class GroundPlacesController {
 
     const cloneGroundPlaces: GroundPlace[] = cloneDeep(this.getGroundPlaces());
 
+    let stopGroupGpuidCreated: StopGroupGpuid;
+
     try {
       const stopGroupCreated: GenerateGpuidGroundPlace = this.generateGpuidService.gpuid({
         ...createGroundPlaceParams,
         type: GroundPlaceType.GROUP,
       });
 
-      const newStopGroup: GroundPlace = parseGeneratePlaceToGroundPlace(stopGroupCreated);
+      const newStopGroup: GroundPlace = parseGeneratePlaceToGroundPlace({
+        ...stopGroupCreated,
+        address: createGroundPlaceParams.address,
+      });
 
       this.storageService.addPlace(newStopGroup);
 
@@ -186,6 +192,8 @@ export class GroundPlacesController {
       stopClusterParent.map(({ gpuid: stopClusterGpuid }: StopCluster) =>
         this.internalAddStopGroupToStopCluster(newStopGroup.gpuid, stopClusterGpuid, CreateActionHistory.FALSE),
       );
+
+      stopGroupGpuidCreated = stopGroupCreated.id;
     } catch (error) {
       // If there is an error, previous update is reverted
       this.storageService.setGroundPlaces(cloneGroundPlaces);
@@ -197,21 +205,24 @@ export class GroundPlacesController {
       type: ActionType.CREATE_STOP_GROUP,
       params: {
         segmentProviderStopId,
+        gpuid: stopGroupGpuidCreated,
         ...createGroundPlaceParams,
       },
     });
+
+    return stopGroupGpuidCreated;
   }
 
   /**
-   * @description Create a new StopCluster from a StopGroup.
+   * @description Create a new StopCluster from a StopGroup and return it's Gpuid.
    * @param {StopGroupGpuid} fromStopGroupGpuid - Ground place unique identifier of the StopGroup on which the StopCluster will be created.
-   * @param {CreateGroundPlacesParams} createGroundPlaceParams - Params that are needed to create a new StopCluster.
+   * @param {CreateGroundPlacesParams} createGroundPlaceParams - Parameters that are needed to create a new StopCluster.
    * @returns {void}
    */
   public createStopCluster(
     fromStopGroupGpuid: StopGroupGpuid,
     createGroundPlaceParams: CreateGroundPlacesParams,
-  ): void {
+  ): StopClusterGpuid {
     if (
       !fromStopGroupGpuid ||
       !createGroundPlaceParams.countryCode ||
@@ -226,17 +237,25 @@ export class GroundPlacesController {
 
     const cloneGroundPlaces: GroundPlace[] = cloneDeep(this.getGroundPlaces());
 
+    let stopClusterGpuidCreated: StopClusterGpuid;
+
     try {
       const stopClusterCreated: GenerateGpuidGroundPlace = this.generateGpuidService.gpuid({
         ...createGroundPlaceParams,
         type: GroundPlaceType.CLUSTER,
       });
 
-      const newStopCluster: GroundPlace = parseGeneratePlaceToGroundPlace(stopClusterCreated);
+      const newStopCluster: GroundPlace = parseGeneratePlaceToGroundPlace({
+        ...stopClusterCreated,
+        // Create `unique_name` attribute set to `null` only for StopCluster
+        unique_name: null,
+      });
 
       this.storageService.addPlace(newStopCluster);
 
       this.internalAddStopGroupToStopCluster(fromStopGroupGpuid, newStopCluster.gpuid, CreateActionHistory.FALSE);
+
+      stopClusterGpuidCreated = stopClusterCreated.id;
     } catch (error) {
       // If there is an error, previous update is reverted
       this.storageService.setGroundPlaces(cloneGroundPlaces);
@@ -247,14 +266,17 @@ export class GroundPlacesController {
     this.storageService.addGroundPlaceActionHistory(fromStopGroupGpuid, {
       type: ActionType.CREATE_STOP_CLUSTER,
       params: {
+        gpuid: stopClusterGpuidCreated,
         ...createGroundPlaceParams,
       },
     });
+
+    return stopClusterGpuidCreated;
   }
 
   /**
-   * @description Update the stopGroup with the new values given.
-   * @param {StopGroupGpuid} stopGroupGpuid - Ground place unique identifier of a StopGroup.
+   * @description Update StopGroup specified properties with new values given.
+   * @param {StopGroupGpuid} stopGroupGpuid - Ground place unique identifier of the StopGroup to update.
    * @param {UpdateGroundPlaceProperties} propertiesToUpdate - Properties that need to be update.
    * @returns {void}
    */
@@ -302,7 +324,7 @@ export class GroundPlacesController {
 
   /**
    * @description Update the stopCluster with the new values given.
-   * @param {StopClusterGpuid} stopClusterGpuid - Ground place unique identifier.
+   * @param {StopClusterGpuid} stopClusterGpuid - Ground place unique identifier of the StopCluster to update.
    * @param {UpdateGroundPlaceProperties} propertiesToUpdate - Properties that need to be update.
    * @returns {void}
    */
@@ -651,7 +673,7 @@ export class GroundPlacesController {
   }
 
   /**
-   * @description Merge two stopGroups. It means moving all SegmentProviderStop of a StopGroup into another.
+   * @description Merge two StopGroups. It means moving all SegmentProviderStop of a StopGroup into another.
    * @param {StopGroupGpuid} stopGroupToMergeGpuid - Ground place unique identifier of the StopGroup to merge.
    * @param {StopGroupGpuid} intoStopGroupGpuid - Ground Place unique identifier of the StopGroup to be merged.
    * @returns {void}
@@ -696,9 +718,9 @@ export class GroundPlacesController {
   }
 
   /**
-   * @description Merge two stopClusters. It Means moving all stopGroup of a stopCluster into another.
-   * @param {StopClusterGpuid} stopClusterToMergeGpuid - Ground place unique identifier of the stopCluster to merge.
-   * @param {StopClusterGpuid} intoStopClusterGpuid - Ground place unique identifier of the stopCluster to be merged.
+   * @description Merge two StopClusters. It Means moving all stopGroup of a StopCluster into another.
+   * @param {StopClusterGpuid} stopClusterToMergeGpuid - Ground place unique identifier of the StopCluster to merge.
+   * @param {StopClusterGpuid} intoStopClusterGpuid - Ground place unique identifier of the StopCluster to be merged.
    * @returns {void}
    */
   public mergeStopCluster(stopClusterToMergeGpuid: StopClusterGpuid, intoStopClusterGpuid: StopClusterGpuid): void {
@@ -778,7 +800,7 @@ export class GroundPlacesController {
   }
 
   /**
-   * @description Getter to retrieve the GroundPlaces object.
+   * @description Get all the Ground places inside a manipulable array.
    * @returns {GroundPlace[]}
    */
   public getGroundPlaces(): GroundPlace[] {
@@ -786,7 +808,7 @@ export class GroundPlacesController {
   }
 
   /**
-   * @description Get the GroundPlaces file.
+   * @description Get all the Ground places JSON format file.
    * @returns {GroundPlacesFile}
    */
   public getGroundPlacesFile(): GroundPlacesFile {
@@ -830,6 +852,7 @@ export class GroundPlacesController {
               latitude: params.latitude,
               longitude: params.longitude,
               name: params.name,
+              address: params.address,
             });
 
           case ActionType.CREATE_STOP_CLUSTER:
@@ -845,9 +868,10 @@ export class GroundPlacesController {
               latitude: params.latitude,
               longitude: params.longitude,
               name: params.name,
+              address: params.address,
             };
 
-            sanitizeGroundPlacePropertiesToUpdate(propertiesToUpdate);
+            removeUndefinedValues(propertiesToUpdate);
 
             return this.updateStopGroup(groundPlaceGpuid, propertiesToUpdate);
           }
@@ -859,7 +883,7 @@ export class GroundPlacesController {
               name: params.name,
             };
 
-            sanitizeGroundPlacePropertiesToUpdate(propertiesToUpdate);
+            removeUndefinedValues(propertiesToUpdate);
 
             return this.updateStopCluster(groundPlaceGpuid, propertiesToUpdate);
           }

@@ -43,6 +43,7 @@ describe('#applyGroundPlacesActionHistory', () => {
             id: '19528',
           },
         ],
+        address: 'Strasbourg, France',
         latitude: 49,
         longitude: 7.8,
         name: 'Strasbourg, Grand-Nord',
