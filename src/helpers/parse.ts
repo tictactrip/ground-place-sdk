@@ -1,4 +1,4 @@
-import { GroundPlaceServiced, GenerateGpuidGroundPlace, GroundPlace, GroundPlaceType } from '../types';
+import { GroundPlaceServiced, GenerateGpuidGroundPlace, GroundPlace } from '../types';
 import { removeUndefinedValues } from './sanitize';
 
 /**
@@ -17,8 +17,7 @@ const parseGeneratePlaceToGroundPlace = (generateGpuidGroundPlace: GenerateGpuid
     type: generateGpuidGroundPlace.type,
     childs: [],
     serviced: GroundPlaceServiced.FALSE,
-    // Create `unique_name` attribute set to `null` only for StopCluster
-    ...(generateGpuidGroundPlace.type === GroundPlaceType.CLUSTER ? { unique_name: null } : {}),
+    unique_name: generateGpuidGroundPlace.unique_name,
   };
 
   removeUndefinedValues(newGroundPlace);

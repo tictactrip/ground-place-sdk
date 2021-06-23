@@ -245,7 +245,11 @@ export class GroundPlacesController {
         type: GroundPlaceType.CLUSTER,
       });
 
-      const newStopCluster: GroundPlace = parseGeneratePlaceToGroundPlace(stopClusterCreated);
+      const newStopCluster: GroundPlace = parseGeneratePlaceToGroundPlace({
+        ...stopClusterCreated,
+        // Create `unique_name` attribute set to `null` only for StopCluster
+        unique_name: null,
+      });
 
       this.storageService.addPlace(newStopCluster);
 
