@@ -18,6 +18,7 @@ const parseGeneratePlaceToGroundPlace = (generateGpuidGroundPlace: GenerateGpuid
     childs: [],
     serviced: GroundPlaceServiced.FALSE,
     unique_name: generateGpuidGroundPlace.unique_name,
+    is_latest: true,
   };
 
   removeUndefinedValues(newGroundPlace);

@@ -66,6 +66,7 @@ describe('#createStopCluster', () => {
         name: 'Strasbourg - Wolfisheim',
         longitude: 7.6275127,
         latitude: 48.5857122,
+        is_latest: true,
         type: 'cluster',
         unique_name: null,
       },

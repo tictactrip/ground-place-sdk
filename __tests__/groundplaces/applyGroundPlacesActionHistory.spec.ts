@@ -46,6 +46,7 @@ describe('#applyGroundPlacesActionHistory', () => {
         address: 'Strasbourg, France',
         latitude: 49,
         longitude: 7.8,
+        is_latest: true,
         name: 'Strasbourg, Grand-Nord',
         serviced: 'False',
         type: 'group',
