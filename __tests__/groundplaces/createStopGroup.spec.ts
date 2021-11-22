@@ -55,6 +55,7 @@ describe('#createStopGroup', () => {
         name: 'Strasbourg - Wolfisheim',
         longitude: 7.6275127,
         latitude: 48.5857122,
+        is_latest: true,
         country_code: 'fr',
         type: 'group',
         serviced: 'False',
