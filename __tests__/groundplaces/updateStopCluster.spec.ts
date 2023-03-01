@@ -19,6 +19,7 @@ describe('#updateStopCluster', () => {
         has_been_modified: false,
         warning: false,
         country_code: 'fr',
+        is_high_speed: true,
         is_latest: true,
         name: 'Strasbourg, Est, France',
         longitude: 7.74815,

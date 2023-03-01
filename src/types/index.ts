@@ -23,6 +23,7 @@ interface GroundPlaceBase {
   is_latest?: boolean;
   not_serviced_since?: string;
   address?: string;
+  is_high_speed?: boolean;
 }
 
 interface StopGroupFromFile extends GroundPlaceBase {
@@ -52,6 +53,7 @@ interface GenerateGpuidGroundPlace {
   latitude: number;
   type: GroundPlaceType;
   address?: string;
+  is_high_speed?: boolean;
   unique_name?: string | null;
 }
 
@@ -72,6 +74,7 @@ interface CreateGroundPlacesParams {
   longitude: number;
   latitude: number;
   address?: string;
+  is_high_speed?: boolean;
 }
 
 interface UpdateGroundPlaceProperties {
@@ -79,6 +82,7 @@ interface UpdateGroundPlaceProperties {
   longitude?: number;
   latitude?: number;
   address?: string;
+  is_high_speed?: boolean;
 }
 
 interface GroundPlaceActionOptions {
@@ -92,6 +96,7 @@ interface GroundPlaceActionOptions {
     longitude?: number;
     latitude?: number;
     address?: string;
+    is_high_speed?: boolean;
     gpuid?: Gpuid;
   };
 }

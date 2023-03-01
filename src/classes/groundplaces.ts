@@ -861,6 +861,7 @@ export class GroundPlacesController {
               latitude: params.latitude,
               longitude: params.longitude,
               name: params.name,
+              is_high_speed: params.is_high_speed,
             });
 
           case ActionType.UPDATE_STOP_GROUP: {
@@ -881,6 +882,7 @@ export class GroundPlacesController {
               latitude: params.latitude,
               longitude: params.longitude,
               name: params.name,
+              is_high_speed: params.is_high_speed,
             };
 
             removeUndefinedValues(propertiesToUpdate);

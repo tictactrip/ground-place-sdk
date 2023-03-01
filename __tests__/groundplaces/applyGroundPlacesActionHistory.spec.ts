@@ -24,6 +24,7 @@ describe('#applyGroundPlacesActionHistory', () => {
         warning: false,
         country_code: 'fr',
         is_latest: true,
+        is_high_speed: true,
         name: 'Strasbourg, Grand-Est, France',
         longitude: 7.74815,
         latitude: 48.45,
