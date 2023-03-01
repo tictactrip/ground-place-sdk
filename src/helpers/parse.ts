@@ -18,6 +18,7 @@ const parseGeneratePlaceToGroundPlace = (generateGpuidGroundPlace: GenerateGpuid
     childs: [],
     serviced: GroundPlaceServiced.FALSE,
     unique_name: generateGpuidGroundPlace.unique_name,
+    is_high_speed: generateGpuidGroundPlace.is_high_speed,
     is_latest: true,
   };
 
