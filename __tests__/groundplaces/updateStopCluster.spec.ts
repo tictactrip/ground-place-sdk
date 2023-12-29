@@ -9,14 +9,14 @@ describe('#updateStopCluster', () => {
     groundPlacesService.init(mockSmallGroundPlacesFile as GroundPlacesFile);
 
     try {
-      groundPlacesService.updateStopCluster('c|FRstrasbou@u0ts2', { name: 'Strasbourg,Est; France' });
+      groundPlacesService.updateStopCluster('c|FRstrasbou@u0ts2', { name: 'Strasbourg, Hauts-de-france; France' });
     } catch (error) {
       thrownError = error;
     }
 
     expect(thrownError).toEqual(
       new Error(
-        'The StopCluster name you entered (Strasbourg,Est; France) does not respect the following format: CITY, REGION, COUNTRY, please correct!',
+        'The StopCluster name you entered (Strasbourg, Hauts-de-france; France) does not respect the following format: CITY, REGION, COUNTRY, please correct!',
       ),
     );
   });
