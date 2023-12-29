@@ -334,6 +334,14 @@ export class GroundPlacesController {
     try {
       this.storageService.updatePlace(stopClusterGpuid, propertiesToUpdate, GroundPlaceType.CLUSTER);
 
+      // If stopCluster name doesn't respect this format: CITY, REGION, COUNTRY
+      const stopClusterNameRegex = /^\w+\,\s*\w+\,\s*\w+$/;
+      if (propertiesToUpdate?.name && !stopClusterNameRegex.test(propertiesToUpdate?.name)) {
+        throw new Error(
+          `The StopCluster name you entered (${propertiesToUpdate?.name}) does not respect the following format: CITY, REGION, COUNTRY, please correct!`,
+        );
+      }
+
       // If latitude and/or longitude have updates wanted, first check that the new distance is correct with all StopGroup childs
       if (propertiesToUpdate.latitude || propertiesToUpdate.longitude) {
         const stopClusterUpdated: StopCluster = this.storageService.getStopClusterByGpuid(stopClusterGpuid);
