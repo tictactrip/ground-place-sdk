@@ -3,20 +3,20 @@ import * as mockSmallGroundPlacesFile from '../../mocks/smallGroundPlacesFile.js
 import { GroundPlacesFile } from '../../src/types';
 
 describe('#updateStopCluster', () => {
-  it('should not update the name of the StopCluster and throw error', () => {
+  it("should not update the name of the StopCluster and throw error", () => {
     const groundPlacesService: GroundPlacesController = new GroundPlacesController();
     let thrownError: Error;
     groundPlacesService.init(mockSmallGroundPlacesFile as GroundPlacesFile);
 
     try {
-      groundPlacesService.updateStopCluster('c|FRstrasbou@u0ts2', { name: 'Strasbourg, Hauts-de-france; France' });
+      groundPlacesService.updateStopCluster('c|FRstrasbou@u0ts2', { name: 'Strasbourg, Hauts-de-france France' });
     } catch (error) {
       thrownError = error;
     }
 
     expect(thrownError).toEqual(
       new Error(
-        'The StopCluster name you entered (Strasbourg, Hauts-de-france; France) does not respect the following format: CITY, REGION, COUNTRY, please correct!',
+        'The StopCluster name you entered (Strasbourg, Hauts-de-france France) does not respect the following format: CITY, REGION, COUNTRY, please correct!',
       ),
     );
   });

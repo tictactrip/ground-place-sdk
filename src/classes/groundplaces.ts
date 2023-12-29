@@ -335,8 +335,7 @@ export class GroundPlacesController {
       this.storageService.updatePlace(stopClusterGpuid, propertiesToUpdate, GroundPlaceType.CLUSTER);
 
       // If stopCluster name doesn't respect this format: CITY, REGION, COUNTRY
-      const stopClusterNameRegex = /^[a-zA-Z0-9_-]+\,\s*[a-zA-Z0-9_-]+\,\s*[a-zA-Z0-9_-]+$/;
-      if (propertiesToUpdate?.name && !stopClusterNameRegex.test(propertiesToUpdate?.name)) {
+      if (propertiesToUpdate?.name && propertiesToUpdate?.name.split(',').length !== 3) {
         throw new Error(
           `The StopCluster name you entered (${propertiesToUpdate?.name}) does not respect the following format: CITY, REGION, COUNTRY, please correct!`,
         );
