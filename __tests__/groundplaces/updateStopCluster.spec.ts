@@ -3,7 +3,7 @@ import * as mockSmallGroundPlacesFile from '../../mocks/smallGroundPlacesFile.js
 import { GroundPlacesFile } from '../../src/types';
 
 describe('#updateStopCluster', () => {
-  it("should not update the name of the StopCluster and throw error", () => {
+  it('should not update the name of the StopCluster and throw error', () => {
     const groundPlacesService: GroundPlacesController = new GroundPlacesController();
     let thrownError: Error;
     groundPlacesService.init(mockSmallGroundPlacesFile as GroundPlacesFile);
